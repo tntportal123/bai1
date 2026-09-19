@@ -7,10 +7,9 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Times New Roman', Times, serif;
         }
         body {
-            background-color: #93c5fd;
+            background-color: #8cc3ff;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -58,8 +57,8 @@
             color: #000;
         }
         p.sub-title {
-            font-size: 14px;
-            margin: 0 0 20px 0;
+            font-size: 20px;
+            margin: 0 0 5px 0;
             color: #000;
         }
         form {
@@ -75,10 +74,10 @@
             display: flex;
             align-items: center;
             margin-bottom: 6px;
-            font-size: 14px;
+            font-size: 15px;
         }
         .label-col {
-            width: 170px;
+            width: 200px;
             text-align: left;
             color: #000;
         }
@@ -108,14 +107,14 @@
         }
         .options-grid {
             display: grid;
-            grid-template-columns: 180px 1fr;
+            grid-template-columns: 140px 1fr;
             gap: 4px 10px;
         }
         .option-item {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-size: 14px;
+            font-size: 17px;
             color: #000;
             cursor: pointer;
             user-select: none;
@@ -124,15 +123,18 @@
             display: none;
         }
         .radio-dot {
-            width: 14px;
-            height: 14px;
+            width: 13px;
+            height: 13px;
             border-radius: 50%;
             background-color: #ffffff;
-            border: 2px solid #a2a2a2;
+            border: 1px solid #666666;
             display: inline-block;
             position: relative;
             box-sizing: border-box;
             flex-shrink: 0;
+        }
+        .option-item input[type="radio"]:checked + .radio-dot {
+            border: 1.8px solid #1fa02c;
         }
         .option-item input[type="radio"]:checked + .radio-dot::after {
             content: "";
@@ -140,10 +142,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            background-color: #00FF00;
+            background-color: #1fa02c;
         }
         textarea {
             width: 100%;
@@ -154,17 +156,15 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-top: 5px;
+            margin-top: 15px;
         }
         button {
             background-color: #f0f0f0;
-            border: 2px outset #ffffff;
-            border-right-color: #808080;
-            border-bottom-color: #808080;
             padding: 2px 12px;
             font-size: 13px;
             cursor: pointer;
             color: #000;
+            border: 1px solid #767676;
         }
         button:active {
             border-style: inset;
@@ -254,11 +254,11 @@
                         <span class="radio-dot"></span> Educational Institution
                     </label>
                     <label class="option-item">
-                        <input type="radio" name="used_for" checked>
+                        <input type="radio" name="used_for">
                         <span class="radio-dot"></span> Business
                     </label>
                     <label class="option-item">
-                        <input type="radio" name="used_for">
+                        <input type="radio" name="used_for" checked>
                         <span class="radio-dot"></span> Other
                     </label>
                     <label class="option-item">
