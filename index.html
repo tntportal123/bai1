@@ -1,296 +1,456 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jackson Electronics - Registration Form</title>
+    <title>Example Cafe Menu</title>
     <style>
         * {
             box-sizing: border-box;
-        }
-        body {
-            background-color: #8cc3ff;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: #fcfcfc;
             display: flex;
             justify-content: center;
+            padding: 15px;
         }
-        .container {
-            width: 100%;
-            max-width: 600px;
+
+        .page-wrapper {
+            width: 1000px;
+            background-color: #ffffff;
+            border: 1px solid #d3d3d3;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        header {
+            text-align: center;
+            padding: 18px 0 14px;
+        }
+
+        header h1 {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 28px;
+            font-style: italic;
+            font-weight: bold;
+            color: #8e2b2b;
+            letter-spacing: 2px;
+            text-shadow: 0px 4px 6px rgba(142, 43, 43, 0.25);
+        }
+
+        .navbar {
+            background-color: #e07e7e;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            padding: 0 210px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-home-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 2px solid rgba(13, 0, 255, 0.6);
+            padding-right: 15px;
+        }
+
+        .nav-home-icon img {
+            width: 18px;
+            height: 18px;
+            filter: invert(1);
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-right: 2px solid rgba(13, 0, 255, 0.6);
+            padding-right: 15px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .nav-links a:last-child{
+            margin-right: 35px;
+        }
+
+        .nav-search {
+            display: flex;
+            align-items: center;
+      
+        }
+
+        .nav-search input {
+            padding: 0 5px;
+            font-size: 11px;
+            outline: none;
+        }
+        .nav-search button {
+            height: 22px;
+            padding: 0 8px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            font-size: 11px;
+            cursor: pointer;
+            margin-left: 5px
+        }
+
+        .main-layout {
+            display: flex;
+            padding: 10px 12px;
+            gap: 15px;
+        }
+
+        .left-col {
+            width: 135px;
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .logo-box {
-            background-color: #00ffff;
-            border: 2px solid #000;
-            border-radius: 12px;
+
+        .menu-pill {
+            display: block;
+            width: 100%;
+            background-color: #ea9999;
+            color: white;
             text-align: center;
-            box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            padding: 5px 8px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            font-size: 11px;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+            transition: 0.2s;
+        }
+
+        .menu-pill:hover {
+            background-color: #df8080;
+        }
+
+        .left-photo-container {
+            margin-top: 15px;
+            width: 130px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #f3b6b6;
+            box-shadow: 0 0 10px rgba(234, 153, 153, 0.6);
+        }
+
+        .left-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .center-col {
+            flex: 1;
+            padding: 0 5px;
+        }
+
+        .section-banner {
+            background-color: #e07e7e;
+            color: #8e2b2b;
+            font-weight: bold;
+            letter-spacing: 5px;
+            padding: 3px 0;
+            margin-bottom: 8px;
+            width: 320px;
+            margin: 0 auto 10px auto
+        }
+
+        .menu-items {
+            list-style: none;
+            padding-left: 10px;
+            margin-bottom: 4px;
+        }
+
+        .menu-items li {
+            font-size: 12px;
+            color: #333;
+            line-height: 1.5;
             position: relative;
-            margin-bottom: 25px;
-            width: 280px;
+            padding-left: 12px;
         }
-        .logo-title {
-            font-size: 26px;
-            font-weight: bold;
-            margin: 0;
-            line-height: 1.1;
-            color: #000;
-        }
-        .logo-divider {
-            border-top: 4px solid #000;
-            margin: 2px 0;
-        }
-        .lightning-icon {
+
+        .menu-items li::before {
+            content: "•";
             position: absolute;
-            top: 4px;
-            left: 15px;
-            font-size: 18px;
-            transform: rotate(-20deg);
+            left: 0;
+            color: #333;
+            font-size: 14px;
         }
-        h1.form-title {
-            font-size: 24px;
+
+        .tag-v {
+            color: #ff0000;
             font-weight: bold;
-            margin: 0 0 10px 0;
-            color: #000;
+            text-decoration: underline;
         }
-        p.sub-title {
-            font-size: 20px;
-            margin: 0 0 5px 0;
-            color: #000;
+        .tag-z{
+            color: #ff6b0f
         }
-        form {
-            width: 100%;
+        .back-to-top {
+            display: inline-block;
+            font-size: 12px;
+            color: #ff0000;
+            text-decoration: underline;
+            margin-bottom: 12px;
+            cursor: pointer;
         }
-        hr {
-            border: none;
-            border-top: 1px solid #6b7280;
-            margin: 15px 0;
-            width: 100%;
+
+        .info-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
         }
+
         .form-row {
             display: flex;
-            align-items: center;
-            margin-bottom: 6px;
-            font-size: 15px;
-        }
-        .label-col {
-            width: 200px;
-            text-align: left;
-            color: #000;
-        }
-        .input-col {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-        input[type="text"], select, textarea {
-            border: 1px solid #7f9db9;
-            padding: 2px 4px;
-            font-size: 13px;
-            background-color: #fff;
-        }
-        input[type="text"] {
-            height: 22px;
-        }
-        select {
-            height: 22px;
-            border-radius: 0;
-        }
-        .inline-label {
-            margin-right: 4px;
-            color: #000;
-        }
-        .options-grid {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 4px 10px;
-        }
-        .option-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 17px;
-            color: #000;
-            cursor: pointer;
-            user-select: none;
-        }
-        .option-item input[type="radio"] {
-            display: none;
-        }
-        .radio-dot {
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            background-color: #ffffff;
-            border: 1px solid #666666;
-            display: inline-block;
-            position: relative;
-            box-sizing: border-box;
-            flex-shrink: 0;
-        }
-        .option-item input[type="radio"]:checked + .radio-dot {
-            border: 1.8px solid #1fa02c;
-        }
-        .option-item input[type="radio"]:checked + .radio-dot::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background-color: #1fa02c;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            resize: vertical;
-        }
-        .button-group {
-            display: flex;
-            justify-content: center;
             gap: 10px;
-            margin-top: 15px;
+            margin-bottom: 8px;
+}
+
+        .form-row > input,
+        .form-row > select,
+        .form-row > .form-row-radio {
+            flex: 1;
+            width: 50%;
+}
+        .form-row input[type="text"],
+        .form-row input[type="email"],
+        .form-row input[type="tel"],
+        .form-row select,
+        .form-row textarea {
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            padding: 5px 8px;
+            font-size: 11px;
+            color: #444;
+            outline: none;
+}
+
+        .form-row textarea {
+            width: 100%;
+            min-height: 55px;
+            resize: vertical;
+}
+        .form-row-radio {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 11.5px;
+            color: #333;
+            padding-left: 5px;
+}
+        textarea {
+            resize: vertical;
+            min-height: 55px;
         }
-        button {
-            background-color: #f0f0f0;
-            padding: 2px 12px;
-            font-size: 13px;
+
+        .form-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .form-buttons button {
+            background-color: #ffffff;
+            border: 1px solid #aaa;
+            padding: 3px 12px;
+            font-size: 11px;
+            border-radius: 2px;
             cursor: pointer;
-            color: #000;
-            border: 1px solid #767676;
         }
-        button:active {
-            border-style: inset;
+
+        .form-buttons button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .right-col {
+            width: 230px;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 12px 10px;
+            flex-shrink: 0;
+            align-self: flex-start;
+        }
+
+        .events-title {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 20px;
+            font-weight: normal;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .event-card {
+            margin-bottom: 15px;
+        }
+
+        .event-card h3 {
+            font-size: 13px;
+            font-weight: normal;
+            margin-bottom: 6px;
+        }
+
+        .event-img {
+            width: 100%;
+            height: 95px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .event-desc {
+            font-size: 10.5px;
+            line-height: 1.35;
+            color: #dddddd;
+        }
+
+        .event-desc a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: #e07e7e;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        footer p {
+            color: #ffffff;
+            font-family: "Times New Roman", Times, serif;
+            font-style: italic;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="logo-box"> 
-        <div class="logo-title">Jackson</div>
-        <div class="logo-divider"></div>
-        <div class="logo-title">Electronics</div>
+<body id="top">
+
+    <div class="page-wrapper">
+        <header>
+            <h1>EXAMPLE CAFE MENU</h1>
+        </header>
+
+        <nav class="navbar">
+            <div class="nav-links">
+  
+                <a href="#top" class="nav-home-icon">
+                    <img src="c:\Users\ASUS\Pictures\Saved Pictures\icons8-home-50.png" alt="Home">
+                </a>
+                <a href="#">STARTER</a>
+                <a href="#">MAIN COURSES</a>
+                <a href="#">DESSERTS</a>
+            </div>
+            <div class="nav-search">
+                <input type="text" placeholder="">
+                <button type="button">Go</button>
+            </div>
+        </nav>
+
+        <main class="main-layout">
+
+            <aside class="left-col">
+                <a href="#" class="menu-pill">Cafe Latte</a>
+                <a href="#" class="menu-pill">Capuchino</a>
+                <a href="#" class="menu-pill">Ocean Blue</a>
+                <a href="#" class="menu-pill">Ice-cream Cafe</a>
+                <a href="#" class="menu-pill">Order Online</a>
+
+                <div class="left-photo-container">
+                    <img src="c:\Users\ASUS\Pictures\Saved Pictures\company.png" alt="Cafe Group">
+                </div>
+            </aside>
+
+            <section class="center-col">
+                <div class="section-banner">S t a r t e r</div>
+                <ul class="menu-items">
+                    <li>Chesnut and Mushroom Goujons <span class="tag-v">(v)</span></li>
+                    <li>Goat Cheese<span class="tag-v">(v)</span></li>
+                    <li><span class="tag-z" >HONEY SOY CHICKEN KEBABS</span><span class="tag-v">(V)</span></li>
+                    <li>Seafood Salad<span class="tag-v">(v)</span></li>
+                </ul>
+                <a href="#top" class="back-to-top">Back to Top</a>
+
+                <div class="section-banner">D e s s e r t s</div>
+                <ul class="menu-items">
+                    <li>Lemon Sorbet <span class="tag-v">(v)</span></li>
+                    <li>Chocolate Mud Pie<span class="tag-v">(v)</span></li>
+                    <li>Pecan Pie<span class="tag-v">(v)</span></li>
+                    <li>Selection of fine Cheeses from Around the World<span class="tag-v">(v)</span></li>
+                </ul>
+                <a href="#top" class="back-to-top">Back to Top</a>
+
+                <div class="section-banner">I N F O R M A T I O N</div>
+                <form class="info-form" action="#" method="post">
+                    <div class="form-row">
+                        <input type="text" placeholder="First Name">
+                        <input type="text" placeholder="Last Name">
+                    </div>
+                    <div class="form-row">
+                        <input type="email" placeholder="Email">
+                        <input type="tel" placeholder="Telephone">
+                    </div>
+                    <div class="form-row">
+                        <select style="flex: 1;">
+                            <option value="USA">USA</option>
+                            <option value="Vietnam">Vietnam</option>
+                            <option value="UK">UK</option>
+                        </select>
+                        <div class="form-row-radio" style="flex: 1;">
+                            <label><input type="radio" name="nationality" value="vn"> Vietnamese</label>
+                            <label><input type="radio" name="nationality" value="foreign"> Foreigner</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <textarea placeholder="Comment"></textarea>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit">Submit</button>
+                        <button type="reset">Cacel</button>
+                    </div>
+                </form>
+            </section>
+
+            <aside class="right-col">
+                <h2 class="events-title">Events</h2>
+
+                <div class="event-card">
+                    <h3>Regular Meetings</h3>
+                    <img src="c:\Users\ASUS\Pictures\Saved Pictures\meeting.png" alt="Regular Meetings" class="event-img">
+                    <p class="event-desc">
+                        Host your regular team meetings or activities in the comfort of your own private room. <a href="#">Read more...</a>
+                    </p>
+                </div>
+
+                <div class="event-card">
+                    <h3>Product Launches</h3>
+                    <img src="c:\Users\ASUS\Pictures\Saved Pictures\launch.png" alt="Product Launches" class="event-img">
+                    <p class="event-desc">
+                        Launch your product with ease in a space that truly fits its image. <a href="#">Read more...</a>
+                    </p>
+                </div>
+            </aside>
+
+        </main>
+
+        <footer>
+            <p>ABC Company &copy; - 12345678 - abccoffee@gmail.com</p>
+        </footer>
     </div>
-    <h1 class="form-title">Registration Form</h1>
-    <p class="sub-title">Register your Jackson Electronics product here</p>
-    <form>
-        <div class="form-row">
-            <div class="label-col">First Name:</div>
-            <div class="input-col">
-                <input type="text" style="width: 140px;">
-                <span class="inline-label">Last Name:</span>
-                <input type="text" style="width: 140px;">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="label-col">Address #1:</div>
-            <div class="input-col">
-                <input type="text" style="width: 220px;">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="label-col">Address #2:</div>
-            <div class="input-col">
-                <input type="text" style="width: 220px;">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="label-col">City:</div>
-            <div class="input-col">
-                <input type="text" style="width: 170px;">
-                <span class="inline-label">State:</span>
-                <input type="text" style="width: 40px;">
-                <span class="inline-label">Zip:</span>
-                <input type="text" style="width: 70px;">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="label-col">Country:</div>
-            <div class="input-col">
-                <input type="text" value="United States" style="width: 160px;">
-            </div>
-        </div>
-        <hr>
-        <div class="form-row">
-            <div class="label-col">Product:</div>
-            <div class="input-col">
-                <select style="width: 140px;">
-                    <option value="ScanMaster">ScanMaster</option>
-                    <option value="N_T_T">N_T_T</option>
-                    <option value="moi bai 2 thoi ma sao kho vay">moi bai 2 thoi ma sao kho vay</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="label-col">Date Purchased:</div>
-            <div class="input-col">
-                <input type="text" style="width: 160px;">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="label-col">Serial #:</div>
-            <div class="input-col">
-                <input type="text" style="width: 160px;">
-            </div>
-        </div>
-    
-        <div class="form-row" style="align-items: flex-start; margin-top: 8px;">
-            <div class="label-col">Used for:</div>
-            <div class="input-col">
-                <div class="options-grid">
-                    <label class="option-item">
-                        <input type="radio" name="used_for">
-                        <span class="radio-dot"></span> Home
-                    </label>
-                    <label class="option-item">
-                        <input type="radio" name="used_for">
-                        <span class="radio-dot"></span> Educational Institution
-                    </label>
-                    <label class="option-item">
-                        <input type="radio" name="used_for">
-                        <span class="radio-dot"></span> Business
-                    </label>
-                    <label class="option-item">
-                        <input type="radio" name="used_for" checked>
-                        <span class="radio-dot"></span> Other
-                    </label>
-                    <label class="option-item">
-                        <input type="radio" name="used_for">
-                        <span class="radio-dot"></span> Government
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="form-row" style="align-items: flex-start; margin-top: 8px;">
-            <div class="label-col">System (check all that apply):</div>
-            <div class="input-col">
-                <div class="options-grid">
-                    <label class="option-item" style="gap:4px;"><input type="checkbox"> Windows</label>
-                    <label class="option-item" style="gap:4px;"><input type="checkbox"> UNIX</label>
-                    <label class="option-item" style="gap:4px;"><input type="checkbox"> Macintosh</label>
-                    <label class="option-item" style="gap:4px;"><input type="checkbox"> Other</label>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <div class="form-row" style="align-items: flex-start;">
-            <div class="label-col">Comments?:</div>
-            <div class="input-col">
-                <textarea></textarea>
-            </div>
-        </div>
-        <div class="button-group">
-            <button type="submit">Click to register</button>
-            <button type="reset">Click to cancel</button>
-        </div>
-    </form>
-</div>
+
 </body>
 </html>
