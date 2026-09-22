@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jackson Electronics - Registration Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #8cc3ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .logo-box {
+            background-color: #00ffff;
+            border: 2px solid #000;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.3);
+            position: relative;
+            margin-bottom: 25px;
+            width: 280px;
+        }
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.1;
+            color: #000;
+        }
+        .logo-divider {
+            border-top: 4px solid #000;
+            margin: 2px 0;
+        }
+        .lightning-icon {
+            position: absolute;
+            top: 4px;
+            left: 15px;
+            font-size: 18px;
+            transform: rotate(-20deg);
+        }
+        h1.form-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            color: #000;
+        }
+        p.sub-title {
+            font-size: 20px;
+            margin: 0 0 5px 0;
+            color: #000;
+        }
+        form {
+            width: 100%;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #6b7280;
+            margin: 15px 0;
+            width: 100%;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+        .label-col {
+            width: 200px;
+            text-align: left;
+            color: #000;
+        }
+        .input-col {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        input[type="text"], select, textarea {
+            border: 1px solid #7f9db9;
+            padding: 2px 4px;
+            font-size: 13px;
+            background-color: #fff;
+        }
+        input[type="text"] {
+            height: 22px;
+        }
+        select {
+            height: 22px;
+            border-radius: 0;
+        }
+        .inline-label {
+            margin-right: 4px;
+            color: #000;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 4px 10px;
+        }
+        .option-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 17px;
+            color: #000;
+            cursor: pointer;
+            user-select: none;
+        }
+        .option-item input[type="radio"] {
+            display: none;
+        }
+        .radio-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 1px solid #666666;
+            display: inline-block;
+            position: relative;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .option-item input[type="radio"]:checked + .radio-dot {
+            border: 1.8px solid #1fa02c;
+        }
+        .option-item input[type="radio"]:checked + .radio-dot::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #1fa02c;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        button {
+            background-color: #f0f0f0;
+            padding: 2px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #000;
+            border: 1px solid #767676;
+        }
+        button:active {
+            border-style: inset;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo-box"> 
+        <div class="logo-title">Jackson</div>
+        <div class="logo-divider"></div>
+        <div class="logo-title">Electronics</div>
+    </div>
+    <h1 class="form-title">Registration Form</h1>
+    <p class="sub-title">Register your Jackson Electronics product here</p>
+    <form>
+        <div class="form-row">
+            <div class="label-col">First Name:</div>
+            <div class="input-col">
+                <input type="text" style="width: 140px;">
+                <span class="inline-label">Last Name:</span>
+                <input type="text" style="width: 140px;">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="label-col">Address #1:</div>
+            <div class="input-col">
+                <input type="text" style="width: 220px;">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="label-col">Address #2:</div>
+            <div class="input-col">
+                <input type="text" style="width: 220px;">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="label-col">City:</div>
+            <div class="input-col">
+                <input type="text" style="width: 170px;">
+                <span class="inline-label">State:</span>
+                <input type="text" style="width: 40px;">
+                <span class="inline-label">Zip:</span>
+                <input type="text" style="width: 70px;">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="label-col">Country:</div>
+            <div class="input-col">
+                <input type="text" value="United States" style="width: 160px;">
+            </div>
+        </div>
+        <hr>
+        <div class="form-row">
+            <div class="label-col">Product:</div>
+            <div class="input-col">
+                <select style="width: 140px;">
+                    <option value="ScanMaster">ScanMaster</option>
+                    <option value="N_T_T">N_T_T</option>
+                    <option value="moi bai 2 thoi ma sao kho vay">moi bai 2 thoi ma sao kho vay</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="label-col">Date Purchased:</div>
+            <div class="input-col">
+                <input type="text" style="width: 160px;">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="label-col">Serial #:</div>
+            <div class="input-col">
+                <input type="text" style="width: 160px;">
+            </div>
+        </div>
+    
+        <div class="form-row" style="align-items: flex-start; margin-top: 8px;">
+            <div class="label-col">Used for:</div>
+            <div class="input-col">
+                <div class="options-grid">
+                    <label class="option-item">
+                        <input type="radio" name="used_for">
+                        <span class="radio-dot"></span> Home
+                    </label>
+                    <label class="option-item">
+                        <input type="radio" name="used_for">
+                        <span class="radio-dot"></span> Educational Institution
+                    </label>
+                    <label class="option-item">
+                        <input type="radio" name="used_for">
+                        <span class="radio-dot"></span> Business
+                    </label>
+                    <label class="option-item">
+                        <input type="radio" name="used_for" checked>
+                        <span class="radio-dot"></span> Other
+                    </label>
+                    <label class="option-item">
+                        <input type="radio" name="used_for">
+                        <span class="radio-dot"></span> Government
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row" style="align-items: flex-start; margin-top: 8px;">
+            <div class="label-col">System (check all that apply):</div>
+            <div class="input-col">
+                <div class="options-grid">
+                    <label class="option-item" style="gap:4px;"><input type="checkbox"> Windows</label>
+                    <label class="option-item" style="gap:4px;"><input type="checkbox"> UNIX</label>
+                    <label class="option-item" style="gap:4px;"><input type="checkbox"> Macintosh</label>
+                    <label class="option-item" style="gap:4px;"><input type="checkbox"> Other</label>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="form-row" style="align-items: flex-start;">
+            <div class="label-col">Comments?:</div>
+            <div class="input-col">
+                <textarea></textarea>
+            </div>
+        </div>
+        <div class="button-group">
+            <button type="submit">Click to register</button>
+            <button type="reset">Click to cancel</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
