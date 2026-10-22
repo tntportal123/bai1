@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07152b">
+  <title>Merry Christmas · Đêm tuyết nhiệm màu</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #07152b;
+      --gold: #ffd887;
+      --cream: #fff7e8;
+      --red: #d94850;
+      --green: #0c573f;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background: var(--night);
+      color: var(--cream);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    .scene {
+      position: relative;
+      width: 100%; height: 100%; min-height: 480px;
+      overflow: hidden; isolation: isolate;
+      background:
+        radial-gradient(ellipse at 50% 76%, rgba(22, 91, 100, .45), transparent 37%),
+        radial-gradient(ellipse at 50% 34%, rgba(41, 73, 120, .42), transparent 53%),
+        linear-gradient(180deg, #081326 0%, #0c2040 48%, #112e4a 77%, #0b2637 100%);
+    }
+    .scene::before {
+      content: ""; position: absolute; z-index: -1; inset: auto -15% -19%;
+      height: 36%; border-radius: 50% 50% 0 0 / 23% 23% 0 0;
+      background: linear-gradient(180deg, #e7f5f1 0%, #b8d9dc 100%);
+      box-shadow: 0 -18px 70px rgba(218, 250, 255, .13);
+    }
+    .sky-glow {
+      position: absolute; left: 50%; top: 48%; width: min(78vw, 850px); aspect-ratio: 1;
+      transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle, rgba(244, 203, 130, .105), rgba(118, 181, 194, .04) 42%, transparent 69%);
+      animation: breathe 6s ease-in-out infinite alternate;
+    }
+    .moon {
+      position: absolute; right: 12%; top: 10%; width: clamp(52px, 8vw, 98px); aspect-ratio: 1;
+      border-radius: 50%; background: #ffedc4;
+      box-shadow: 0 0 22px #ffe9bb, 0 0 75px rgba(255, 221, 162, .48);
+      opacity: .83;
+    }
+    .moon::after {
+      content: ""; position: absolute; width: 100%; height: 100%; left: 20%; top: -12%;
+      border-radius: 50%; background: #142644;
+    }
+    .stars { position: absolute; inset: 0; pointer-events: none; }
+    .star {
+      position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff2d3;
+      box-shadow: 0 0 9px 2px rgba(255, 230, 184, .65);
+      animation: twinkle var(--twinkle, 3s) ease-in-out infinite alternate;
+    }
+    #snow {
+      position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; pointer-events: none;
+      opacity: 0; animation: snow-reveal .7s ease 3.55s forwards;
+    }
+    .intro-snow { position: absolute; z-index: 3; inset: 0; overflow: hidden; pointer-events: none; }
+    .intro-flake {
+      position: absolute; top: -42vh; left: var(--x); width: var(--size); height: var(--size);
+      overflow: visible; opacity: 0; filter: drop-shadow(0 0 18px rgba(229, 249, 255, .76));
+      animation: mega-fall 3.15s cubic-bezier(.38,.05,.62,.97) var(--delay) forwards;
+    }
+    .intro-flake path { fill: none; stroke: #f5fcff; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+    .snowbanks {
+      position: absolute; z-index: 1; inset: auto 0 0; height: 18%; pointer-events: none;
+      background: linear-gradient(180deg, transparent, rgba(224, 243, 239, .28) 20%, #e7f5f1 72%);
+      clip-path: ellipse(70% 75% at 50% 100%);
+    }
+    .tree-wrap {
+      position: absolute; z-index: 2; left: 50%; top: 55%;
+      width: clamp(230px, 39vw, 490px); height: min(76vh, 660px);
+      transform: translate(-50%, -48%) scale(.72); opacity: 0;
+      filter: drop-shadow(0 15px 26px rgba(1, 13, 22, .33));
+      animation: tree-arrive 2.2s cubic-bezier(.2,.8,.25,1) 3.65s forwards;
+    }
+    .tree-svg { width: 100%; height: 100%; overflow: visible; }
+    .tree-lights { animation: lights 2.4s ease-in-out infinite alternate; }
+    .top-star { transform-box: fill-box; transform-origin: center; }
+    .mini-tree {
+      position: absolute; z-index: 2; bottom: 8%; width: clamp(52px, 9vw, 118px);
+      filter: drop-shadow(0 7px 9px rgba(5, 28, 31, .25)); opacity: 0;
+      animation: decor-arrive 1.2s ease 8s forwards, bob 4s ease-in-out 9.2s infinite;
+    }
+    .mini-tree.left { left: 5%; }
+    .mini-tree.right { right: 5%; animation-delay: 8.2s, 9.4s; }
+    .greeting {
+      position: absolute; z-index: 4; left: 50%; top: 53%; width: min(92vw, 1000px);
+      text-align: center; transform: translate(-50%, -50%) scale(.03); opacity: 0;
+      pointer-events: none; animation: greeting-arrive 1.25s cubic-bezier(.18,.9,.25,1.2) 7.8s forwards;
+    }
+    .greeting h1 {
+      margin: 0; color: #fff6df; font-size: clamp(2.8rem, 9vw, 7.5rem);
+      font-weight: 500; line-height: .98; letter-spacing: .025em;
+      text-shadow: 0 2px 0 #ce9d55, 0 5px 0 rgba(111, 62, 31, .5), 0 0 28px rgba(255, 209, 126, .8), 0 0 82px rgba(255, 180, 91, .48);
+    }
+    .greeting p {
+      margin: clamp(10px, 2vh, 20px) 0 0; color: #f8e6bf;
+      font-family: Arial, sans-serif; font-size: clamp(.72rem, 1.7vw, 1.05rem);
+      font-weight: 300; letter-spacing: .42em; text-transform: uppercase;
+      opacity: .9; text-shadow: 0 1px 12px rgba(255, 208, 131, .45);
+    }
+    .orbit { position: absolute; z-index: 5; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+    .flight-sleigh { opacity: 0; animation: sleigh-show .5s ease 5s forwards; }
+    .sleigh { overflow: visible; filter: drop-shadow(0 5px 8px rgba(4, 12, 25, .38)); }
+    .caption {
+      position: absolute; z-index: 6; bottom: 3.2%; left: 0; width: 100%; text-align: center;
+      color: rgba(31, 73, 84, .7); font: 10px/1.5 Arial, sans-serif; letter-spacing: .32em;
+      text-transform: uppercase; opacity: 0; animation: caption-in 1s ease 9s forwards;
+    }
+    @keyframes breathe { to { opacity: .55; transform: translate(-50%, -50%) scale(1.08); } }
+    @keyframes twinkle { from { opacity: .22; transform: scale(.65); } to { opacity: 1; transform: scale(1.3); } }
+    @keyframes lights { from { opacity: .72; } to { opacity: 1; filter: drop-shadow(0 0 6px #ffd36c); } }
+    @keyframes mega-fall {
+      0% { opacity: 0; transform: translate3d(-50%, -3vh, 0) rotate(-25deg); }
+      12% { opacity: .94; }
+      88% { opacity: .88; }
+      100% { opacity: 0; transform: translate3d(-50%, 185vh, 0) rotate(335deg); }
+    }
+    @keyframes snow-reveal { to { opacity: 1; } }
+    @keyframes tree-arrive { to { transform: translate(-50%, -48%) scale(1); opacity: 1; } }
+    @keyframes sleigh-show { to { opacity: 1; } }
+    @keyframes greeting-arrive {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.02) rotate(-8deg); filter: blur(16px); }
+      56% { opacity: 1; transform: translate(-50%, -50%) scale(1.28) rotate(2deg); filter: blur(0); }
+      72% { opacity: 1; transform: translate(-50%, -50%) scale(.9) rotate(-1deg); }
+      88% { opacity: 1; transform: translate(-50%, -50%) scale(1.06) rotate(.4deg); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); filter: blur(0); }
+    }
+    @keyframes decor-arrive { to { opacity: .93; } }
+    @keyframes bob { 50% { translate: 0 -8px; } }
+    @keyframes caption-in { to { opacity: 1; } }
+    @media (max-width: 600px) {
+      .moon { right: 8%; top: 8%; }
+      .tree-wrap { top: 57%; height: 61vh; width: min(68vw, 330px); }
+      .intro-flake { top: -36vh; }
+      .greeting { top: 52%; }
+      .greeting h1 { font-size: clamp(2.7rem, 12vw, 4.5rem); }
+      .greeting p { letter-spacing: .26em; }
+      .mini-tree { bottom: 9%; }
+      .mini-tree.left { left: 2%; }
+      .mini-tree.right { right: 2%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene" aria-label="Cảnh Giáng sinh với tuyết rơi, cây thông và ông già Noel bay trên xe tuần lộc">
+    <div class="sky-glow" aria-hidden="true"></div>
+    <div class="moon" aria-hidden="true"></div>
+    <div class="stars" id="stars" aria-hidden="true"></div>
+    <canvas id="snow" aria-hidden="true"></canvas>
+    <div class="intro-snow" aria-hidden="true">
+      <svg class="intro-flake" style="--x:8%; --size:clamp(135px,22vw,280px); --delay:0s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:25%; --size:clamp(125px,19vw,245px); --delay:.12s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:43%; --size:clamp(155px,25vw,320px); --delay:.2s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:62%; --size:clamp(125px,20vw,255px); --delay:.08s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:81%; --size:clamp(145px,23vw,290px); --delay:.25s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:96%; --size:clamp(120px,18vw,230px); --delay:.16s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+    </div>
+
+    <div class="tree-wrap" aria-hidden="true">
+      <svg class="tree-svg" viewBox="0 0 500 650" role="img" aria-label="Cây thông Giáng sinh lấp lánh">
+        <defs>
+          <linearGradient id="pine" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#238463"/><stop offset=".48" stop-color="#126347"/><stop offset="1" stop-color="#073b36"/></linearGradient>
+          <linearGradient id="edge" x1="0" x2="1"><stop stop-color="#3da47b"/><stop offset="1" stop-color="#0b4a3d"/></linearGradient>
+          <radialGradient id="bauble"><stop stop-color="#fff8d5"/><stop offset=".24" stop-color="#ffd274"/><stop offset="1" stop-color="#c9822f"/></radialGradient>
+          <filter id="soft"><feGaussianBlur stdDeviation="8"/></filter>
+        </defs>
+        <ellipse cx="250" cy="586" rx="148" ry="22" fill="#7caea9" opacity=".32" filter="url(#soft)"/>
+        <path d="M229 525h42v85h-42z" fill="#6e422c"/><path d="M218 600h64v12h-64z" fill="#523421"/>
+        <path d="M249 40 188 170 219 157 137 282 176 264 91 402 144 378 58 507Q250 559 442 507l-86-129 53 24-86-138 40 18-82-125 31 13z" fill="url(#pine)" stroke="#59a67e" stroke-opacity=".43" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M249 59 206 166 236 153 166 275 201 258 123 394 172 371 91 496q159 39 318 0l-81-125 48 22-77-135 36 16-74-114 27 11z" fill="url(#edge)" opacity=".5"/>
+        <path d="M175 246q45 30 93 26t75 28q-47 11-89 0t-96 0M133 359q60 30 124 25t105 29q-61 17-125 2t-120 4M93 464q74 29 157 24t151 28" fill="none" stroke="#f2c875" stroke-width="5" stroke-linecap="round" opacity=".86"/>
+        <g class="tree-lights" fill="#fff1ad">
+          <circle cx="246" cy="176" r="5"/><circle cx="205" cy="238" r="5"/><circle cx="287" cy="261" r="5"/><circle cx="161" cy="331" r="5"/><circle cx="244" cy="319" r="5"/><circle cx="337" cy="343" r="5"/><circle cx="123" cy="427" r="5"/><circle cx="207" cy="415" r="5"/><circle cx="288" cy="444" r="5"/><circle cx="377" cy="429" r="5"/><circle cx="164" cy="490" r="5"/><circle cx="247" cy="502" r="5"/><circle cx="331" cy="496" r="5"/>
+        </g>
+        <g stroke="#ffe9ac" stroke-width="2" opacity=".72">
+          <path d="M158 300v29M143.5 314.5h29M151 307l14 14m0-14-14 14"/><path d="M333 212v26M320 225h26M324 216l18 18m0-18-18 18"/><path d="M273 387v28M259 401h28M263 391l20 20m0-20-20 20"/>
+        </g>
+        <g stroke="#fae3a6" stroke-width="2">
+          <path d="M203 286v29"/><circle cx="203" cy="323" r="15" fill="url(#bauble)"/><path d="M300 300v27"/><circle cx="300" cy="339" r="14" fill="#cf4d4b" stroke="#ffd28a"/>
+          <path d="M111 392v28"/><circle cx="111" cy="430" r="16" fill="#d8e9e2" stroke="#fff3d2"/><path d="M245 377v30"/><circle cx="245" cy="421" r="17" fill="url(#bauble)"/>
+          <path d="M354 382v28"/><circle cx="354" cy="420" r="16" fill="#c94c4a"/><path d="M183 450v27"/><circle cx="183" cy="488" r="14" fill="#dce9e2"/><path d="M314 451v27"/><circle cx="314" cy="489" r="15" fill="url(#bauble)"/>
+        </g>
+        <g class="top-star" transform="translate(250 41)">
+          <path d="m0-30 8 20 22 1-17 14 6 22L0 14-19 27l6-22-17-14 22-1z" fill="#ffe9a3" stroke="#fff7d9" stroke-width="2"/>
+          <circle r="6" fill="#fff"/>
+        </g>
+      </svg>
+    </div>
+
+    <svg class="orbit" viewBox="0 0 1000 800" preserveAspectRatio="none" aria-hidden="true">
+      <g class="flight-sleigh">
+        <animateMotion begin="5s" dur="14s" repeatCount="indefinite" rotate="0" path="M 500,34 C 720,34 900,195 900,400 C 900,605 720,766 500,766 C 280,766 100,605 100,400 C 100,195 280,34 500,34"/>
+      <svg class="sleigh" x="-88" y="-40" width="176" height="80" viewBox="0 0 420 190">
+        <!-- Sparkling flight trail -->
+        <g fill="#ffe7aa"><circle cx="42" cy="82" r="3"/><circle cx="28" cy="96" r="2"/><circle cx="53" cy="108" r="2.5"/></g>
+        <!-- Two flying reindeer -->
+        <g fill="#b9774d" stroke="#f0c08d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <g transform="translate(205 54)">
+            <path d="M6 49q17-18 37-8l20 12 30 1q12 0 17 10l-13 5-29-4-27 12-9 28h-8l3-31-22 4-8 24h-8l3-33q-18-4-21-18l17-3z"/>
+            <path d="M18 42Q0 31 5 8m0 13Q-9 11-12 1m17 22Q22 11 19-1M34 39q-7-16-1-32m0 19Q47 16 52 4" fill="none" stroke-width="6"/>
+            <path d="M97 55q17-8 24 3l-10 7" fill="#d94c4d" stroke="none"/><circle cx="110" cy="60" r="4" fill="#fff4cf" stroke="none"/>
+          </g>
+          <g transform="translate(301 38) scale(.82)">
+            <path d="M6 49q17-18 37-8l20 12 30 1q12 0 17 10l-13 5-29-4-27 12-9 28h-8l3-31-22 4-8 24h-8l3-33q-18-4-21-18l17-3z"/>
+            <path d="M18 42Q0 31 5 8m0 13Q-9 11-12 1m17 22Q22 11 19-1M34 39q-7-16-1-32m0 19Q47 16 52 4" fill="none" stroke-width="6"/>
+            <path d="M97 55q17-8 24 3l-10 7" fill="#d94c4d" stroke="none"/><circle cx="110" cy="60" r="4" fill="#fff4cf" stroke="none"/>
+          </g>
+        </g>
+        <path d="M288 112q-27-22-52-12l-16 10m91 7-33 8m-58-25-15 5" fill="none" stroke="#e5bc76" stroke-width="3"/>
+        <!-- Sleigh -->
+        <path d="M54 126q13 29 59 31h89q30-2 44-23l-15-9q-12 14-31 15h-83q-34 0-43-21l-20 7z" fill="#b52f3c" stroke="#f2c773" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M49 154q11 20 38 20h98q29 0 45-18" fill="none" stroke="#f6d992" stroke-width="5" stroke-linecap="round"/>
+        <path d="M85 121q12-24 44-24h50q24 0 35 19l-15 12H95z" fill="#d94b50" stroke="#f4c875" stroke-width="4"/>
+        <path d="M119 99q2-23 24-29 18-5 33 8l14 24z" fill="#f4ddbd" stroke="#fff2d7" stroke-width="3"/>
+        <!-- Santa -->
+        <circle cx="155" cy="76" r="18" fill="#f1c8a6"/>
+        <path d="M137 72q3-24 27-26 21-1 27 19l-8 6q-14-9-46 1z" fill="#c53243"/>
+        <path d="m153 48 7-17 11 16" fill="#c53243" stroke="#f6e9d4" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="171" cy="47" r="7" fill="#fff4df"/>
+        <path d="M140 82q15 10 31 0l8 14q-22 16-45 0z" fill="#fff5df"/>
+        <circle cx="151" cy="75" r="2.3" fill="#25334a"/><circle cx="163" cy="75" r="2.3" fill="#25334a"/>
+        <path d="M152 83q5 5 10 0" fill="none" stroke="#aa4545" stroke-width="2" stroke-linecap="round"/>
+        <path d="M139 88q-10 2-13 12l18 2m34-12q13-2 19 7l-16 7" fill="none" stroke="#c53243" stroke-width="10" stroke-linecap="round"/>
+        <path d="M133 99h50" stroke="#f3d897" stroke-width="4"/>
+        <g fill="#fff3ce"><circle cx="72" cy="112" r="3"/><circle cx="31" cy="70" r="2"/><circle cx="19" cy="117" r="2.5"/></g>
+      </svg>
+      </g>
+    </svg>
+
+    <svg class="mini-tree left" viewBox="0 0 120 170" aria-hidden="true">
+      <path d="M60 5 36 53h14L25 89h17L14 131h92L78 89h17L70 53h14z" fill="#176449" stroke="#73ad82" stroke-width="2"/>
+      <path d="M56 123h9v29h-9z" fill="#755039"/><circle cx="60" cy="16" r="5" fill="#ffdf89"/><circle cx="44" cy="72" r="4" fill="#d84e4d"/><circle cx="75" cy="102" r="4" fill="#ffdc87"/><circle cx="43" cy="116" r="4" fill="#e2f3e8"/>
+    </svg>
+    <svg class="mini-tree right" viewBox="0 0 120 170" aria-hidden="true">
+      <path d="M60 5 36 53h14L25 89h17L14 131h92L78 89h17L70 53h14z" fill="#155d47" stroke="#73ad82" stroke-width="2"/>
+      <path d="M56 123h9v29h-9z" fill="#755039"/><circle cx="60" cy="16" r="5" fill="#ffdf89"/><circle cx="44" cy="72" r="4" fill="#ffdc87"/><circle cx="75" cy="102" r="4" fill="#d84e4d"/><circle cx="43" cy="116" r="4" fill="#e2f3e8"/>
+    </svg>
+
+    <div class="greeting" aria-live="polite">
+      <h1>Merry<br>Christmas</h1>
+      <p>Chúc bạn một mùa an lành</p>
+    </div>
+    <div class="snowbanks" aria-hidden="true"></div>
+    <div class="caption">A little Christmas magic</div>
+  </main>
+  <script>
+    (() => {
+      const canvas = document.getElementById('snow');
+      const ctx = canvas.getContext('2d');
+      const stars = document.getElementById('stars');
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let width = 0, height = 0, flakes = [], last = 0;
+      const rand = (min, max) => Math.random() * (max - min) + min;
+
+      for (let i = 0; i < 46; i++) {
+        const star = document.createElement('i');
+        star.className = 'star';
+        star.style.left = `${rand(3, 97)}%`;
+        star.style.top = `${rand(3, 74)}%`;
+        star.style.setProperty('--twinkle', `${rand(1.8, 4.8)}s`);
+        star.style.animationDelay = `${rand(-5, 0)}s`;
+        stars.appendChild(star);
+      }
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = canvas.clientWidth; height = canvas.clientHeight;
+        canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const count = Math.max(90, Math.min(220, Math.round(width * height / 6500)));
+        flakes = Array.from({ length: count }, () => ({
+          x: rand(0, width), y: rand(-height, height), r: rand(1, 4.6),
+          speed: rand(.45, 2.2), drift: rand(-.45, .45), phase: rand(0, Math.PI * 2),
+          alpha: rand(.36, .91)
+        }));
+      }
+      function draw(time) {
+        if (reduced) {
+          ctx.clearRect(0, 0, width, height);
+          flakes.forEach(f => {
+            ctx.beginPath(); ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
+            ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+          });
+          return;
+        }
+        const delta = Math.min((time - (last || time)) / 16.7, 2.5); last = time;
+        ctx.clearRect(0, 0, width, height);
+        for (const f of flakes) {
+          f.y += f.speed * delta; f.x += (f.drift + Math.sin(time / 1000 + f.phase) * .34) * delta;
+          if (f.y > height + 7) { f.y = -8; f.x = rand(0, width); }
+          if (f.x < -8) f.x = width + 8; else if (f.x > width + 8) f.x = -8;
+          ctx.beginPath(); ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
+          ctx.shadowBlur = f.r > 3.2 ? 12 : 4; ctx.shadowColor = 'rgba(232,247,255,.9)';
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+        requestAnimationFrame(draw);
+      }
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+      if (reduced) draw(0); else requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>
