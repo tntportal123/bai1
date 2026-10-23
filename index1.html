@@ -4,7 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#07152b">
-  <title>Merry Christmas · Đêm tuyết nhiệm màu</title>
+  <title>Merry Christmas · Giáng sinh an lành</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: dark;
@@ -13,17 +16,20 @@
       --cream: #fff7e8;
       --red: #d94850;
       --green: #0c573f;
+      --font-sans: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-serif: 'Playfair Display', Georgia, serif;
     }
     * { box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
-    body {
-      background: var(--night);
-      color: var(--cream);
-      font-family: Georgia, "Times New Roman", serif;
+    html, body {
+      width: 100%; height: 100%; margin: 0; overflow: hidden;
+      font-family: var(--font-sans);
+      background: var(--night); color: var(--cream);
+      -webkit-font-smoothing: antialiased;
     }
+
     .scene {
       position: relative;
-      width: 100%; height: 100%; min-height: 480px;
+      width: 100%; height: 100%; min-height: 500px;
       overflow: hidden; isolation: isolate;
       background:
         radial-gradient(ellipse at 50% 76%, rgba(22, 91, 100, .45), transparent 37%),
@@ -36,21 +42,22 @@
       background: linear-gradient(180deg, #e7f5f1 0%, #b8d9dc 100%);
       box-shadow: 0 -18px 70px rgba(218, 250, 255, .13);
     }
+
     .sky-glow {
       position: absolute; left: 50%; top: 48%; width: min(78vw, 850px); aspect-ratio: 1;
       transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
-      background: radial-gradient(circle, rgba(244, 203, 130, .105), rgba(118, 181, 194, .04) 42%, transparent 69%);
+      background: radial-gradient(circle, rgba(244, 203, 130, .11), rgba(118, 181, 194, .04) 42%, transparent 69%);
       animation: breathe 6s ease-in-out infinite alternate;
     }
     .moon {
-      position: absolute; right: 12%; top: 10%; width: clamp(52px, 8vw, 98px); aspect-ratio: 1;
+      position: absolute; right: 11%; top: 9%; width: clamp(52px, 8vw, 96px); aspect-ratio: 1;
       border-radius: 50%; background: #ffedc4;
       box-shadow: 0 0 22px #ffe9bb, 0 0 75px rgba(255, 221, 162, .48);
-      opacity: .83;
+      opacity: .86;
     }
     .moon::after {
       content: ""; position: absolute; width: 100%; height: 100%; left: 20%; top: -12%;
-      border-radius: 50%; background: #142644;
+      border-radius: 50%; background: #10223e;
     }
     .stars { position: absolute; inset: 0; pointer-events: none; }
     .star {
@@ -58,107 +65,720 @@
       box-shadow: 0 0 9px 2px rgba(255, 230, 184, .65);
       animation: twinkle var(--twinkle, 3s) ease-in-out infinite alternate;
     }
+
+    /* ==================== RÈM NHUNG ĐỎ MỞ ĐẦU ==================== */
+    .curtain-stage {
+      position: absolute; z-index: 30; inset: 0;
+      display: flex; cursor: pointer;
+      user-select: none;
+      transition: visibility 0s linear 2.2s;
+    }
+    .curtain-stage.open {
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .curtain-valance {
+      position: absolute; z-index: 4; top: 0; left: 0; width: 100%;
+      height: clamp(56px, 9.5vh, 92px);
+      background:
+        repeating-linear-gradient(90deg,
+          #5c0811 0px, #8f1120 26px, #b81d2f 52px, #8f1120 78px, #5c0811 104px);
+      border-bottom: 5px solid #f4c96b;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .68), inset 0 -6px 14px rgba(255, 215, 130, .28);
+      transition: transform 1.6s cubic-bezier(.65, 0, .25, 1) .15s;
+    }
+    .curtain-stage.open .curtain-valance {
+      transform: translateY(-130%);
+    }
+    .valance-lights {
+      position: absolute; inset: 0; width: 100%; height: 145%; overflow: visible;
+    }
+
+    .curtain-panel {
+      position: relative; width: 50.5%; height: 100%;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 100, 100, .14), transparent 65%),
+        repeating-linear-gradient(90deg,
+          #4b050d 0%, #7d0c19 4.5%, #b51b2c 9%, #830e1c 13.5%, #4b050d 18%);
+      box-shadow: inset 0 0 80px rgba(20, 0, 4, .75), 0 0 45px rgba(0, 0, 0, .65);
+      transition: transform 2.05s cubic-bezier(.6, .04, .2, 1);
+      overflow: hidden;
+    }
+    .curtain-panel.left {
+      transform-origin: left top;
+      border-right: 4px solid #f2c76e;
+    }
+    .curtain-panel.right {
+      transform-origin: right top;
+      border-left: 4px solid #f2c76e;
+    }
+    .curtain-stage.open .curtain-panel.left {
+      transform: translateX(-96%) rotate(2deg);
+    }
+    .curtain-stage.open .curtain-panel.right {
+      transform: translateX(96%) rotate(-2deg);
+    }
+
+    .curtain-ornaments {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+    }
+    .bulb-glow-1 { animation: bulb-blink 1.1s ease-in-out infinite alternate; }
+    .bulb-glow-2 { animation: bulb-blink 1.1s ease-in-out .38s infinite alternate; }
+    .bulb-glow-3 { animation: bulb-blink 1.1s ease-in-out .75s infinite alternate; }
+    .dangling-item {
+      transform-box: fill-box; transform-origin: top center;
+      animation: sway 3.2s ease-in-out infinite alternate;
+    }
+    .dangling-item.delay-1 { animation-delay: -.8s; }
+    .dangling-item.delay-2 { animation-delay: -1.6s; }
+    .dangling-item.delay-3 { animation-delay: -2.3s; }
+
+    .curtain-hint {
+      position: absolute; z-index: 6; left: 50%; bottom: 9%;
+      transform: translateX(-50%);
+      padding: 13px 30px; border-radius: 999px;
+      background: rgba(58, 6, 14, .88);
+      border: 2px solid rgba(255, 220, 142, .85);
+      color: #fff6dc;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: clamp(.92rem, 1.8vw, 1.12rem);
+      letter-spacing: .04em; white-space: nowrap;
+      box-shadow: 0 0 30px rgba(255, 202, 104, .45), inset 0 0 12px rgba(255, 220, 142, .2);
+      animation: hint-pulse 1.5s ease-in-out infinite alternate;
+    }
+    .curtain-stage.open .curtain-hint {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    /* ==================== TUẦN LỘC BAY QUA LẠI ==================== */
+    .sky-reindeers {
+      position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; overflow: hidden;
+      opacity: 0; transition: opacity 1s ease;
+    }
+    .scene.ambient-reindeer-active .sky-reindeers {
+      opacity: 1;
+    }
+    .reindeer-runner {
+      position: absolute; width: clamp(110px, 14vw, 185px);
+      filter: drop-shadow(0 0 12px rgba(255, 224, 152, .45));
+      opacity: .92;
+    }
+    .reindeer-runner.r-ltr-1 {
+      top: 12%; left: -22%;
+      animation: fly-ltr-1 15s linear infinite;
+    }
+    .reindeer-runner.r-rtl-1 {
+      top: 23%; right: -22%;
+      animation: fly-rtl-1 18s linear 2.5s infinite;
+    }
+    .reindeer-runner.r-ltr-2 {
+      top: 34%; left: -22%; width: clamp(92px, 11vw, 145px); opacity: .78;
+      animation: fly-ltr-2 21s linear 6s infinite;
+    }
+    .reindeer-runner.r-rtl-2 {
+      top: 16%; right: -22%; width: clamp(98px, 12vw, 155px); opacity: .82;
+      animation: fly-rtl-2 16.5s linear 9s infinite;
+    }
+
+    /* ==================== ÔNG GIÀ NOEL BAY ==================== */
+    .orbit {
+      position: absolute; z-index: 6; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; overflow: visible;
+    }
+    .intro-sleigh-group {
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .orbit-sleigh-wrap {
+      opacity: 0;
+      transition: opacity 1.1s ease;
+    }
+    .scene.stage-orbit-santa .orbit-sleigh-wrap {
+      opacity: 1;
+    }
+    .sleigh {
+      overflow: visible;
+      filter: drop-shadow(0 8px 16px rgba(4, 12, 25, .55)) drop-shadow(0 0 20px rgba(255, 223, 148, .38));
+    }
+
+    /* ==================== BÔNG TUYẾT KHỔNG LỒ & MƯA TUYẾT ==================== */
     #snow {
       position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; pointer-events: none;
-      opacity: 0; animation: snow-reveal .7s ease 3.55s forwards;
+      opacity: 0; transition: opacity .9s ease;
     }
-    .intro-snow { position: absolute; z-index: 3; inset: 0; overflow: hidden; pointer-events: none; }
+    .scene.stage-snow #snow { opacity: 1; }
+
+    .intro-snow { position: absolute; z-index: 5; inset: 0; overflow: hidden; pointer-events: none; }
     .intro-flake {
-      position: absolute; top: -42vh; left: var(--x); width: var(--size); height: var(--size);
-      overflow: visible; opacity: 0; filter: drop-shadow(0 0 18px rgba(229, 249, 255, .76));
-      animation: mega-fall 3.15s cubic-bezier(.38,.05,.62,.97) var(--delay) forwards;
+      position: absolute; top: -44vh; left: var(--x); width: var(--size); height: var(--size);
+      overflow: visible; opacity: 0;
+      filter: drop-shadow(0 0 18px rgba(229, 249, 255, .82));
     }
-    .intro-flake path { fill: none; stroke: #f5fcff; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+    .scene.stage-snow .intro-flake {
+      animation: mega-fall 3.1s cubic-bezier(.36,.05,.62,.97) var(--delay) forwards;
+    }
+    .intro-flake path {
+      fill: none; stroke: #f5fcff; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+
     .snowbanks {
-      position: absolute; z-index: 1; inset: auto 0 0; height: 18%; pointer-events: none;
+      position: absolute; z-index: 1; inset: auto 0 0; height: 19%; pointer-events: none;
       background: linear-gradient(180deg, transparent, rgba(224, 243, 239, .28) 20%, #e7f5f1 72%);
-      clip-path: ellipse(70% 75% at 50% 100%);
+      clip-path: ellipse(72% 76% at 50% 100%);
     }
+
+    /* ==================== CÂY THÔNG NOEL CHÍNH & RỪNG THÔNG NHỎ ==================== */
     .tree-wrap {
-      position: absolute; z-index: 2; left: 50%; top: 55%;
-      width: clamp(230px, 39vw, 490px); height: min(76vh, 660px);
-      transform: translate(-50%, -48%) scale(.72); opacity: 0;
-      filter: drop-shadow(0 15px 26px rgba(1, 13, 22, .33));
-      animation: tree-arrive 2.2s cubic-bezier(.2,.8,.25,1) 3.65s forwards;
+      position: absolute; z-index: 4; left: 50%; top: 53%;
+      width: clamp(250px, 41vw, 510px); height: min(77vh, 670px);
+      transform: translate(-50%, -46%) scale(.66); opacity: 0;
+      filter: drop-shadow(0 16px 28px rgba(1, 13, 22, .4));
+      pointer-events: none;
+    }
+    .scene.stage-tree .tree-wrap {
+      animation: tree-arrive 2.1s cubic-bezier(.2,.82,.25,1) forwards;
     }
     .tree-svg { width: 100%; height: 100%; overflow: visible; }
-    .tree-lights { animation: lights 2.4s ease-in-out infinite alternate; }
-    .top-star { transform-box: fill-box; transform-origin: center; }
-    .mini-tree {
-      position: absolute; z-index: 2; bottom: 8%; width: clamp(52px, 9vw, 118px);
-      filter: drop-shadow(0 7px 9px rgba(5, 28, 31, .25)); opacity: 0;
-      animation: decor-arrive 1.2s ease 8s forwards, bob 4s ease-in-out 9.2s infinite;
+    .tree-lights { animation: lights 2s ease-in-out infinite alternate; }
+    .tree-lights-alt { animation: lights 2s ease-in-out 1s infinite alternate; }
+    .top-star-inner {
+      transform-box: fill-box; transform-origin: center;
+      animation: star-pulse 2.2s ease-in-out infinite alternate;
     }
-    .mini-tree.left { left: 5%; }
-    .mini-tree.right { right: 5%; animation-delay: 8.2s, 9.4s; }
+
+    .mini-forest {
+      position: absolute; z-index: 3; inset: auto 0 0; height: 32%;
+      pointer-events: none;
+    }
+    .mini-tree {
+      position: absolute; bottom: var(--bottom, 7%);
+      width: var(--w, clamp(52px, 8.5vw, 114px));
+      filter: drop-shadow(0 7px 10px rgba(5, 28, 31, .3));
+      opacity: 0;
+    }
+    .scene.stage-tree .mini-tree {
+      animation:
+        decor-arrive 1.1s ease var(--d, .35s) forwards,
+        bob 4s ease-in-out calc(var(--d, .35s) + 1.1s) infinite;
+    }
+
+    /* ==================== DÒNG CHỮ MERRY CHRISTMAS ==================== */
     .greeting {
-      position: absolute; z-index: 4; left: 50%; top: 53%; width: min(92vw, 1000px);
+      position: absolute; z-index: 7; left: 50%; top: 47%; width: min(92vw, 1000px);
       text-align: center; transform: translate(-50%, -50%) scale(.03); opacity: 0;
-      pointer-events: none; animation: greeting-arrive 1.25s cubic-bezier(.18,.9,.25,1.2) 7.8s forwards;
+      pointer-events: none;
+    }
+    .scene.stage-greeting .greeting {
+      animation: greeting-arrive 1.3s cubic-bezier(.18,.9,.25,1.2) forwards;
     }
     .greeting h1 {
-      margin: 0; color: #fff6df; font-size: clamp(2.8rem, 9vw, 7.5rem);
-      font-weight: 500; line-height: .98; letter-spacing: .025em;
-      text-shadow: 0 2px 0 #ce9d55, 0 5px 0 rgba(111, 62, 31, .5), 0 0 28px rgba(255, 209, 126, .8), 0 0 82px rgba(255, 180, 91, .48);
+      margin: 0; color: #fff6df;
+      font-family: var(--font-serif);
+      font-size: clamp(2.7rem, 8.6vw, 7rem);
+      font-weight: 700; line-height: .96; letter-spacing: .02em;
+      text-shadow:
+        0 2px 0 #ce9d55,
+        0 5px 0 rgba(111, 62, 31, .5),
+        0 0 28px rgba(255, 209, 126, .82),
+        0 0 82px rgba(255, 180, 91, .48);
     }
     .greeting p {
-      margin: clamp(10px, 2vh, 20px) 0 0; color: #f8e6bf;
-      font-family: Arial, sans-serif; font-size: clamp(.72rem, 1.7vw, 1.05rem);
-      font-weight: 300; letter-spacing: .42em; text-transform: uppercase;
-      opacity: .9; text-shadow: 0 1px 12px rgba(255, 208, 131, .45);
+      margin: clamp(12px, 2.2vh, 22px) 0 0; color: #fff1cf;
+      font-family: var(--font-sans);
+      font-size: clamp(1rem, 2.2vw, 1.55rem);
+      font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+      opacity: .96;
+      text-shadow: 0 2px 14px rgba(10, 24, 42, .85), 0 0 18px rgba(255, 208, 131, .65);
     }
-    .orbit { position: absolute; z-index: 5; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-    .flight-sleigh { opacity: 0; animation: sleigh-show .5s ease 5s forwards; }
-    .sleigh { overflow: visible; filter: drop-shadow(0 5px 8px rgba(4, 12, 25, .38)); }
-    .caption {
-      position: absolute; z-index: 6; bottom: 3.2%; left: 0; width: 100%; text-align: center;
-      color: rgba(31, 73, 84, .7); font: 10px/1.5 Arial, sans-serif; letter-spacing: .32em;
-      text-transform: uppercase; opacity: 0; animation: caption-in 1s ease 9s forwards;
+
+    /* ==================== 15 HỘP QUÀ RƠI LIÊN TỤC NHƯ BÔNG TUYẾT ==================== */
+    .gifts-container {
+      position: absolute; z-index: 12; inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity .8s ease;
     }
+    .scene.stage-greeting .gifts-container {
+      opacity: 1;
+    }
+
+    .gift-item {
+      position: absolute; top: 0; left: 0;
+      width: clamp(46px, 5.4vw, 68px); aspect-ratio: 1;
+      cursor: pointer; pointer-events: auto;
+      background: none; border: none; padding: 0;
+      filter: drop-shadow(0 6px 12px rgba(4, 15, 28, .48));
+      will-change: transform;
+      touch-action: manipulation;
+      user-select: none;
+    }
+    .gift-item svg {
+      width: 100%; height: 100%; overflow: visible;
+      transition: transform .2s cubic-bezier(.2, .9, .3, 1.4), filter .2s ease;
+    }
+    .gift-item:hover svg {
+      transform: scale(1.25);
+      filter: drop-shadow(0 0 16px rgba(255, 230, 145, .95));
+    }
+
+    /* ==================== POPUP MỞ LỜI CHÚC TRONG HỘP QUÀ ==================== */
+    .wish-modal-backdrop {
+      position: fixed; z-index: 50; inset: 0;
+      background: rgba(4, 12, 24, .72);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; visibility: hidden;
+      transition: opacity .35s ease, visibility .35s ease;
+    }
+    .wish-modal-backdrop.active {
+      opacity: 1; visibility: visible;
+    }
+    .wish-modal {
+      position: relative;
+      width: min(92vw, 460px);
+      padding: 32px 28px 26px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 218, 133, .22), transparent 65%),
+        linear-gradient(160deg, #6d0f1c 0%, #430811 55%, #2a060d 100%);
+      border: 2px solid #f5ca72;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .75), 0 0 40px rgba(255, 206, 112, .35);
+      text-align: center;
+      color: #fff8e8;
+      font-family: var(--font-sans);
+      transform: scale(.65) translateY(30px);
+      transition: transform .4s cubic-bezier(.2, .9, .25, 1.25);
+    }
+    .wish-modal-backdrop.active .wish-modal {
+      transform: scale(1) translateY(0);
+    }
+    .wish-modal-icon {
+      width: 82px; height: 82px; margin: -62px auto 12px;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.45));
+      animation: modal-gift-pop .7s cubic-bezier(.2, .9, .3, 1.4);
+    }
+    .wish-modal-badge {
+      display: inline-block;
+      padding: 5px 16px; border-radius: 999px;
+      background: rgba(255, 216, 135, .18);
+      border: 1px solid rgba(255, 216, 135, .55);
+      color: #ffd984;
+      font-family: var(--font-sans);
+      font-size: .82rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .wish-modal h3 {
+      margin: 0 0 12px;
+      font-family: var(--font-serif);
+      font-size: clamp(1.4rem, 3.2vw, 1.8rem);
+      font-weight: 700;
+      color: #ffe8a8;
+      text-shadow: 0 2px 10px rgba(255, 198, 92, .4);
+    }
+    .wish-modal p {
+      margin: 0 0 22px;
+      font-family: var(--font-sans);
+      font-size: clamp(1rem, 2.2vw, 1.14rem);
+      line-height: 1.68;
+      font-weight: 400;
+      color: #fff6e5;
+    }
+    .wish-close-btn {
+      padding: 11px 30px; border-radius: 999px;
+      background: linear-gradient(180deg, #ffd97d 0%, #e09f36 100%);
+      border: none; color: #3d1205;
+      font-family: var(--font-sans);
+      font-weight: 700; font-size: .96rem;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(255, 197, 84, .4);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .wish-close-btn:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 10px 24px rgba(255, 210, 108, .6);
+    }
+
+    /* ==================== NÚT ĐIỀU KHIỂN GÓC DƯỚI ==================== */
+    .bottom-controls {
+      position: absolute; z-index: 20; bottom: 1.8%; right: 2%;
+      display: flex; gap: 8px; align-items: center;
+      opacity: 0; pointer-events: none; transition: opacity .6s ease;
+    }
+    .scene.stage-greeting .bottom-controls {
+      opacity: 1; pointer-events: auto;
+    }
+    .control-btn {
+      padding: 8px 16px; border-radius: 999px;
+      background: rgba(11, 34, 54, .82);
+      border: 1px solid rgba(255, 222, 148, .55);
+      color: #ffefc9;
+      font-family: var(--font-sans);
+      font-size: 12.5px; font-weight: 600;
+      letter-spacing: .04em;
+      cursor: pointer; backdrop-filter: blur(6px);
+      transition: transform .2s ease, background .2s ease;
+    }
+    .control-btn:hover {
+      background: rgba(22, 58, 88, .92);
+      transform: translateY(-2px);
+    }
+
+    /* ==================== KEYFRAMES ==================== */
     @keyframes breathe { to { opacity: .55; transform: translate(-50%, -50%) scale(1.08); } }
     @keyframes twinkle { from { opacity: .22; transform: scale(.65); } to { opacity: 1; transform: scale(1.3); } }
-    @keyframes lights { from { opacity: .72; } to { opacity: 1; filter: drop-shadow(0 0 6px #ffd36c); } }
+    @keyframes bulb-blink {
+      from { opacity: .45; filter: drop-shadow(0 0 2px currentColor); }
+      to { opacity: 1; filter: drop-shadow(0 0 11px currentColor); }
+    }
+    @keyframes sway {
+      from { transform: rotate(-4.5deg); }
+      to { transform: rotate(4.5deg); }
+    }
+    @keyframes hint-pulse {
+      from { transform: translateX(-50%) scale(.96); box-shadow: 0 0 18px rgba(255, 202, 104, .3); }
+      to { transform: translateX(-50%) scale(1.04); box-shadow: 0 0 32px rgba(255, 214, 128, .65); }
+    }
+
+    @keyframes fly-ltr-1 {
+      0% { transform: translate3d(-15vw, 2vh, 0) rotate(-6deg); }
+      25% { transform: translate3d(25vw, -4vh, 0) rotate(3deg); }
+      50% { transform: translate3d(60vw, 2vh, 0) rotate(-4deg); }
+      75% { transform: translate3d(95vw, -3vh, 0) rotate(4deg); }
+      100% { transform: translate3d(135vw, 1vh, 0) rotate(0deg); }
+    }
+    @keyframes fly-ltr-2 {
+      0% { transform: translate3d(-15vw, 0, 0) rotate(-4deg); }
+      50% { transform: translate3d(55vw, -6vh, 0) rotate(5deg); }
+      100% { transform: translate3d(135vw, 2vh, 0) rotate(-2deg); }
+    }
+    @keyframes fly-rtl-1 {
+      0% { transform: translate3d(15vw, 1vh, 0) scaleX(-1) rotate(-5deg); }
+      35% { transform: translate3d(-35vw, -4vh, 0) scaleX(-1) rotate(4deg); }
+      70% { transform: translate3d(-85vw, 3vh, 0) scaleX(-1) rotate(-3deg); }
+      100% { transform: translate3d(-135vw, -2vh, 0) scaleX(-1) rotate(2deg); }
+    }
+    @keyframes fly-rtl-2 {
+      0% { transform: translate3d(15vw, -2vh, 0) scaleX(-1) rotate(3deg); }
+      50% { transform: translate3d(-60vw, 4vh, 0) scaleX(-1) rotate(-5deg); }
+      100% { transform: translate3d(-135vw, -1vh, 0) scaleX(-1) rotate(2deg); }
+    }
+
     @keyframes mega-fall {
       0% { opacity: 0; transform: translate3d(-50%, -3vh, 0) rotate(-25deg); }
-      12% { opacity: .94; }
+      12% { opacity: .95; }
       88% { opacity: .88; }
       100% { opacity: 0; transform: translate3d(-50%, 185vh, 0) rotate(335deg); }
     }
-    @keyframes snow-reveal { to { opacity: 1; } }
-    @keyframes tree-arrive { to { transform: translate(-50%, -48%) scale(1); opacity: 1; } }
-    @keyframes sleigh-show { to { opacity: 1; } }
+    @keyframes tree-arrive {
+      0% { transform: translate(-50%, -42%) scale(.62); opacity: 0; }
+      100% { transform: translate(-50%, -48%) scale(1); opacity: 1; }
+    }
+    @keyframes lights {
+      from { opacity: .62; }
+      to { opacity: 1; filter: drop-shadow(0 0 7px #ffd36c); }
+    }
+    @keyframes star-pulse {
+      from { transform: scale(.92) rotate(-4deg); filter: drop-shadow(0 0 8px #ffe699); }
+      to { transform: scale(1.1) rotate(4deg); filter: drop-shadow(0 0 22px #fff2be); }
+    }
     @keyframes greeting-arrive {
       0% { opacity: 0; transform: translate(-50%, -50%) scale(.02) rotate(-8deg); filter: blur(16px); }
-      56% { opacity: 1; transform: translate(-50%, -50%) scale(1.28) rotate(2deg); filter: blur(0); }
-      72% { opacity: 1; transform: translate(-50%, -50%) scale(.9) rotate(-1deg); }
-      88% { opacity: 1; transform: translate(-50%, -50%) scale(1.06) rotate(.4deg); }
+      56% { opacity: 1; transform: translate(-50%, -50%) scale(1.22) rotate(2deg); filter: blur(0); }
+      74% { opacity: 1; transform: translate(-50%, -50%) scale(.92) rotate(-1deg); }
+      88% { opacity: 1; transform: translate(-50%, -50%) scale(1.05) rotate(.4deg); }
       100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); filter: blur(0); }
     }
-    @keyframes decor-arrive { to { opacity: .93; } }
-    @keyframes bob { 50% { translate: 0 -8px; } }
-    @keyframes caption-in { to { opacity: 1; } }
-    @media (max-width: 600px) {
-      .moon { right: 8%; top: 8%; }
-      .tree-wrap { top: 57%; height: 61vh; width: min(68vw, 330px); }
-      .intro-flake { top: -36vh; }
-      .greeting { top: 52%; }
-      .greeting h1 { font-size: clamp(2.7rem, 12vw, 4.5rem); }
-      .greeting p { letter-spacing: .26em; }
-      .mini-tree { bottom: 9%; }
-      .mini-tree.left { left: 2%; }
-      .mini-tree.right { right: 2%; }
+    @keyframes decor-arrive { to { opacity: .94; } }
+    @keyframes bob { 50% { translate: 0 -7px; } }
+    @keyframes modal-gift-pop {
+      0% { transform: scale(0) rotate(-18deg); }
+      70% { transform: scale(1.15) rotate(6deg); }
+      100% { transform: scale(1) rotate(0); }
     }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+
+    @media (max-width: 640px) {
+      .moon { right: 7%; top: 7%; }
+      .tree-wrap { top: 53%; height: 60vh; width: min(74vw, 350px); }
+      .intro-flake { top: -36vh; }
+      .greeting { top: 45%; }
+      .greeting h1 { font-size: clamp(2.4rem, 11.5vw, 4.3rem); }
+      .greeting p { font-size: clamp(.88rem, 3.6vw, 1.15rem); letter-spacing: .12em; }
     }
   </style>
 </head>
 <body>
-  <main class="scene" aria-label="Cảnh Giáng sinh với tuyết rơi, cây thông và ông già Noel bay trên xe tuần lộc">
+  <!-- Ghép trực tiếp đúng tên 2 file nhạc của bạn -->
+  <audio id="jingleBellsAudio" loop preload="auto">
+    <source src="Jingle Bells with Lyrics  Christmas Songs HD  Christmas Songs and Carols - Christmas Songs and Carols - Love to Sing.mp3" type="audio/mpeg">
+    <source src="jingle-bells.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="hoHoHoAudio" preload="auto">
+    <source src="Ho Ho Ho Merry Christmas - Ted Breslin.mp3" type="audio/mpeg">
+    <source src="hohoho.mp3" type="audio/mpeg">
+  </audio>
+
+  <main class="scene" id="scene" aria-label="Hoạt cảnh Giáng sinh nhiệm màu">
+    <!-- ==================== 1. TẤM RÈM MỞ ĐẦU ==================== -->
+    <div class="curtain-stage" id="curtainStage" role="button" tabindex="0" aria-label="Nhấn để mở rèm Giáng sinh">
+      <!-- Diềm rèm phía trên với dây đèn nhấp nháy & vòng nguyệt quế -->
+      <div class="curtain-valance" aria-hidden="true">
+        <svg class="valance-lights" viewBox="0 0 1200 130" preserveAspectRatio="none">
+          <path d="M0 18 Q150 92 300 18 Q450 92 600 18 Q750 92 900 18 Q1050 92 1200 18" fill="none" stroke="#28422b" stroke-width="4"/>
+          <path d="M0 32 Q150 110 300 32 Q450 110 600 32 Q750 110 900 32 Q1050 110 1200 32" fill="none" stroke="#f6cf77" stroke-width="2" stroke-dasharray="6 6" opacity=".7"/>
+          <g>
+            <circle class="bulb-glow-1" cx="75" cy="48" r="9" fill="#ffeb7a" style="color:#ffeb7a"/>
+            <circle class="bulb-glow-2" cx="150" cy="64" r="9" fill="#ff5964" style="color:#ff5964"/>
+            <circle class="bulb-glow-3" cx="225" cy="48" r="9" fill="#4cd97b" style="color:#4cd97b"/>
+            <circle class="bulb-glow-1" cx="300" cy="22" r="9" fill="#63d2ff" style="color:#63d2ff"/>
+            <circle class="bulb-glow-2" cx="375" cy="48" r="9" fill="#ffeb7a" style="color:#ffeb7a"/>
+            <circle class="bulb-glow-3" cx="450" cy="64" r="9" fill="#ff5964" style="color:#ff5964"/>
+            <circle class="bulb-glow-1" cx="525" cy="48" r="9" fill="#4cd97b" style="color:#4cd97b"/>
+            <circle class="bulb-glow-2" cx="600" cy="22" r="9" fill="#ffeb7a" style="color:#ffeb7a"/>
+            <circle class="bulb-glow-3" cx="675" cy="48" r="9" fill="#63d2ff" style="color:#63d2ff"/>
+            <circle class="bulb-glow-1" cx="750" cy="64" r="9" fill="#ff5964" style="color:#ff5964"/>
+            <circle class="bulb-glow-2" cx="825" cy="48" r="9" fill="#4cd97b" style="color:#4cd97b"/>
+            <circle class="bulb-glow-3" cx="900" cy="22" r="9" fill="#ffeb7a" style="color:#ffeb7a"/>
+            <circle class="bulb-glow-1" cx="975" cy="48" r="9" fill="#ff5964" style="color:#ff5964"/>
+            <circle class="bulb-glow-2" cx="1050" cy="64" r="9" fill="#63d2ff" style="color:#63d2ff"/>
+            <circle class="bulb-glow-3" cx="1125" cy="48" r="9" fill="#4cd97b" style="color:#4cd97b"/>
+          </g>
+          <g transform="translate(300 48)">
+            <circle r="24" fill="none" stroke="#1d7a4c" stroke-width="11"/>
+            <circle r="24" fill="none" stroke="#39a86b" stroke-width="5" stroke-dasharray="7 9"/>
+            <path d="M-8-18 C-16-28 -24-14 -6-12 C6-14 16-28 8-18 Z" fill="#ff4757"/>
+          </g>
+          <g transform="translate(600 48)">
+            <circle r="28" fill="none" stroke="#1d7a4c" stroke-width="12"/>
+            <circle r="28" fill="none" stroke="#39a86b" stroke-width="6" stroke-dasharray="8 9"/>
+            <path d="M-10-20 C-20-32 -28-16 -7-14 C7-16 20-32 10-20 Z" fill="#ff4757"/>
+            <circle cx="0" cy="-18" r="5" fill="#ffd97d"/>
+          </g>
+          <g transform="translate(900 48)">
+            <circle r="24" fill="none" stroke="#1d7a4c" stroke-width="11"/>
+            <circle r="24" fill="none" stroke="#39a86b" stroke-width="5" stroke-dasharray="7 9"/>
+            <path d="M-8-18 C-16-28 -24-14 -6-12 C6-14 16-28 8-18 Z" fill="#ff4757"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Cánh rèm bên trái -->
+      <div class="curtain-panel left" aria-hidden="true">
+        <svg class="curtain-ornaments" viewBox="0 0 500 800" preserveAspectRatio="xMidYMid slice">
+          <path d="M0 95 Q250 185 500 105" fill="none" stroke="#f3c76b" stroke-width="3" stroke-dasharray="8 6" opacity=".65"/>
+          <path d="M0 290 Q240 390 500 300" fill="none" stroke="#f3c76b" stroke-width="2.5" stroke-dasharray="6 8" opacity=".45"/>
+
+          <g class="dangling-item" transform="translate(245 215)">
+            <line x1="0" y1="-155" x2="0" y2="-65" stroke="#f5cb76" stroke-width="3"/>
+            <circle r="66" fill="none" stroke="#0f5f3c" stroke-width="28"/>
+            <circle r="66" fill="none" stroke="#248f59" stroke-width="16" stroke-dasharray="14 11"/>
+            <circle r="66" fill="none" stroke="#53bf82" stroke-width="6" stroke-dasharray="5 18"/>
+            <circle cx="-46" cy="-42" r="7" fill="#ff4757"/><circle cx="48" cy="-38" r="7" fill="#ffd36b"/>
+            <circle cx="-58" cy="14" r="7" fill="#ffd36b"/><circle cx="56" cy="20" r="7" fill="#ff4757"/>
+            <circle cx="-26" cy="58" r="7" fill="#63d2ff"/><circle cx="28" cy="56" r="7" fill="#ff4757"/>
+            <circle cx="0" cy="-66" r="7" fill="#ffeb7a"/><circle cx="0" cy="66" r="7" fill="#4cd97b"/>
+            <path d="M-14 0 L-8 -22 L8 -22 L14 0 Z" fill="#ffd56b" stroke="#b57c1e" stroke-width="2"/>
+            <circle cx="0" cy="3" r="5" fill="#fff0b8"/>
+            <path d="M0-58 C-28-88 -58-58 -24-38 C-6-32 0-46 0-58 C0-46 6-32 24-38 C58-58 28-88 0-58 Z" fill="#e63946" stroke="#ffd885" stroke-width="2.5"/>
+            <path d="M-8-46 L-24 6 L-8 0 L-4-38 M8-46 L24 6 L8 0 L4-38" fill="#c81d2a"/>
+          </g>
+
+          <g class="dangling-item delay-2" transform="translate(105 425)">
+            <line x1="0" y1="-125" x2="0" y2="-45" stroke="#f5cb76" stroke-width="2.5"/>
+            <circle r="44" fill="none" stroke="#136842" stroke-width="20"/>
+            <circle r="44" fill="none" stroke="#2ea368" stroke-width="10" stroke-dasharray="10 9"/>
+            <circle cx="-32" cy="-26" r="5.5" fill="#ff5964"/><circle cx="34" cy="-24" r="5.5" fill="#ffd875"/>
+            <circle cx="-35" cy="22" r="5.5" fill="#ffd875"/><circle cx="32" cy="25" r="5.5" fill="#ff5964"/>
+            <path d="M0-38 C-18-58 -38-38 -15-25 C0-22 0-38 0-38 C0-38 0-22 15-25 C38-38 18-58 0-38 Z" fill="#ff4757" stroke="#ffd885" stroke-width="2"/>
+          </g>
+
+          <g class="dangling-item delay-1" transform="translate(95 250) rotate(-14)">
+            <line x1="0" y1="-155" x2="0" y2="-55" stroke="#f5cb76" stroke-width="3"/>
+            <path d="M-22 -22 A24 24 0 0 1 26 -22 L26 68" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round"/>
+            <path d="M-22 -22 A24 24 0 0 1 26 -22 L26 68" fill="none" stroke="#e63946" stroke-width="20" stroke-linecap="butt" stroke-dasharray="16 16"/>
+            <path d="M12 10 C-6-6 -18 12 -2 18 L26 18 C42 12 30-6 12 10 Z" fill="#248f59" stroke="#ffd885" stroke-width="2"/>
+          </g>
+
+          <g class="dangling-item delay-3" transform="translate(385 450)">
+            <line x1="0" y1="-140" x2="0" y2="-35" stroke="#f5cb76" stroke-width="2.5"/>
+            <g transform="rotate(-24)">
+              <path d="M-16 -18 A18 18 0 0 1 20 -18 L20 52" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round"/>
+              <path d="M-16 -18 A18 18 0 0 1 20 -18 L20 52" fill="none" stroke="#e63946" stroke-width="15" stroke-dasharray="13 13"/>
+            </g>
+            <g transform="rotate(24) scale(-1, 1)">
+              <path d="M-16 -18 A18 18 0 0 1 20 -18 L20 52" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round"/>
+              <path d="M-16 -18 A18 18 0 0 1 20 -18 L20 52" fill="none" stroke="#1e824c" stroke-width="15" stroke-dasharray="13 13"/>
+            </g>
+            <circle cx="0" cy="8" r="10" fill="#ff4757" stroke="#ffd885" stroke-width="2.5"/>
+          </g>
+
+          <g class="dangling-item delay-2" transform="translate(390 255)">
+            <line x1="0" y1="-150" x2="0" y2="-38" stroke="#f5cb76" stroke-width="3"/>
+            <rect x="-10" y="-44" width="20" height="10" rx="3" fill="#ffd875"/>
+            <circle r="38" fill="#ffd166" stroke="#fff3c4" stroke-width="3"/>
+            <path d="M-36 0 Q0 22 36 0" fill="none" stroke="#d9384a" stroke-width="6"/>
+            <circle cx="-12" cy="-14" r="9" fill="#fff" opacity=".45"/>
+          </g>
+
+          <g class="dangling-item delay-3" transform="translate(155 595) rotate(8)">
+            <path d="M-24 -52 H22 V6 C22 26 38 30 48 40 C58 50 48 68 28 68 H-12 C-30 68 -34 50 -24 32 Z" fill="#e63946" stroke="#ffd885" stroke-width="3"/>
+            <rect x="-30" y="-64" width="60" height="24" rx="10" fill="#fff8ea"/>
+            <circle cx="-12" cy="-52" r="4" fill="#1e824c"/><circle cx="10" cy="-52" r="4" fill="#e63946"/>
+          </g>
+
+          <g class="dangling-item delay-1" transform="translate(335 615)">
+            <path d="M0 -72 L-54 38 H-24 L-68 108 H68 L24 38 H54 Z" fill="#146b48" stroke="#6fd19c" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="-12" y="108" width="24" height="28" fill="#6e422c"/>
+            <circle cx="0" cy="-76" r="11" fill="#ffe680"/>
+            <circle cx="-20" cy="14" r="6.5" fill="#ff5964"/><circle cx="22" cy="24" r="6.5" fill="#ffd875"/>
+            <circle cx="-28" cy="76" r="6.5" fill="#63d2ff"/><circle cx="26" cy="78" r="6.5" fill="#ff5964"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Cánh rèm bên phải -->
+      <div class="curtain-panel right" aria-hidden="true">
+        <svg class="curtain-ornaments" viewBox="0 0 500 800" preserveAspectRatio="xMidYMid slice">
+          <path d="M0 105 Q250 185 500 95" fill="none" stroke="#f3c76b" stroke-width="3" stroke-dasharray="8 6" opacity=".65"/>
+          <path d="M0 300 Q260 390 500 290" fill="none" stroke="#f3c76b" stroke-width="2.5" stroke-dasharray="6 8" opacity=".45"/>
+
+          <g class="dangling-item delay-1" transform="translate(255 215)">
+            <line x1="0" y1="-155" x2="0" y2="-65" stroke="#f5cb76" stroke-width="3"/>
+            <circle r="66" fill="none" stroke="#0f5f3c" stroke-width="28"/>
+            <circle r="66" fill="none" stroke="#248f59" stroke-width="16" stroke-dasharray="14 11"/>
+            <circle r="66" fill="none" stroke="#53bf82" stroke-width="6" stroke-dasharray="5 18"/>
+            <circle cx="-46" cy="-42" r="7" fill="#ffd36b"/><circle cx="48" cy="-38" r="7" fill="#ff4757"/>
+            <circle cx="-58" cy="14" r="7" fill="#63d2ff"/><circle cx="56" cy="20" r="7" fill="#ffd36b"/>
+            <circle cx="-26" cy="58" r="7" fill="#ff4757"/><circle cx="28" cy="56" r="7" fill="#4cd97b"/>
+            <path d="M-14 0 L-8 -22 L8 -22 L14 0 Z" fill="#ffd56b" stroke="#b57c1e" stroke-width="2"/>
+            <circle cx="0" cy="3" r="5" fill="#fff0b8"/>
+            <path d="M0-58 C-28-88 -58-58 -24-38 C-6-32 0-46 0-58 C0-46 6-32 24-38 C58-58 28-88 0-58 Z" fill="#e63946" stroke="#ffd885" stroke-width="2.5"/>
+            <path d="M-8-46 L-24 6 L-8 0 L-4-38 M8-46 L24 6 L8 0 L4-38" fill="#c81d2a"/>
+          </g>
+
+          <g class="dangling-item delay-3" transform="translate(395 425)">
+            <line x1="0" y1="-125" x2="0" y2="-45" stroke="#f5cb76" stroke-width="2.5"/>
+            <circle r="44" fill="none" stroke="#136842" stroke-width="20"/>
+            <circle r="44" fill="none" stroke="#2ea368" stroke-width="10" stroke-dasharray="10 9"/>
+            <circle cx="-32" cy="-26" r="5.5" fill="#ffd875"/><circle cx="34" cy="-24" r="5.5" fill="#ff5964"/>
+            <circle cx="-35" cy="22" r="5.5" fill="#ff5964"/><circle cx="32" cy="25" r="5.5" fill="#ffd875"/>
+            <path d="M0-38 C-18-58 -38-38 -15-25 C0-22 0-38 0-38 C0-38 0-22 15-25 C38-38 18-58 0-38 Z" fill="#ff4757" stroke="#ffd885" stroke-width="2"/>
+          </g>
+
+          <g class="dangling-item delay-2" transform="translate(115 255)">
+            <line x1="0" y1="-150" x2="0" y2="-38" stroke="#f5cb76" stroke-width="3"/>
+            <rect x="-10" y="-44" width="20" height="10" rx="3" fill="#ffd875"/>
+            <circle r="38" fill="#32a86d" stroke="#fff3c4" stroke-width="3"/>
+            <path d="M-36 0 Q0 -22 36 0" fill="none" stroke="#ffd166" stroke-width="6"/>
+            <circle cx="-12" cy="-14" r="9" fill="#fff" opacity=".4"/>
+          </g>
+
+          <g class="dangling-item" transform="translate(405 250) rotate(14) scale(-1, 1)">
+            <line x1="0" y1="-155" x2="0" y2="-55" stroke="#f5cb76" stroke-width="3"/>
+            <path d="M-22 -22 A24 24 0 0 1 26 -22 L26 68" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round"/>
+            <path d="M-22 -22 A24 24 0 0 1 26 -22 L26 68" fill="none" stroke="#e63946" stroke-width="20" stroke-linecap="butt" stroke-dasharray="16 16"/>
+            <path d="M12 10 C-6-6 -18 12 -2 18 L26 18 C42 12 30-6 12 10 Z" fill="#248f59" stroke="#ffd885" stroke-width="2"/>
+          </g>
+
+          <g class="dangling-item delay-1" transform="translate(115 450)">
+            <line x1="0" y1="-140" x2="0" y2="-35" stroke="#f5cb76" stroke-width="2.5"/>
+            <g transform="rotate(-24)">
+              <path d="M-16 -18 A18 18 0 0 1 20 -18 L20 52" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round"/>
+              <path d="M-16 -18 A18 18 0 0 1 20 -18 L20 52" fill="none" stroke="#e63946" stroke-width="15" stroke-dasharray="13 13"/>
+            </g>
+            <g transform="rotate(24) scale(-1, 1)">
+              <path d="M-16 -18 A18 18 0 0 1 20 -18 L20 52" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round"/>
+              <path d="M-16 -18 A18 18 0 0 1 20 -18 L20 52" fill="none" stroke="#1e824c" stroke-width="15" stroke-dasharray="13 13"/>
+            </g>
+            <circle cx="0" cy="8" r="10" fill="#ff4757" stroke="#ffd885" stroke-width="2.5"/>
+          </g>
+
+          <g class="dangling-item delay-3" transform="translate(345 595) rotate(-8) scale(-1, 1)">
+            <path d="M-24 -52 H22 V6 C22 26 38 30 48 40 C58 50 48 68 28 68 H-12 C-30 68 -34 50 -24 32 Z" fill="#e63946" stroke="#ffd885" stroke-width="3"/>
+            <rect x="-30" y="-64" width="60" height="24" rx="10" fill="#fff8ea"/>
+            <circle cx="-12" cy="-52" r="4" fill="#1e824c"/><circle cx="10" cy="-52" r="4" fill="#e63946"/>
+          </g>
+
+          <g class="dangling-item delay-2" transform="translate(165 615)">
+            <path d="M0 -72 L-54 38 H-24 L-68 108 H68 L24 38 H54 Z" fill="#146b48" stroke="#6fd19c" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="-12" y="108" width="24" height="28" fill="#6e422c"/>
+            <circle cx="0" cy="-76" r="11" fill="#ffe680"/>
+            <circle cx="-20" cy="14" r="6.5" fill="#ffd875"/><circle cx="22" cy="24" r="6.5" fill="#ff5964"/>
+            <circle cx="-28" cy="76" r="6.5" fill="#ff5964"/><circle cx="26" cy="78" r="6.5" fill="#63d2ff"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="curtain-hint" id="curtainHint">🎄 Chạm vào rèm để mở màn Giáng sinh 🎄</div>
+    </div>
+
+    <!-- ==================== BỐI CẢNH BẦU TRỜI ĐÊM ==================== -->
     <div class="sky-glow" aria-hidden="true"></div>
     <div class="moon" aria-hidden="true"></div>
     <div class="stars" id="stars" aria-hidden="true"></div>
     <canvas id="snow" aria-hidden="true"></canvas>
+
+    <!-- Đàn tuần lộc bay qua bay lại hai chiều -->
+    <div class="sky-reindeers" aria-hidden="true">
+      <svg width="0" height="0" style="position:absolute">
+        <defs>
+          <linearGradient id="deerCoat" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c98753"/>
+            <stop offset="55%" stop-color="#9c5d32"/>
+            <stop offset="100%" stop-color="#6e3c1b"/>
+          </linearGradient>
+          <linearGradient id="deerBelly" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f7dfc2"/>
+            <stop offset="100%" stop-color="#dfb88f"/>
+          </linearGradient>
+          <g id="flyingReindeerSingle">
+            <g fill="#ffe9a8" opacity=".88">
+              <circle cx="8" cy="68" r="3"/><circle cx="24" cy="76" r="2.2"/><circle cx="16" cy="56" r="2"/>
+            </g>
+            <path d="M36 52 Q22 44 26 59 Q31 64 41 58 Z" fill="#f7dfc2" stroke="#8b4f28" stroke-width="1.5"/>
+            <path d="M46 62 L24 82 L16 86" fill="none" stroke="#844923" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M54 64 L38 88 L30 92" fill="none" stroke="#a66538" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="15" cy="86" r="3.5" fill="#3b2313"/><circle cx="29" cy="92" r="3.5" fill="#3b2313"/>
+            <path d="M98 63 L118 84 L128 82" fill="none" stroke="#844923" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M104 60 L132 76 L142 72" fill="none" stroke="#b57242" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="129" cy="82" r="3.5" fill="#3b2313"/><circle cx="143" cy="72" r="3.5" fill="#3b2313"/>
+            <path d="M40 54 C42 40 72 40 98 46 C106 34 114 24 122 26 C128 28 124 46 114 58 C110 66 94 69 72 67 C52 66 39 62 40 54 Z" fill="url(#deerCoat)" stroke="#5c3014" stroke-width="1.8"/>
+            <path d="M50 63 Q75 68 100 62 Q108 55 112 46 Q103 56 76 58 Q56 58 50 63 Z" fill="url(#deerBelly)" opacity=".85"/>
+            <circle cx="56" cy="50" r="2.3" fill="#fae3c6" opacity=".8"/>
+            <circle cx="66" cy="48" r="2" fill="#fae3c6" opacity=".8"/>
+            <circle cx="75" cy="51" r="2.2" fill="#fae3c6" opacity=".8"/>
+            <path d="M103 42 Q112 50 117 57" fill="none" stroke="#e63946" stroke-width="5.5" stroke-linecap="round"/>
+            <circle cx="107" cy="46" r="3.2" fill="#ffd766"/><circle cx="113" cy="52" r="3.5" fill="#ffd766"/>
+            <path d="M114 27 C118 20 132 21 142 29 C147 33 145 41 136 41 C126 41 119 38 114 33 Z" fill="url(#deerCoat)" stroke="#5c3014" stroke-width="1.6"/>
+            <path d="M116 26 Q106 18 110 13 Q118 15 120 24 Z" fill="#9c5d32" stroke="#5c3014" stroke-width="1.5"/>
+            <circle cx="129" cy="29" r="3" fill="#1e130c"/>
+            <circle cx="130" cy="28" r="1.1" fill="#ffffff"/>
+            <g fill="none" stroke="#f3cf98" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M119 22 C115 10 104 4 94 5"/>
+              <path d="M112 13 L116 3"/>
+              <path d="M105 8 L104 -2"/>
+              <path d="M123 21 C124 9 133 3 142 4"/>
+              <path d="M128 11 L125 2"/>
+            </g>
+            <circle cx="145" cy="34" r="4.8" fill="#ff2e3b"/>
+            <circle cx="144" cy="32.5" r="1.6" fill="#ffb8be"/>
+            <circle cx="145" cy="34" r="9" fill="#ff3844" opacity=".38"/>
+          </g>
+        </defs>
+      </svg>
+      <svg class="reindeer-runner r-ltr-1" viewBox="0 0 165 105"><use href="#flyingReindeerSingle"/></svg>
+      <svg class="reindeer-runner r-rtl-1" viewBox="0 0 165 105"><use href="#flyingReindeerSingle"/></svg>
+      <svg class="reindeer-runner r-ltr-2" viewBox="0 0 165 105"><use href="#flyingReindeerSingle"/></svg>
+      <svg class="reindeer-runner r-rtl-2" viewBox="0 0 165 105"><use href="#flyingReindeerSingle"/></svg>
+    </div>
+
+    <!-- 6 bông tuyết khổng lồ rơi mở màn -->
     <div class="intro-snow" aria-hidden="true">
       <svg class="intro-flake" style="--x:8%; --size:clamp(135px,22vw,280px); --delay:0s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
       <svg class="intro-flake" style="--x:25%; --size:clamp(125px,19vw,245px); --delay:.12s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
@@ -168,148 +788,932 @@
       <svg class="intro-flake" style="--x:96%; --size:clamp(120px,18vw,230px); --delay:.16s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
     </div>
 
+    <!-- ==================== CÂY THÔNG NOEL LỘNG LẪY Ở TRUNG TÂM ==================== -->
     <div class="tree-wrap" aria-hidden="true">
       <svg class="tree-svg" viewBox="0 0 500 650" role="img" aria-label="Cây thông Giáng sinh lấp lánh">
         <defs>
-          <linearGradient id="pine" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#238463"/><stop offset=".48" stop-color="#126347"/><stop offset="1" stop-color="#073b36"/></linearGradient>
-          <linearGradient id="edge" x1="0" x2="1"><stop stop-color="#3da47b"/><stop offset="1" stop-color="#0b4a3d"/></linearGradient>
-          <radialGradient id="bauble"><stop stop-color="#fff8d5"/><stop offset=".24" stop-color="#ffd274"/><stop offset="1" stop-color="#c9822f"/></radialGradient>
+          <linearGradient id="pine" x1="0" x2="1" y1="0" y2="1">
+            <stop stop-color="#27916c"/>
+            <stop offset=".48" stop-color="#13694b"/>
+            <stop offset="1" stop-color="#073b36"/>
+          </linearGradient>
+          <linearGradient id="edge" x1="0" x2="1">
+            <stop stop-color="#45b589"/>
+            <stop offset="1" stop-color="#0b4a3d"/>
+          </linearGradient>
+          <radialGradient id="baubleGold">
+            <stop stop-color="#fff8d5"/>
+            <stop offset=".28" stop-color="#ffd274"/>
+            <stop offset="1" stop-color="#c9822f"/>
+          </radialGradient>
+          <radialGradient id="baubleRed">
+            <stop stop-color="#ffd6d6"/>
+            <stop offset=".3" stop-color="#e63946"/>
+            <stop offset="1" stop-color="#8c1420"/>
+          </radialGradient>
+          <radialGradient id="baubleBlue">
+            <stop stop-color="#e0f7ff"/>
+            <stop offset=".3" stop-color="#48bfe3"/>
+            <stop offset="1" stop-color="#186487"/>
+          </radialGradient>
           <filter id="soft"><feGaussianBlur stdDeviation="8"/></filter>
         </defs>
-        <ellipse cx="250" cy="586" rx="148" ry="22" fill="#7caea9" opacity=".32" filter="url(#soft)"/>
-        <path d="M229 525h42v85h-42z" fill="#6e422c"/><path d="M218 600h64v12h-64z" fill="#523421"/>
-        <path d="M249 40 188 170 219 157 137 282 176 264 91 402 144 378 58 507Q250 559 442 507l-86-129 53 24-86-138 40 18-82-125 31 13z" fill="url(#pine)" stroke="#59a67e" stroke-opacity=".43" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M249 59 206 166 236 153 166 275 201 258 123 394 172 371 91 496q159 39 318 0l-81-125 48 22-77-135 36 16-74-114 27 11z" fill="url(#edge)" opacity=".5"/>
-        <path d="M175 246q45 30 93 26t75 28q-47 11-89 0t-96 0M133 359q60 30 124 25t105 29q-61 17-125 2t-120 4M93 464q74 29 157 24t151 28" fill="none" stroke="#f2c875" stroke-width="5" stroke-linecap="round" opacity=".86"/>
-        <g class="tree-lights" fill="#fff1ad">
-          <circle cx="246" cy="176" r="5"/><circle cx="205" cy="238" r="5"/><circle cx="287" cy="261" r="5"/><circle cx="161" cy="331" r="5"/><circle cx="244" cy="319" r="5"/><circle cx="337" cy="343" r="5"/><circle cx="123" cy="427" r="5"/><circle cx="207" cy="415" r="5"/><circle cx="288" cy="444" r="5"/><circle cx="377" cy="429" r="5"/><circle cx="164" cy="490" r="5"/><circle cx="247" cy="502" r="5"/><circle cx="331" cy="496" r="5"/>
+
+        <ellipse cx="250" cy="586" rx="155" ry="24" fill="#7caea9" opacity=".34" filter="url(#soft)"/>
+        <path d="M226 520h48v88h-48z" fill="#6e422c"/>
+        <path d="M214 598h72v14h-72z" fill="#523421"/>
+
+        <path d="M249 40 188 170 219 157 137 282 176 264 91 402 144 378 58 507Q250 559 442 507l-86-129 53 24-86-138 40 18-82-125 31 13z"
+              fill="url(#pine)" stroke="#59a67e" stroke-opacity=".48" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M249 59 206 166 236 153 166 275 201 258 123 394 172 371 91 496q159 39 318 0l-81-125 48 22-77-135 36 16-74-114 27 11z"
+              fill="url(#edge)" opacity=".52"/>
+
+        <path d="M188 170 Q204 177 219 157 M310 170 Q294 177 280 157
+                 M137 282 Q158 292 176 264 M362 282 Q342 292 322 264
+                 M91 402 Q118 412 144 378 M408 402 Q382 412 356 378
+                 M58 507 Q150 538 250 534 Q350 538 442 507"
+              fill="none" stroke="#e9f7f5" stroke-width="6.5" stroke-linecap="round" opacity=".68"/>
+
+        <path d="M198 182q32 22 58 18t50 20
+                 M175 246q45 30 93 26t75 28q-47 11-89 0t-96 0
+                 M133 359q60 30 124 25t105 29q-61 17-125 2t-120 4
+                 M93 464q74 29 157 24t151 28"
+              fill="none" stroke="#f5ce78" stroke-width="5.5" stroke-linecap="round" opacity=".9"/>
+        <path d="M162 298q55 26 110 20t92 22
+                 M114 414q70 28 144 22t132 24"
+              fill="none" stroke="#fff4d6" stroke-width="3" stroke-dasharray="6 9" stroke-linecap="round" opacity=".82"/>
+
+        <g transform="translate(216 205) rotate(-15) scale(.42)">
+          <path d="M-12 -14 A14 14 0 0 1 16 -14 L16 38" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/>
+          <path d="M-12 -14 A14 14 0 0 1 16 -14 L16 38" fill="none" stroke="#e63946" stroke-width="11" stroke-dasharray="9 9"/>
         </g>
-        <g stroke="#ffe9ac" stroke-width="2" opacity=".72">
-          <path d="M158 300v29M143.5 314.5h29M151 307l14 14m0-14-14 14"/><path d="M333 212v26M320 225h26M324 216l18 18m0-18-18 18"/><path d="M273 387v28M259 401h28M263 391l20 20m0-20-20 20"/>
+        <g transform="translate(292 288) rotate(18) scale(.45)">
+          <path d="M-12 -14 A14 14 0 0 1 16 -14 L16 38" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/>
+          <path d="M-12 -14 A14 14 0 0 1 16 -14 L16 38" fill="none" stroke="#e63946" stroke-width="11" stroke-dasharray="9 9"/>
         </g>
+        <g transform="translate(166 392) rotate(-18) scale(.48)">
+          <path d="M-12 -14 A14 14 0 0 1 16 -14 L16 38" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/>
+          <path d="M-12 -14 A14 14 0 0 1 16 -14 L16 38" fill="none" stroke="#e63946" stroke-width="11" stroke-dasharray="9 9"/>
+        </g>
+        <g transform="translate(334 452) rotate(14) scale(.48)">
+          <path d="M-12 -14 A14 14 0 0 1 16 -14 L16 38" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/>
+          <path d="M-12 -14 A14 14 0 0 1 16 -14 L16 38" fill="none" stroke="#e63946" stroke-width="11" stroke-dasharray="9 9"/>
+        </g>
+
+        <g fill="#ff3b4a" stroke="#ffd885" stroke-width="1.5">
+          <path d="M249 145 C239 135 229 145 241 151 L257 151 C269 145 259 135 249 145 Z"/>
+          <path d="M188 265 C178 255 168 265 180 271 L196 271 C208 265 198 255 188 265 Z"/>
+          <path d="M318 358 C308 348 298 358 310 364 L326 364 C338 358 328 348 318 358 Z"/>
+          <path d="M138 462 C128 452 118 462 130 468 L146 468 C158 462 148 452 138 462 Z"/>
+        </g>
+
+        <g fill="#ffd56b" stroke="#b57c1e" stroke-width="1.5">
+          <path d="M262 248 l6 -14 h10 l6 14 z"/><circle cx="273" cy="250" r="3" fill="#fff"/>
+          <path d="M212 372 l6 -14 h10 l6 14 z"/><circle cx="223" cy="374" r="3" fill="#fff"/>
+          <path d="M276 478 l6 -14 h10 l6 14 z"/><circle cx="287" cy="480" r="3" fill="#fff"/>
+        </g>
+
+        <g class="tree-lights">
+          <circle cx="248" cy="116" r="5.5" fill="#fff1ad"/>
+          <circle cx="246" cy="176" r="5.5" fill="#ff5964"/>
+          <circle cx="205" cy="238" r="5.5" fill="#fff1ad"/>
+          <circle cx="287" cy="261" r="5.5" fill="#4cd97b"/>
+          <circle cx="161" cy="331" r="5.5" fill="#63d2ff"/>
+          <circle cx="244" cy="319" r="5.5" fill="#fff1ad"/>
+          <circle cx="337" cy="343" r="5.5" fill="#ff5964"/>
+          <circle cx="123" cy="427" r="5.5" fill="#fff1ad"/>
+          <circle cx="207" cy="415" r="5.5" fill="#4cd97b"/>
+          <circle cx="288" cy="444" r="5.5" fill="#63d2ff"/>
+          <circle cx="377" cy="429" r="5.5" fill="#fff1ad"/>
+          <circle cx="164" cy="490" r="5.5" fill="#ff5964"/>
+          <circle cx="247" cy="502" r="5.5" fill="#fff1ad"/>
+          <circle cx="331" cy="496" r="5.5" fill="#4cd97b"/>
+        </g>
+        <g class="tree-lights-alt">
+          <circle cx="224" cy="152" r="5" fill="#63d2ff"/>
+          <circle cx="276" cy="156" r="5" fill="#ffd875"/>
+          <circle cx="242" cy="222" r="5" fill="#4cd97b"/>
+          <circle cx="195" cy="298" r="5" fill="#ff5964"/>
+          <circle cx="286" cy="312" r="5" fill="#ffd875"/>
+          <circle cx="152" cy="378" r="5" fill="#4cd97b"/>
+          <circle cx="256" cy="375" r="5" fill="#ff5964"/>
+          <circle cx="348" cy="396" r="5" fill="#63d2ff"/>
+          <circle cx="104" cy="485" r="5" fill="#ffd875"/>
+          <circle cx="212" cy="468" r="5" fill="#63d2ff"/>
+          <circle cx="392" cy="488" r="5" fill="#ff5964"/>
+        </g>
+
+        <g stroke="#ffe9ac" stroke-width="2" opacity=".78">
+          <path d="M158 300v29M143.5 314.5h29M151 307l14 14m0-14-14 14"/>
+          <path d="M333 212v26M320 225h26M324 216l18 18m0-18-18 18"/>
+          <path d="M273 387v28M259 401h28M263 391l20 20m0-20-20 20"/>
+          <path d="M196 178v22M185 189h22M189 182l14 14m0-14-14 14"/>
+        </g>
+
         <g stroke="#fae3a6" stroke-width="2">
-          <path d="M203 286v29"/><circle cx="203" cy="323" r="15" fill="url(#bauble)"/><path d="M300 300v27"/><circle cx="300" cy="339" r="14" fill="#cf4d4b" stroke="#ffd28a"/>
-          <path d="M111 392v28"/><circle cx="111" cy="430" r="16" fill="#d8e9e2" stroke="#fff3d2"/><path d="M245 377v30"/><circle cx="245" cy="421" r="17" fill="url(#bauble)"/>
-          <path d="M354 382v28"/><circle cx="354" cy="420" r="16" fill="#c94c4a"/><path d="M183 450v27"/><circle cx="183" cy="488" r="14" fill="#dce9e2"/><path d="M314 451v27"/><circle cx="314" cy="489" r="15" fill="url(#bauble)"/>
+          <path d="M214 180v22"/><circle cx="214" cy="212" r="12" fill="url(#baubleRed)"/>
+          <path d="M284 185v22"/><circle cx="284" cy="217" r="12" fill="url(#baubleBlue)"/>
+          <path d="M203 286v29"/><circle cx="203" cy="323" r="15" fill="url(#baubleGold)"/>
+          <path d="M300 300v27"/><circle cx="300" cy="339" r="14" fill="url(#baubleRed)" stroke="#ffd28a"/>
+          <path d="M111 392v28"/><circle cx="111" cy="430" r="16" fill="url(#baubleBlue)" stroke="#fff3d2"/>
+          <path d="M245 377v30"/><circle cx="245" cy="421" r="17" fill="url(#baubleGold)"/>
+          <path d="M354 382v28"/><circle cx="354" cy="420" r="16" fill="url(#baubleRed)"/>
+          <path d="M183 450v27"/><circle cx="183" cy="488" r="14" fill="url(#baubleBlue)"/>
+          <path d="M314 451v27"/><circle cx="314" cy="489" r="15" fill="url(#baubleGold)"/>
+          <path d="M140 462v22"/><circle cx="140" cy="496" r="13" fill="url(#baubleRed)"/>
+          <path d="M368 458v22"/><circle cx="368" cy="492" r="13" fill="url(#baubleBlue)"/>
         </g>
-        <g class="top-star" transform="translate(250 41)">
-          <path d="m0-30 8 20 22 1-17 14 6 22L0 14-19 27l6-22-17-14 22-1z" fill="#ffe9a3" stroke="#fff7d9" stroke-width="2"/>
-          <circle r="6" fill="#fff"/>
+
+        <!-- Ngôi sao cố định trên đỉnh cây thông (249, 38) -->
+        <g transform="translate(249 38)">
+          <g class="top-star-inner">
+            <circle r="32" fill="#ffe794" opacity=".28"/>
+            <path d="m0-34 9 21 23 2-18 15 6 23L0 14-20 27l6-23-18-15 23-2z"
+                  fill="#ffe9a3" stroke="#fff7d9" stroke-width="2.2" stroke-linejoin="round"/>
+            <circle r="7" fill="#ffffff"/>
+          </g>
         </g>
       </svg>
     </div>
 
-    <svg class="orbit" viewBox="0 0 1000 800" preserveAspectRatio="none" aria-hidden="true">
-      <g class="flight-sleigh">
-        <animateMotion begin="5s" dur="14s" repeatCount="indefinite" rotate="0" path="M 500,34 C 720,34 900,195 900,400 C 900,605 720,766 500,766 C 280,766 100,605 100,400 C 100,195 280,34 500,34"/>
-      <svg class="sleigh" x="-88" y="-40" width="176" height="80" viewBox="0 0 420 190">
-        <!-- Sparkling flight trail -->
-        <g fill="#ffe7aa"><circle cx="42" cy="82" r="3"/><circle cx="28" cy="96" r="2"/><circle cx="53" cy="108" r="2.5"/></g>
-        <!-- Two flying reindeer -->
-        <g fill="#b9774d" stroke="#f0c08d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <g transform="translate(205 54)">
-            <path d="M6 49q17-18 37-8l20 12 30 1q12 0 17 10l-13 5-29-4-27 12-9 28h-8l3-31-22 4-8 24h-8l3-33q-18-4-21-18l17-3z"/>
-            <path d="M18 42Q0 31 5 8m0 13Q-9 11-12 1m17 22Q22 11 19-1M34 39q-7-16-1-32m0 19Q47 16 52 4" fill="none" stroke-width="6"/>
-            <path d="M97 55q17-8 24 3l-10 7" fill="#d94c4d" stroke="none"/><circle cx="110" cy="60" r="4" fill="#fff4cf" stroke="none"/>
+    <!-- ==================== ÔNG GIÀ NOEL BAY MỞ MÀN & BAY ELIP QUANH CÂY THÔNG ==================== -->
+    <svg class="orbit" viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <g id="santaSleighArtwork">
+          <g fill="#ffe7aa">
+            <circle cx="34" cy="82" r="4"/><circle cx="18" cy="96" r="3"/><circle cx="48" cy="112" r="3.5"/>
+            <circle cx="8" cy="78" r="2.5"/><circle cx="62" cy="126" r="3"/>
           </g>
-          <g transform="translate(301 38) scale(.82)">
-            <path d="M6 49q17-18 37-8l20 12 30 1q12 0 17 10l-13 5-29-4-27 12-9 28h-8l3-31-22 4-8 24h-8l3-33q-18-4-21-18l17-3z"/>
-            <path d="M18 42Q0 31 5 8m0 13Q-9 11-12 1m17 22Q22 11 19-1M34 39q-7-16-1-32m0 19Q47 16 52 4" fill="none" stroke-width="6"/>
-            <path d="M97 55q17-8 24 3l-10 7" fill="#d94c4d" stroke="none"/><circle cx="110" cy="60" r="4" fill="#fff4cf" stroke="none"/>
+          <g transform="translate(205 24) scale(1.08)">
+            <use href="#flyingReindeerSingle"/>
           </g>
+          <g transform="translate(310 10) scale(.92)">
+            <use href="#flyingReindeerSingle"/>
+          </g>
+          <path d="M318 82 Q265 65 210 92 M395 66 Q335 55 210 92" fill="none" stroke="#f5cf7b" stroke-width="3.2" stroke-dasharray="5 3"/>
+          <path d="M54 126q13 29 59 31h89q30-2 44-23l-15-9q-12 14-31 15h-83q-34 0-43-21l-20 7z" fill="#b52f3c" stroke="#f2c773" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M49 154q11 20 38 20h98q29 0 45-18" fill="none" stroke="#f6d992" stroke-width="5.5" stroke-linecap="round"/>
+          <path d="M85 121q12-24 44-24h50q24 0 35 19l-15 12H95z" fill="#d94b50" stroke="#f4c875" stroke-width="4"/>
+          <path d="M72 118 C62 85 88 68 112 80 C128 88 126 112 108 120 Z" fill="#8c4a27" stroke="#f3c878" stroke-width="2.5"/>
+          <rect x="92" y="64" width="18" height="16" rx="2" fill="#32a86d" stroke="#ffd875" stroke-width="2" transform="rotate(-12 101 72)"/>
+          <path d="M119 99q2-23 24-29 18-5 33 8l14 24z" fill="#f4ddbd" stroke="#fff2d7" stroke-width="3"/>
+          <circle cx="155" cy="76" r="18" fill="#f1c8a6"/>
+          <path d="M137 72q3-24 27-26 21-1 27 19l-8 6q-14-9-46 1z" fill="#c53243"/>
+          <path d="m153 48 7-17 11 16" fill="#c53243" stroke="#f6e9d4" stroke-width="5" stroke-linejoin="round"/>
+          <circle cx="171" cy="47" r="7" fill="#fff4df"/>
+          <path d="M140 82q15 10 31 0l8 14q-22 16-45 0z" fill="#fff5df"/>
+          <circle cx="151" cy="75" r="2.4" fill="#25334a"/><circle cx="163" cy="75" r="2.4" fill="#25334a"/>
+          <path d="M152 83q5 5 10 0" fill="none" stroke="#aa4545" stroke-width="2" stroke-linecap="round"/>
+          <path d="M139 88q-10 2-13 12l18 2m34-12q13-2 19 7l-16 7" fill="none" stroke="#c53243" stroke-width="10" stroke-linecap="round"/>
+          <path d="M133 99h50" stroke="#f3d897" stroke-width="4"/>
+          <g fill="#fff3ce"><circle cx="72" cy="112" r="3.5"/><circle cx="31" cy="70" r="2.5"/><circle cx="19" cy="117" r="3"/></g>
         </g>
-        <path d="M288 112q-27-22-52-12l-16 10m91 7-33 8m-58-25-15 5" fill="none" stroke="#e5bc76" stroke-width="3"/>
-        <!-- Sleigh -->
-        <path d="M54 126q13 29 59 31h89q30-2 44-23l-15-9q-12 14-31 15h-83q-34 0-43-21l-20 7z" fill="#b52f3c" stroke="#f2c773" stroke-width="4" stroke-linejoin="round"/>
-        <path d="M49 154q11 20 38 20h98q29 0 45-18" fill="none" stroke="#f6d992" stroke-width="5" stroke-linecap="round"/>
-        <path d="M85 121q12-24 44-24h50q24 0 35 19l-15 12H95z" fill="#d94b50" stroke="#f4c875" stroke-width="4"/>
-        <path d="M119 99q2-23 24-29 18-5 33 8l14 24z" fill="#f4ddbd" stroke="#fff2d7" stroke-width="3"/>
-        <!-- Santa -->
-        <circle cx="155" cy="76" r="18" fill="#f1c8a6"/>
-        <path d="M137 72q3-24 27-26 21-1 27 19l-8 6q-14-9-46 1z" fill="#c53243"/>
-        <path d="m153 48 7-17 11 16" fill="#c53243" stroke="#f6e9d4" stroke-width="5" stroke-linejoin="round"/>
-        <circle cx="171" cy="47" r="7" fill="#fff4df"/>
-        <path d="M140 82q15 10 31 0l8 14q-22 16-45 0z" fill="#fff5df"/>
-        <circle cx="151" cy="75" r="2.3" fill="#25334a"/><circle cx="163" cy="75" r="2.3" fill="#25334a"/>
-        <path d="M152 83q5 5 10 0" fill="none" stroke="#aa4545" stroke-width="2" stroke-linecap="round"/>
-        <path d="M139 88q-10 2-13 12l18 2m34-12q13-2 19 7l-16 7" fill="none" stroke="#c53243" stroke-width="10" stroke-linecap="round"/>
-        <path d="M133 99h50" stroke="#f3d897" stroke-width="4"/>
-        <g fill="#fff3ce"><circle cx="72" cy="112" r="3"/><circle cx="31" cy="70" r="2"/><circle cx="19" cy="117" r="2.5"/></g>
-      </svg>
+      </defs>
+
+      <!-- Ông già Noel #1: Bay vòng cung mở màn từ trái qua phải -->
+      <g class="intro-sleigh-group" id="introSleighGroup">
+        <svg class="sleigh" x="-165" y="-75" width="330" height="150" viewBox="0 0 470 190">
+          <use href="#santaSleighArtwork"/>
+        </svg>
+      </g>
+
+      <!-- Ông già Noel #2: Bay hình elip mượt mà quanh cây thông ở đoạn cuối -->
+      <g class="orbit-sleigh-wrap">
+        <g id="orbitSleighNode" transform="translate(930 410)">
+          <svg class="sleigh" x="-145" y="-66" width="290" height="132" viewBox="0 0 470 190">
+            <use href="#santaSleighArtwork"/>
+          </svg>
+        </g>
       </g>
     </svg>
 
-    <svg class="mini-tree left" viewBox="0 0 120 170" aria-hidden="true">
-      <path d="M60 5 36 53h14L25 89h17L14 131h92L78 89h17L70 53h14z" fill="#176449" stroke="#73ad82" stroke-width="2"/>
-      <path d="M56 123h9v29h-9z" fill="#755039"/><circle cx="60" cy="16" r="5" fill="#ffdf89"/><circle cx="44" cy="72" r="4" fill="#d84e4d"/><circle cx="75" cy="102" r="4" fill="#ffdc87"/><circle cx="43" cy="116" r="4" fill="#e2f3e8"/>
-    </svg>
-    <svg class="mini-tree right" viewBox="0 0 120 170" aria-hidden="true">
-      <path d="M60 5 36 53h14L25 89h17L14 131h92L78 89h17L70 53h14z" fill="#155d47" stroke="#73ad82" stroke-width="2"/>
-      <path d="M56 123h9v29h-9z" fill="#755039"/><circle cx="60" cy="16" r="5" fill="#ffdf89"/><circle cx="44" cy="72" r="4" fill="#ffdc87"/><circle cx="75" cy="102" r="4" fill="#d84e4d"/><circle cx="43" cy="116" r="4" fill="#e2f3e8"/>
-    </svg>
+    <!-- ==================== RỪNG CÂY THÔNG NHỎ BÊN DƯỚI ==================== -->
+    <div class="mini-forest" aria-hidden="true">
+      <svg width="0" height="0" style="position:absolute">
+        <defs>
+          <g id="miniPineTree">
+            <path d="M60 8 L36 53 H50 L25 89 H42 L14 131 H106 L78 89 H95 L70 53 H84 Z" fill="#166248" stroke="#75b588" stroke-width="2.2" stroke-linejoin="round"/>
+            <path d="M36 53 Q48 58 60 51 Q72 58 84 53 M25 89 Q42 95 60 87 Q78 95 95 89 M14 131 Q60 140 106 131" fill="none" stroke="#dff3ef" stroke-width="3.5" stroke-linecap="round" opacity=".75"/>
+            <path d="M55 131h10v25h-10z" fill="#6d4730"/>
+            <path d="M60 0 l3 6 7 1-5 4 1 7-6-4-6 4 1-7-5-4 7-1z" fill="#ffe68a"/>
+            <circle cx="46" cy="70" r="4.5" fill="#ff5964"/>
+            <circle cx="74" cy="74" r="4.5" fill="#ffd875"/>
+            <circle cx="42" cy="108" r="4.5" fill="#63d2ff"/>
+            <circle cx="62" cy="102" r="4.5" fill="#ff5964"/>
+            <circle cx="78" cy="112" r="4.5" fill="#ffd875"/>
+          </g>
+        </defs>
+      </svg>
+      <svg class="mini-tree" style="left: 1.5%; --bottom: 7.5%; --w: clamp(58px, 8.8vw, 118px); --d: .2s" viewBox="0 0 120 170"><use href="#miniPineTree"/></svg>
+      <svg class="mini-tree" style="left: 9.5%; --bottom: 10%; --w: clamp(44px, 6.5vw, 88px); --d: .45s; opacity:.85" viewBox="0 0 120 170"><use href="#miniPineTree"/></svg>
+      <svg class="mini-tree" style="left: 16.5%; --bottom: 6.5%; --w: clamp(50px, 7.4vw, 98px); --d: .7s" viewBox="0 0 120 170"><use href="#miniPineTree"/></svg>
+      <svg class="mini-tree" style="left: 24%; --bottom: 9.5%; --w: clamp(38px, 5.4vw, 72px); --d: .95s" viewBox="0 0 120 170"><use href="#miniPineTree"/></svg>
+      <svg class="mini-tree" style="right: 24%; --bottom: 9.5%; --w: clamp(38px, 5.4vw, 72px); --d: .85s" viewBox="0 0 120 170"><use href="#miniPineTree"/></svg>
+      <svg class="mini-tree" style="right: 16.5%; --bottom: 6.5%; --w: clamp(50px, 7.4vw, 98px); --d: .6s" viewBox="0 0 120 170"><use href="#miniPineTree"/></svg>
+      <svg class="mini-tree" style="right: 9.5%; --bottom: 10%; --w: clamp(44px, 6.5vw, 88px); --d: .35s" viewBox="0 0 120 170"><use href="#miniPineTree"/></svg>
+      <svg class="mini-tree" style="right: 1.5%; --bottom: 7.5%; --w: clamp(58px, 8.8vw, 118px); --d: .15s" viewBox="0 0 120 170"><use href="#miniPineTree"/></svg>
+    </div>
 
+    <!-- ==================== LỜI CHÚC CHÍNH ==================== -->
     <div class="greeting" aria-live="polite">
       <h1>Merry<br>Christmas</h1>
-      <p>Chúc bạn một mùa an lành</p>
+      <p>Giáng sinh an lành</p>
     </div>
+
+    <!-- ==================== 15 HỘP QUÀ RƠI LIÊN TỤC ==================== -->
+    <div class="gifts-container" id="giftsContainer" aria-label="Những hộp quà Giáng sinh đang rơi"></div>
+
     <div class="snowbanks" aria-hidden="true"></div>
-    <div class="caption">A little Christmas magic</div>
+
+    <div class="bottom-controls">
+      <button class="control-btn" id="soundToggleBtn" type="button">🔊 Tắt nhạc</button>
+      <button class="control-btn" id="replayBtn" type="button">↻ Xem lại từ đầu</button>
+    </div>
+
+    <!-- ==================== HỘP THOẠI HIỂN THỊ LỜI CHÚC ==================== -->
+    <div class="wish-modal-backdrop" id="wishModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="wishModalTitle">
+      <div class="wish-modal">
+        <div class="wish-modal-icon" id="wishModalIcon"></div>
+        <span class="wish-modal-badge" id="wishModalBadge">Món quà Giáng sinh</span>
+        <h3 id="wishModalTitle">Giáng Sinh An Lành!</h3>
+        <p id="wishModalText"></p>
+        <button class="wish-close-btn" id="wishCloseBtn" type="button">Nhận lời chúc ✨</button>
+      </div>
+    </div>
   </main>
+
   <script>
     (() => {
+      const scene = document.getElementById('scene');
+      const curtainStage = document.getElementById('curtainStage');
+      const curtainHint = document.getElementById('curtainHint');
+      const replayBtn = document.getElementById('replayBtn');
+      const soundToggleBtn = document.getElementById('soundToggleBtn');
       const canvas = document.getElementById('snow');
       const ctx = canvas.getContext('2d');
       const stars = document.getElementById('stars');
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let width = 0, height = 0, flakes = [], last = 0;
+      const introSleighGroup = document.getElementById('introSleighGroup');
+      const orbitSleighNode = document.getElementById('orbitSleighNode');
+      const giftsContainer = document.getElementById('giftsContainer');
+      const wishModalBackdrop = document.getElementById('wishModalBackdrop');
+      const wishModalBadge = document.getElementById('wishModalBadge');
+      const wishModalTitle = document.getElementById('wishModalTitle');
+      const wishModalText = document.getElementById('wishModalText');
+      const wishModalIcon = document.getElementById('wishModalIcon');
+      const wishCloseBtn = document.getElementById('wishCloseBtn');
+
+      const jingleBellsAudio = document.getElementById('jingleBellsAudio');
+      const hoHoHoAudio = document.getElementById('hoHoHoAudio');
+
+      let width = 0, height = 0, flakes = [], crystalFlakes = [], last = 0;
+      let timers = [];
+      let isCurtainOpened = false;
+      let isMuted = false;
+
       const rand = (min, max) => Math.random() * (max - min) + min;
 
-      for (let i = 0; i < 46; i++) {
+      /* ==================== HỆ THỐNG PHÁT 2 FILE NHẠC CỦA BẠN + DỰ PHÒNG WEB AUDIO ==================== */
+      let audioCtx = null;
+      let jingleLoopTimer = null;
+      let sleighBellTimer = null;
+
+      function ensureAudioContext() {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) audioCtx = new AudioContextClass();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      }
+
+      function playSleighBellShake(duration = 0.14, volume = 0.08) {
+        if (isMuted) return;
+        const ctxAudio = ensureAudioContext();
+        if (!ctxAudio) return;
+
+        const now = ctxAudio.currentTime;
+        const bufferSize = Math.floor(ctxAudio.sampleRate * duration);
+        const buffer = ctxAudio.createBuffer(1, bufferSize, ctxAudio.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.32));
+        }
+
+        const noise = ctxAudio.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctxAudio.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(4800, now);
+        filter.Q.setValueAtTime(3.5, now);
+
+        const gain = ctxAudio.createGain();
+        gain.gain.setValueAtTime(volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctxAudio.destination);
+        noise.start(now);
+
+        [2637, 3520].forEach((freq) => {
+          const osc = ctxAudio.createOscillator();
+          const bellGain = ctxAudio.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          bellGain.gain.setValueAtTime(volume * 0.35, now);
+          bellGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          osc.connect(bellGain);
+          bellGain.connect(ctxAudio.destination);
+          osc.start(now);
+          osc.stop(now + duration);
+        });
+      }
+
+      function playChimeNote(freq, startTime, duration, vol = 0.16) {
+        if (isMuted || !audioCtx) return;
+
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'triangle';
+        osc2.type = 'sine';
+        osc1.frequency.setValueAtTime(freq, startTime);
+        osc2.frequency.setValueAtTime(freq * 2, startTime);
+
+        gain.gain.setValueAtTime(0.001, startTime);
+        gain.gain.linearRampToValueAtTime(vol, startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0008, startTime + duration);
+
+        const osc2Gain = audioCtx.createGain();
+        osc2Gain.gain.setValueAtTime(0.3, startTime);
+
+        osc1.connect(gain);
+        osc2.connect(osc2Gain);
+        osc2Gain.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(startTime);
+        osc2.start(startTime);
+        osc1.stop(startTime + duration + 0.04);
+        osc2.stop(startTime + duration + 0.04);
+      }
+
+      const NOTES = {
+        C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
+        C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.00
+      };
+
+      const JINGLE_BELLS_MELODY = [
+        ['E5', 'C4', 1], ['E5', null, 1], ['E5', 'G4', 2],
+        ['E5', 'C4', 1], ['E5', null, 1], ['E5', 'G4', 2],
+        ['E5', 'C4', 1], ['G5', null, 1], ['C5', 'E4', 1.5], ['D5', null, 0.5], ['E5', 'C4', 4],
+        ['F5', 'F4', 1], ['F5', null, 1], ['F5', 'A4', 1.5], ['F5', null, 0.5],
+        ['F5', 'C4', 1], ['E5', null, 1], ['E5', 'G4', 1], ['E5', null, 0.5], ['E5', null, 0.5],
+        ['E5', 'D4', 1], ['D5', null, 1], ['D5', 'A4', 1], ['E5', null, 1], ['D5', 'G4', 2], ['G5', 'B4', 2],
+        ['E5', 'C4', 1], ['E5', null, 1], ['E5', 'G4', 2],
+        ['E5', 'C4', 1], ['E5', null, 1], ['E5', 'G4', 2],
+        ['E5', 'C4', 1], ['G5', null, 1], ['C5', 'E4', 1.5], ['D5', null, 0.5], ['E5', 'C4', 4],
+        ['F5', 'F4', 1], ['F5', null, 1], ['F5', 'A4', 1.5], ['F5', null, 0.5],
+        ['F5', 'C4', 1], ['E5', null, 1], ['E5', 'G4', 1], ['E5', null, 0.5], ['E5', null, 0.5],
+        ['G5', 'G4', 1], ['G5', null, 1], ['F5', 'B4', 1], ['D5', null, 1], ['C5', 'C4', 4]
+      ];
+
+      function startSynthesizedJingleBells() {
+        stopSynthesizedJingleBells();
+        const ctxAudio = ensureAudioContext();
+        if (!ctxAudio) return;
+
+        const beatSec = 0.24;
+        function scheduleSongLoop() {
+          if (isMuted) return;
+          let cursor = ctxAudio.currentTime + 0.05;
+          let totalBeats = 0;
+
+          JINGLE_BELLS_MELODY.forEach(([melodyNote, bassNote, beats]) => {
+            const dur = beats * beatSec;
+            if (melodyNote && NOTES[melodyNote]) {
+              playChimeNote(NOTES[melodyNote], cursor, dur * 0.92, 0.14);
+            }
+            if (bassNote && NOTES[bassNote]) {
+              playChimeNote(NOTES[bassNote], cursor, dur * 1.1, 0.08);
+            }
+            cursor += dur;
+            totalBeats += beats;
+          });
+
+          jingleLoopTimer = setTimeout(scheduleSongLoop, totalBeats * beatSec * 1000);
+        }
+
+        scheduleSongLoop();
+        sleighBellTimer = setInterval(() => {
+          if (!isMuted) playSleighBellShake(0.11, 0.045);
+        }, beatSec * 1000);
+      }
+
+      function stopSynthesizedJingleBells() {
+        if (jingleLoopTimer) { clearTimeout(jingleLoopTimer); jingleLoopTimer = null; }
+        if (sleighBellTimer) { clearInterval(sleighBellTimer); sleighBellTimer = null; }
+      }
+
+      function startJingleBellsMusic() {
+        jingleBellsAudio.muted = isMuted;
+        jingleBellsAudio.currentTime = 0;
+        const playPromise = jingleBellsAudio.play();
+
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            stopSynthesizedJingleBells();
+          }).catch(() => {
+            startSynthesizedJingleBells();
+          });
+        } else {
+          startSynthesizedJingleBells();
+        }
+      }
+
+      function stopAllMusic() {
+        jingleBellsAudio.pause();
+        jingleBellsAudio.currentTime = 0;
+        hoHoHoAudio.pause();
+        hoHoHoAudio.currentTime = 0;
+        stopSynthesizedJingleBells();
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+
+      function playSynthesizedHoHoHo() {
+        if (isMuted) return;
+        const ctxAudio = ensureAudioContext();
+
+        [0, 180, 360, 540, 720, 900].forEach((delay) => {
+          setTimeout(() => playSleighBellShake(0.16, 0.09), delay);
+        });
+
+        if (ctxAudio) {
+          const hoPitches = [135, 128, 118];
+          hoPitches.forEach((baseFreq, idx) => {
+            const start = ctxAudio.currentTime + 0.1 + idx * 0.42;
+            const dur = 0.32;
+
+            const osc = ctxAudio.createOscillator();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(baseFreq * 1.08, start);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.86, start + dur);
+
+            const formant1 = ctxAudio.createBiquadFilter();
+            formant1.type = 'bandpass';
+            formant1.frequency.setValueAtTime(460, start);
+            formant1.Q.setValueAtTime(4.5, start);
+
+            const formant2 = ctxAudio.createBiquadFilter();
+            formant2.type = 'bandpass';
+            formant2.frequency.setValueAtTime(820, start);
+            formant2.Q.setValueAtTime(5, start);
+
+            const voiceGain = ctxAudio.createGain();
+            voiceGain.gain.setValueAtTime(0.001, start);
+            voiceGain.gain.linearRampToValueAtTime(0.28, start + 0.05);
+            voiceGain.gain.exponentialRampToValueAtTime(0.002, start + dur);
+
+            osc.connect(formant1);
+            osc.connect(formant2);
+            formant1.connect(voiceGain);
+            formant2.connect(voiceGain);
+            voiceGain.connect(ctxAudio.destination);
+
+            osc.start(start);
+            osc.stop(start + dur + 0.02);
+          });
+        }
+
+        if ('speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance('Ho! Ho! Ho! Merry Christmas!');
+            utter.lang = 'en-US';
+            utter.pitch = 0.35;
+            utter.rate = 0.78;
+            utter.volume = 1;
+            window.speechSynthesis.speak(utter);
+          } catch (_) {}
+        }
+      }
+
+      function playSantaHoHoHoSound() {
+        if (isMuted) return;
+        hoHoHoAudio.muted = isMuted;
+        hoHoHoAudio.currentTime = 0;
+        const playPromise = hoHoHoAudio.play();
+
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            playSynthesizedHoHoHo();
+          });
+        } else {
+          playSynthesizedHoHoHo();
+        }
+      }
+
+      soundToggleBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        jingleBellsAudio.muted = isMuted;
+        hoHoHoAudio.muted = isMuted;
+        soundToggleBtn.textContent = isMuted ? '🔇 Bật nhạc' : '🔊 Tắt nhạc';
+        if (isMuted) {
+          stopSynthesizedJingleBells();
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        } else if (isCurtainOpened && jingleBellsAudio.paused) {
+          startSynthesizedJingleBells();
+        }
+      });
+
+      /* ==================== 15 LỜI CHÚC GIÁNG SINH NGẪU NHIÊN ==================== */
+      const WISHES_POOL = [
+        { title: "Giáng Sinh Ấm Áp", text: "Chúc bạn một mùa Giáng sinh ngập tràn hơi ấm bên gia đình, mọi ước nguyện đêm Noel đều sớm trở thành hiện thực!" },
+        { title: "Bình An & Hạnh Phúc", text: "Chúc bạn luôn giữ được nụ cười rạng rỡ, tâm hồn bình yên và trái tim tràn đầy yêu thương trong mùa lễ hội này." },
+        { title: "May Mắn Ngập Tràn", text: "Ông già Noel gửi tặng bạn một túi đầy ắp may mắn, sức khỏe dồi dào và những niềm vui bất ngờ mỗi ngày!" },
+        { title: "Thành Công Rực Rỡ", text: "Chúc mọi dự định, học tập và công việc của bạn trong chặng đường sắp tới đều tỏa sáng rực rỡ như ngôi sao trên đỉnh thông!" },
+        { title: "Ngọt Ngào Như Kẹo Gậy", text: "Chúc mùa Giáng sinh của bạn ngọt ngào như những chiếc kẹo gậy, lung linh như ánh đèn vàng và trọn vẹn từng khoảnh khắc." },
+        { title: "Vạn Sự Như Ý", text: "Mong rằng tiếng chuông Giáng sinh ngân vang sẽ mang đến cho bạn khởi đầu mới thuận lợi, vạn sự hanh thông và tốt lành." },
+        { title: "Tràn Đầy Năng Lượng", text: "Chúc bạn luôn tràn đầy nhiệt huyết, vượt qua mọi thử thách nhẹ nhàng như cưỡi xe tuần lộc bay trên bầu trời đêm!" },
+        { title: "Yêu Thương Đong Đầy", text: "Giáng sinh là mùa sẻ chia — chúc bạn luôn được bao bọc bởi tình yêu thương chân thành từ những người thân yêu nhất." },
+        { title: "Niềm Vui Bất Tận", text: "Chúc những muộn phiền tan biến theo từng bông tuyết rơi, nhường chỗ cho niềm vui và tiếng cười ngập tràn ngôi nhà bạn." },
+        { title: "Phép Màu Đêm Đông", text: "Chúc phép màu của đêm Giáng sinh chạm đến trái tim bạn, mang theo những điều kỳ diệu đẹp đẽ nhất mà bạn hằng mong đợi." },
+        { title: "Sức Khỏe & An Khang", text: "Món quà quý giá nhất chính là sức khỏe. Chúc bạn và gia đình một mùa đông ấm áp, bình an và thật nhiều sức khỏe!" },
+        { title: "Tỏa Sáng Theo Cách Riêng", text: "Hãy luôn tự tin và tỏa sáng lấp lánh như những vì sao trên bầu trời đêm Giáng sinh. Chúc bạn luôn vững bước và hạnh phúc!" },
+        { title: "Tài Lộc Gõ Cửa", text: "Chúc mùa lễ hội cuối năm mang tới cho bạn thật nhiều tin vui, tài lộc rủng rỉnh và những cơ hội tuyệt vời mới." },
+        { title: "Kỷ Niệm Đáng Nhớ", text: "Chúc bạn có một đêm Noel thật đáng nhớ bên bạn bè và người thân, lưu giữ thêm thật nhiều kỷ niệm đẹp trong thanh xuân." },
+        { title: "Một Năm Mới Tuyệt Vời", text: "Merry Christmas & Happy New Year! Chúc bạn khép lại năm cũ thật trọn vẹn và sẵn sàng đón chào năm mới rực rỡ!" }
+      ];
+
+      const GIFT_PALETTES = [
+        { box: "#e63946", lid: "#ff5964", ribbon: "#ffd166" },
+        { box: "#1e824c", lid: "#2ecc71", ribbon: "#ffeb85" },
+        { box: "#2b6cb0", lid: "#4299e1", ribbon: "#ffd166" },
+        { box: "#8e44ad", lid: "#ab69c6", ribbon: "#ffeaa7" },
+        { box: "#d97706", lid: "#f59e0b", ribbon: "#fff3c4" },
+        { box: "#c53030", lid: "#e53e3e", ribbon: "#9ae6b4" },
+        { box: "#0d9488", lid: "#14b8a6", ribbon: "#fde68a" }
+      ];
+
+      function shuffleArray(arr) {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function createGiftSVG(palette) {
+        return `
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <ellipse cx="50" cy="92" rx="34" ry="6" fill="rgba(0,0,0,.28)"/>
+            <rect x="20" y="42" width="60" height="46" rx="6" fill="${palette.box}" stroke="rgba(255,255,255,.28)" stroke-width="2"/>
+            <rect x="44" y="42" width="12" height="46" fill="${palette.ribbon}"/>
+            <rect x="20" y="60" width="60" height="10" fill="${palette.ribbon}"/>
+            <rect x="15" y="30" width="70" height="15" rx="5" fill="${palette.lid}" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+            <rect x="43" y="30" width="14" height="15" fill="${palette.ribbon}"/>
+            <path d="M50 30 C35 12 18 22 34 31 C42 33 47 31 50 30 C53 31 58 33 66 31 C82 22 65 12 50 30 Z"
+                  fill="${palette.ribbon}" stroke="rgba(0,0,0,.18)" stroke-width="1.5"/>
+            <circle cx="50" cy="29" r="5" fill="#ffffff" opacity=".7"/>
+          </svg>
+        `;
+      }
+
+      let fallingGifts = [];
+      let giftsFallingActive = false;
+
+      function renderGifts() {
+        giftsContainer.innerHTML = '';
+        fallingGifts = [];
+        const shuffledWishes = shuffleArray(WISHES_POOL);
+        const colOrder = shuffleArray(Array.from({ length: 15 }, (_, idx) => idx));
+
+        shuffledWishes.forEach((wish, i) => {
+          const palette = GIFT_PALETTES[i % GIFT_PALETTES.length];
+          const btn = document.createElement('button');
+          btn.className = 'gift-item';
+          btn.type = 'button';
+          btn.setAttribute('aria-label', 'Mở hộp quà Giáng sinh');
+          btn.innerHTML = createGiftSVG(palette);
+
+          const openHandler = (e) => {
+            e.stopPropagation();
+            openGiftWish(wish, palette);
+          };
+          btn.addEventListener('pointerdown', openHandler);
+          btn.addEventListener('click', openHandler);
+
+          giftsContainer.appendChild(btn);
+
+          const xPercent = 4 + (colOrder[i] / 14) * 88 + rand(-1.5, 1.5);
+          fallingGifts.push({
+            el: btn,
+            xPercent,
+            y: -rand(90, 960),
+            speed: rand(1.15, 2.05),
+            swayAmp: rand(10, 24),
+            swaySpeed: rand(0.0012, 0.0024),
+            rotAmp: rand(8, 16),
+            phase: rand(0, Math.PI * 2)
+          });
+        });
+      }
+
+      function openGiftWish(wish, palette) {
+        playSleighBellShake(0.18, 0.09);
+        wishModalBadge.textContent = 'Món quà Giáng sinh 🎁';
+        wishModalTitle.textContent = wish.title;
+        wishModalText.textContent = wish.text;
+        wishModalIcon.innerHTML = createGiftSVG(palette);
+        wishModalBackdrop.classList.add('active');
+      }
+
+      function closeGiftWish() {
+        wishModalBackdrop.classList.remove('active');
+      }
+
+      wishCloseBtn.addEventListener('click', closeGiftWish);
+      wishModalBackdrop.addEventListener('click', (e) => {
+        if (e.target === wishModalBackdrop) closeGiftWish();
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && wishModalBackdrop.classList.contains('active')) {
+          closeGiftWish();
+        }
+      });
+
+      /* ==================== TẠO SAO TRÊN BẦU TRỜI ==================== */
+      for (let i = 0; i < 48; i++) {
         const star = document.createElement('i');
         star.className = 'star';
         star.style.left = `${rand(3, 97)}%`;
-        star.style.top = `${rand(3, 74)}%`;
+        star.style.top = `${rand(3, 72)}%`;
         star.style.setProperty('--twinkle', `${rand(1.8, 4.8)}s`);
         star.style.animationDelay = `${rand(-5, 0)}s`;
         stars.appendChild(star);
       }
+
+      /* ==================== KHỞI TẠO HẠT TUYẾT & BÔNG TUYẾT 6 CÁNH NHỎ ==================== */
       function resize() {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         width = canvas.clientWidth; height = canvas.clientHeight;
         canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const count = Math.max(90, Math.min(220, Math.round(width * height / 6500)));
+
+        const count = Math.max(85, Math.min(200, Math.round(width * height / 6800)));
         flakes = Array.from({ length: count }, () => ({
-          x: rand(0, width), y: rand(-height, height), r: rand(1, 4.6),
-          speed: rand(.45, 2.2), drift: rand(-.45, .45), phase: rand(0, Math.PI * 2),
-          alpha: rand(.36, .91)
+          x: rand(0, width), y: rand(-height, height), r: rand(1, 4.2),
+          speed: rand(.45, 2.1), drift: rand(-.42, .42), phase: rand(0, Math.PI * 2),
+          alpha: rand(.35, .9)
+        }));
+
+        const crystalCount = Math.max(18, Math.min(40, Math.round(width * height / 34000)));
+        crystalFlakes = Array.from({ length: crystalCount }, () => ({
+          x: rand(0, width),
+          y: rand(-height, height),
+          size: rand(6, 13.5),
+          speed: rand(.55, 1.55),
+          drift: rand(-.38, .38),
+          phase: rand(0, Math.PI * 2),
+          angle: rand(0, Math.PI * 2),
+          spin: (Math.random() < .5 ? -1 : 1) * rand(.004, .018),
+          alpha: rand(.48, .92)
         }));
       }
-      function draw(time) {
-        if (reduced) {
-          ctx.clearRect(0, 0, width, height);
-          flakes.forEach(f => {
-            ctx.beginPath(); ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
-            ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
-          });
+
+      function drawSmallSnowflake(x, y, size, angle, alpha) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.strokeStyle = `rgba(244, 251, 255, ${alpha})`;
+        ctx.lineWidth = Math.max(1.15, size * 0.13);
+        ctx.lineCap = 'round';
+        ctx.shadowBlur = 7;
+        ctx.shadowColor = 'rgba(215, 243, 255, .85)';
+
+        for (let i = 0; i < 6; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(0, -size);
+          const bPos = -size * 0.58;
+          const bLen = size * 0.34;
+          ctx.moveTo(0, bPos);
+          ctx.lineTo(-bLen * 0.72, bPos - bLen * 0.68);
+          ctx.moveTo(0, bPos);
+          ctx.lineTo(bLen * 0.72, bPos - bLen * 0.68);
+          ctx.stroke();
+          ctx.rotate(Math.PI / 3);
+        }
+        ctx.restore();
+      }
+
+      /* ==================== CHUYỂN ĐỘNG ÔNG GIÀ NOEL & HỘP QUÀ RƠI ==================== */
+      let introFlightStart = 0;
+      let introFlightActive = false;
+      const INTRO_FLIGHT_DURATION = 4200;
+
+      function startIntroSantaFlight() {
+        introFlightStart = performance.now();
+        introFlightActive = true;
+        playSantaHoHoHoSound();
+      }
+
+      function updateIntroSantaFlight(time) {
+        if (!introFlightActive || !introSleighGroup) return;
+        const elapsed = time - introFlightStart;
+        const p = elapsed / INTRO_FLIGHT_DURATION;
+
+        if (p >= 1) {
+          introFlightActive = false;
+          introSleighGroup.style.opacity = '0';
           return;
         }
-        const delta = Math.min((time - (last || time)) / 16.7, 2.5); last = time;
+
+        const startX = -260;
+        const endX = 1260;
+        const x = startX + (endX - startX) * p;
+        const baseLineY = 475 - 65 * p;
+        const arcLift = 335 * Math.sin(p * Math.PI);
+        const y = baseLineY - arcLift;
+
+        const dx = endX - startX;
+        const dy = -65 - 335 * Math.PI * Math.cos(p * Math.PI);
+        const tiltDeg = Math.atan2(dy, dx) * (180 / Math.PI) * 0.65;
+        const scale = 0.94 + 0.16 * Math.sin(p * Math.PI);
+
+        let opacity = 1;
+        if (p < 0.08) opacity = p / 0.08;
+        else if (p > 0.9) opacity = (1 - p) / 0.1;
+
+        introSleighGroup.style.opacity = opacity.toFixed(3);
+        introSleighGroup.setAttribute(
+          'transform',
+          `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${tiltDeg.toFixed(1)}) scale(${scale.toFixed(3)})`
+        );
+      }
+
+      function updateFallingGifts(time, delta) {
+        if (!giftsFallingActive || !fallingGifts.length) return;
+        for (const g of fallingGifts) {
+          g.y += g.speed * delta;
+          if (g.y > height + 90) {
+            g.y = -rand(80, 240);
+          }
+          const swayX = Math.sin(time * g.swaySpeed + g.phase) * g.swayAmp;
+          const rot = Math.sin(time * g.swaySpeed + g.phase) * g.rotAmp;
+          const xPos = (g.xPercent / 100) * width + swayX;
+          g.el.style.transform = `translate3d(${xPos.toFixed(1)}px, ${g.y.toFixed(1)}px, 0) rotate(${rot.toFixed(1)}deg)`;
+        }
+      }
+
+      function updateSantaEllipseOrbit(time) {
+        if (!orbitSleighNode) return;
+        const period = 12500;
+        const angle = ((time % period) / period) * Math.PI * 2;
+        const centerX = 500;
+        const centerY = 405;
+        const radiusX = 435;
+        const radiusY = 272;
+
+        const x = centerX + radiusX * Math.cos(angle);
+        const y = centerY + radiusY * Math.sin(angle);
+        const vx = -radiusX * Math.sin(angle);
+        const vy = radiusY * Math.cos(angle);
+        const goingLeft = vx < 0;
+
+        const depthScale = 0.88 + 0.2 * ((Math.sin(angle) + 1) / 2);
+        const tilt = (vy / radiusY) * (goingLeft ? -11 : 11);
+        const flipX = goingLeft ? -depthScale : depthScale;
+
+        orbitSleighNode.setAttribute(
+          'transform',
+          `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${tilt.toFixed(1)}) scale(${flipX.toFixed(3)} ${depthScale.toFixed(3)})`
+        );
+      }
+
+      function draw(time) {
+        const delta = Math.min((time - (last || time)) / 16.7, 2.5);
+        last = time;
+
+        updateIntroSantaFlight(time);
+        updateSantaEllipseOrbit(time);
+        updateFallingGifts(time, delta);
+
         ctx.clearRect(0, 0, width, height);
+
         for (const f of flakes) {
-          f.y += f.speed * delta; f.x += (f.drift + Math.sin(time / 1000 + f.phase) * .34) * delta;
-          if (f.y > height + 7) { f.y = -8; f.x = rand(0, width); }
+          f.y += f.speed * delta;
+          f.x += (f.drift + Math.sin(time / 1000 + f.phase) * .34) * delta;
+          if (f.y > height + 8) { f.y = -8; f.x = rand(0, width); }
           if (f.x < -8) f.x = width + 8; else if (f.x > width + 8) f.x = -8;
-          ctx.beginPath(); ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
-          ctx.shadowBlur = f.r > 3.2 ? 12 : 4; ctx.shadowColor = 'rgba(232,247,255,.9)';
-          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
+          ctx.shadowBlur = f.r > 3.1 ? 11 : 4;
+          ctx.shadowColor = 'rgba(232,247,255,.9)';
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+          ctx.fill();
         }
         ctx.shadowBlur = 0;
+
+        for (const cf of crystalFlakes) {
+          cf.y += cf.speed * delta;
+          cf.x += (cf.drift + Math.cos(time / 900 + cf.phase) * .36) * delta;
+          cf.angle += cf.spin * delta;
+          if (cf.y > height + 18) { cf.y = -18; cf.x = rand(0, width); }
+          if (cf.x < -18) cf.x = width + 18; else if (cf.x > width + 18) cf.x = -18;
+          drawSmallSnowflake(cf.x, cf.y, cf.size, cf.angle, cf.alpha);
+        }
+
         requestAnimationFrame(draw);
       }
+
+      /* ==================== KỊCH BẢN TRÌNH DIỄN TUẦN TỰ ==================== */
+      function clearTimers() {
+        timers.forEach(id => clearTimeout(id));
+        timers = [];
+      }
+      function schedule(fn, delay) {
+        timers.push(setTimeout(fn, delay));
+      }
+
+      function openCurtain() {
+        if (isCurtainOpened) return;
+        isCurtainOpened = true;
+
+        // 1. Ẩn ngay lập tức dòng chữ hướng dẫn
+        if (curtainHint) curtainHint.style.display = 'none';
+
+        // 2. Phát ngay nhạc Jingle Bells khi nhấn mở rèm
+        startJingleBellsMusic();
+
+        // 3. Kéo rèm sang hai bên
+        curtainStage.classList.add('open');
+        scene.classList.add('ambient-reindeer-active');
+
+        // 4. Ông già Noel bay vòng cung ra màn hình kèm âm thanh "Ho Ho Ho"
+        schedule(() => startIntroSantaFlight(), 450);
+
+        // 5. Những bông tuyết khổng lồ rơi xuống + mưa tuyết
+        schedule(() => scene.classList.add('stage-snow'), 4450);
+
+        // 6. Cây thông Noel & rừng thông nhỏ hiện lên
+        schedule(() => scene.classList.add('stage-tree'), 5050);
+
+        // 7. Chữ "Merry Christmas / Giáng sinh an lành" + 15 hộp quà bắt đầu rơi liên tục
+        schedule(() => {
+          scene.classList.add('stage-greeting');
+          giftsFallingActive = true;
+        }, 7250);
+
+        // 8. Ông già Noel bay vòng elip quanh cây thông liên tục
+        schedule(() => scene.classList.add('stage-orbit-santa'), 8150);
+      }
+
+      function resetAndStandbyCurtain() {
+        clearTimers();
+        isCurtainOpened = false;
+        introFlightActive = false;
+        giftsFallingActive = false;
+        if (introSleighGroup) introSleighGroup.style.opacity = '0';
+        closeGiftWish();
+        stopAllMusic();
+
+        curtainStage.classList.remove('open');
+        if (curtainHint) curtainHint.style.display = '';
+
+        scene.classList.remove(
+          'ambient-reindeer-active',
+          'stage-snow',
+          'stage-tree',
+          'stage-greeting',
+          'stage-orbit-santa'
+        );
+
+        void scene.offsetWidth;
+        renderGifts();
+      }
+
+      curtainStage.addEventListener('click', openCurtain);
+      curtainStage.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openCurtain();
+        }
+      });
+      replayBtn.addEventListener('click', resetAndStandbyCurtain);
+
       window.addEventListener('resize', resize, { passive: true });
       resize();
-      if (reduced) draw(0); else requestAnimationFrame(draw);
+      renderGifts();
+      requestAnimationFrame(draw);
     })();
   </script>
 </body>
