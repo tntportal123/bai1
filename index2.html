@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07152b">
+  <title>Merry Christmas · Đêm tuyết nhiệm màu</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #07152b;
+      --gold: #ffd887;
+      --cream: #fff7e8;
+      --red: #d94850;
+      --green: #0c573f;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+    body {
+      background: var(--night);
+      color: var(--cream);
+      font-family: Georgia, "Times New Roman", serif;
+      user-select: none;
+    }
+
+    /* ================= BỐI CẢNH ĐÊM GIÁNG SINH ================= */
+    .scene {
+      position: relative;
+      width: 100%; height: 100%; min-height: 480px;
+      overflow: hidden; isolation: isolate;
+      background:
+        radial-gradient(ellipse at 50% 76%, rgba(22, 91, 100, .45), transparent 37%),
+        radial-gradient(ellipse at 50% 34%, rgba(41, 73, 120, .42), transparent 53%),
+        linear-gradient(180deg, #081326 0%, #0c2040 48%, #112e4a 77%, #0b2637 100%);
+    }
+    .scene::before {
+      content: ""; position: absolute; z-index: -1; inset: auto -15% -19%;
+      height: 36%; border-radius: 50% 50% 0 0 / 23% 23% 0 0;
+      background: linear-gradient(180deg, #e7f5f1 0%, #b8d9dc 100%);
+      box-shadow: 0 -18px 70px rgba(218, 250, 255, .13);
+    }
+    .sky-glow {
+      position: absolute; left: 50%; top: 48%; width: min(78vw, 850px); aspect-ratio: 1;
+      transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle, rgba(244, 203, 130, .105), rgba(118, 181, 194, .04) 42%, transparent 69%);
+      animation: breathe 6s ease-in-out infinite alternate;
+    }
+    .moon {
+      position: absolute; right: 12%; top: 10%; width: clamp(52px, 8vw, 98px); aspect-ratio: 1;
+      border-radius: 50%; background: #ffedc4;
+      box-shadow: 0 0 22px #ffe9bb, 0 0 75px rgba(255, 221, 162, .48);
+      opacity: .83;
+    }
+    .moon::after {
+      content: ""; position: absolute; width: 100%; height: 100%; left: 20%; top: -12%;
+      border-radius: 50%; background: #142644;
+    }
+    .stars { position: absolute; inset: 0; pointer-events: none; }
+    .star {
+      position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff2d3;
+      box-shadow: 0 0 9px 2px rgba(255, 230, 184, .65);
+      animation: twinkle var(--twinkle, 3s) ease-in-out infinite alternate;
+    }
+
+    /* ================= PHÂN CẢNH 1: TẤM RÈM ĐỎ GIÁNG SINH ================= */
+    .curtain-stage {
+      position: absolute;
+      z-index: 20;
+      inset: 0;
+      overflow: hidden;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: visibility 0s linear 2s;
+    }
+    .curtain-stage.is-open {
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    /* Diềm rèm phía trên (Valance) */
+    .curtain-valance {
+      position: absolute;
+      z-index: 4;
+      top: 0; left: -2%; width: 104%;
+      height: clamp(78px, 14vh, 130px);
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, .65));
+      transition: transform 1.5s cubic-bezier(.6, .04, .25, 1) .15s;
+    }
+    .curtain-stage.is-open .curtain-valance {
+      transform: translateY(-115%);
+    }
+
+    /* Hai cánh rèm trái & phải */
+    .curtain-panel {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      width: 51%;
+      height: 100%;
+      /* Hiệu ứng nếp gấp vải nhung đỏ sang trọng */
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(45, 4, 10, .55) 0%,
+          rgba(165, 22, 35, .1) 4%,
+          rgba(220, 48, 60, .28) 8%,
+          rgba(95, 10, 18, .48) 12%,
+          rgba(45, 4, 10, .55) 16%
+        ),
+        linear-gradient(180deg, #8f111d 0%, #6d0b14 55%, #47050b 100%);
+      box-shadow: inset 0 0 60px rgba(0, 0, 0, .65), 0 0 45px rgba(0, 0, 0, .75);
+      transition: transform 1.85s cubic-bezier(.68, 0, .26, 1);
+      will-change: transform;
+    }
+    .curtain-panel.left {
+      left: 0;
+      border-right: 4px solid #e6b85c;
+      transform-origin: left top;
+    }
+    .curtain-panel.right {
+      right: 0;
+      border-left: 4px solid #e6b85c;
+      transform-origin: right top;
+    }
+    .curtain-stage.is-open .curtain-panel.left {
+      transform: translateX(-102%) skewX(-2deg);
+    }
+    .curtain-stage.is-open .curtain-panel.right {
+      transform: translateX(102%) skewX(2deg);
+    }
+
+    /* Đồ trang trí gắn trên rèm */
+    .curtain-decor {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      display: block;
+    }
+    .ornament-swing {
+      transform-box: fill-box;
+      transform-origin: top center;
+      animation: sway var(--sway-dur, 3.2s) ease-in-out infinite alternate;
+    }
+    .ornament-float {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: gentle-pulse 2.8s ease-in-out infinite alternate;
+    }
+
+    /* Đèn nhấp nháy trên rèm */
+    .bulb-a { animation: bulb-blink 1.1s ease-in-out infinite alternate; }
+    .bulb-b { animation: bulb-blink 1.1s ease-in-out .55s infinite alternate; }
+    .bulb-c { animation: bulb-blink 1.4s ease-in-out .3s infinite alternate; }
+
+    /* Nút nhắc nhấn để mở màn */
+    .curtain-prompt {
+      position: absolute;
+      z-index: 5;
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(145, 18, 31, .95) 0%, rgba(74, 6, 13, .95) 100%);
+      border: 2px solid #ffd887;
+      color: #fff6df;
+      font-family: Arial, sans-serif;
+      font-size: clamp(.85rem, 2vw, 1.05rem);
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      box-shadow: 0 0 30px rgba(255, 200, 92, .55), inset 0 0 12px rgba(255, 226, 158, .35);
+      white-space: nowrap;
+      cursor: pointer;
+      animation: prompt-pulse 1.4s ease-in-out infinite alternate;
+      transition: opacity .45s ease, transform .25s ease, box-shadow .25s ease;
+    }
+    .curtain-stage:hover .curtain-prompt {
+      box-shadow: 0 0 42px rgba(255, 216, 120, .85), inset 0 0 16px rgba(255, 240, 190, .55);
+    }
+    .curtain-stage.is-open .curtain-prompt {
+      opacity: 0;
+    }
+
+    /* ================= PHÂN CẢNH 2: SANTA CLAUS BAY QUA MÀN HÌNH ================= */
+    .orbit {
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .flight-sleigh {
+      opacity: 0;
+      transform: translate(-260px, 340px) rotate(-12deg) scale(.92);
+    }
+    .scene.play-santa .flight-sleigh {
+      animation: santa-fly-across 4s cubic-bezier(.32, .08, .68, .94) forwards;
+    }
+    /* Ông già Noel bay theo quỹ đạo tròn/elip mượt quanh cây thông ở đoạn cuối */
+    .orbit-sleigh-wrap {
+      opacity: 0;
+      transition: opacity 1s ease;
+      will-change: transform, opacity;
+    }
+    .scene.play-orbit .orbit-sleigh-wrap {
+      opacity: 1;
+    }
+    .sleigh {
+      overflow: visible;
+      filter: drop-shadow(0 8px 14px rgba(4, 12, 25, .5));
+    }
+    .magic-sparkle {
+      animation: twinkle .6s ease-in-out infinite alternate;
+    }
+
+    /* ================= PHÂN CẢNH 3: TUYẾT RƠI, CÂY THÔNG & LỜI CHÚC ================= */
+    #snow {
+      position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    .scene.play-snow #snow {
+      opacity: 1;
+    }
+
+    .intro-snow { position: absolute; z-index: 3; inset: 0; overflow: hidden; pointer-events: none; }
+    .intro-flake {
+      position: absolute; top: -42vh; left: var(--x); width: var(--size); height: var(--size);
+      overflow: visible; opacity: 0; filter: drop-shadow(0 0 18px rgba(229, 249, 255, .76));
+    }
+    .scene.play-snow .intro-flake {
+      animation: mega-fall 3.15s cubic-bezier(.38,.05,.62,.97) var(--delay) forwards;
+    }
+    .intro-flake path { fill: none; stroke: #f5fcff; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .snowbanks {
+      position: absolute; z-index: 1; inset: auto 0 0; height: 18%; pointer-events: none;
+      background: linear-gradient(180deg, transparent, rgba(224, 243, 239, .28) 20%, #e7f5f1 72%);
+      clip-path: ellipse(70% 75% at 50% 100%);
+    }
+
+    .tree-wrap {
+      position: absolute; z-index: 2; left: 50%; top: 55%;
+      width: clamp(230px, 39vw, 490px); height: min(76vh, 660px);
+      transform: translate(-50%, -42%) scale(.68); opacity: 0;
+      filter: drop-shadow(0 15px 26px rgba(1, 13, 22, .33));
+    }
+    .scene.play-tree .tree-wrap {
+      animation: tree-arrive 2.1s cubic-bezier(.2,.8,.25,1) forwards;
+    }
+    .tree-svg { width: 100%; height: 100%; overflow: visible; }
+    .tree-lights { animation: lights 2.4s ease-in-out infinite alternate; }
+    .top-star-inner {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: star-glow 2s ease-in-out infinite alternate;
+    }
+
+    .mini-tree {
+      position: absolute; z-index: 2; bottom: 8%; width: clamp(52px, 9vw, 118px);
+      filter: drop-shadow(0 7px 9px rgba(5, 28, 31, .25)); opacity: 0;
+      transform: translateY(20px) scale(.85);
+    }
+    .scene.play-tree .mini-tree.left {
+      animation: decor-arrive 1.1s ease .5s forwards, bob 4s ease-in-out 1.6s infinite;
+    }
+    .scene.play-tree .mini-tree.right {
+      animation: decor-arrive 1.1s ease .75s forwards, bob 4s ease-in-out 1.85s infinite;
+    }
+    .mini-tree.left { left: 5%; }
+    .mini-tree.right { right: 5%; }
+
+    .greeting {
+      position: absolute; z-index: 4; left: 50%; top: 53%; width: min(92vw, 1000px);
+      text-align: center; transform: translate(-50%, -50%) scale(.03); opacity: 0;
+      pointer-events: none;
+    }
+    .scene.play-greeting .greeting {
+      animation: greeting-arrive 1.25s cubic-bezier(.18,.9,.25,1.2) forwards;
+    }
+    .greeting h1 {
+      margin: 0; color: #fff6df; font-size: clamp(2.8rem, 9vw, 7.5rem);
+      font-weight: 500; line-height: .98; letter-spacing: .025em;
+      text-shadow: 0 2px 0 #ce9d55, 0 5px 0 rgba(111, 62, 31, .5), 0 0 28px rgba(255, 209, 126, .8), 0 0 82px rgba(255, 180, 91, .48);
+    }
+    .greeting p {
+      margin: clamp(12px, 2.2vh, 22px) 0 0; color: #fff0d1;
+      font-family: Arial, sans-serif; font-size: clamp(.9rem, 2.1vw, 1.35rem);
+      font-weight: 600; letter-spacing: .32em; text-transform: uppercase;
+      opacity: .95; text-shadow: 0 2px 14px rgba(10, 28, 44, .85), 0 0 18px rgba(255, 208, 131, .65);
+    }
+
+    .caption {
+      position: absolute; z-index: 6; bottom: 3.2%; left: 0; width: 100%; text-align: center;
+      color: rgba(31, 73, 84, .75); font: 10px/1.5 Arial, sans-serif; letter-spacing: .32em;
+      text-transform: uppercase; opacity: 0;
+    }
+    .scene.play-greeting .caption {
+      animation: caption-in 1s ease .8s forwards;
+    }
+
+    /* Nút phát lại toàn bộ hoạt cảnh */
+    .replay-btn {
+      position: absolute;
+      z-index: 15;
+      bottom: 20px;
+      right: 20px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 216, 135, .55);
+      background: rgba(12, 32, 64, .78);
+      color: #ffefc7;
+      font: 600 12px/1 Arial, sans-serif;
+      letter-spacing: .08em;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .35);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity .4s ease, transform .4s ease, background .25s ease;
+    }
+    .scene.play-greeting .replay-btn {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      transition-delay: 1.1s;
+    }
+    .replay-btn:hover {
+      background: rgba(181, 47, 60, .9);
+      border-color: #fff2cc;
+    }
+
+    /* ================= KEYFRAMES HOẠT ẢNH ================= */
+    @keyframes breathe { to { opacity: .55; transform: translate(-50%, -50%) scale(1.08); } }
+    @keyframes twinkle { from { opacity: .22; transform: scale(.65); } to { opacity: 1; transform: scale(1.3); } }
+    @keyframes lights { from { opacity: .72; } to { opacity: 1; filter: drop-shadow(0 0 6px #ffd36c); } }
+    @keyframes star-glow {
+      from { transform: scale(.95); filter: drop-shadow(0 0 6px #ffe89e); }
+      to { transform: scale(1.08); filter: drop-shadow(0 0 16px #fff5cc); }
+    }
+    @keyframes sway {
+      from { transform: rotate(-5deg); }
+      to { transform: rotate(5deg); }
+    }
+    @keyframes gentle-pulse {
+      from { transform: scale(.97) rotate(-2deg); }
+      to { transform: scale(1.03) rotate(2deg); }
+    }
+    @keyframes bulb-blink {
+      0% { opacity: .38; filter: brightness(.8); }
+      100% { opacity: 1; filter: brightness(1.35) drop-shadow(0 0 9px currentColor); }
+    }
+    @keyframes prompt-pulse {
+      from { transform: translateX(-50%) scale(.97); opacity: .75; }
+      to { transform: translateX(-50%) scale(1.03); opacity: 1; }
+    }
+
+    /* Quỹ đạo bay của Ông già Noel từ ngoài màn hình bên trái sang bên phải rồi biến mất */
+    @keyframes santa-fly-across {
+      0% {
+        opacity: 0;
+        transform: translate(-250px, 330px) rotate(-13deg) scale(.88);
+      }
+      8% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 1;
+        transform: translate(500px, 145px) rotate(1deg) scale(1.06);
+      }
+      92% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(1260px, 255px) rotate(12deg) scale(.9);
+      }
+    }
+
+    @keyframes mega-fall {
+      0% { opacity: 0; transform: translate3d(-50%, -3vh, 0) rotate(-25deg); }
+      12% { opacity: .94; }
+      88% { opacity: .88; }
+      100% { opacity: 0; transform: translate3d(-50%, 185vh, 0) rotate(335deg); }
+    }
+    @keyframes tree-arrive { to { transform: translate(-50%, -48%) scale(1); opacity: 1; } }
+    @keyframes greeting-arrive {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.02) rotate(-8deg); filter: blur(16px); }
+      56% { opacity: 1; transform: translate(-50%, -50%) scale(1.28) rotate(2deg); filter: blur(0); }
+      72% { opacity: 1; transform: translate(-50%, -50%) scale(.9) rotate(-1deg); }
+      88% { opacity: 1; transform: translate(-50%, -50%) scale(1.06) rotate(.4deg); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); filter: blur(0); }
+    }
+    @keyframes decor-arrive { to { opacity: .93; transform: translateY(0) scale(1); } }
+    @keyframes bob { 50% { translate: 0 -8px; } }
+    @keyframes caption-in { to { opacity: 1; } }
+
+    @media (max-width: 600px) {
+      .moon { right: 8%; top: 8%; }
+      .tree-wrap { top: 57%; height: 61vh; width: min(68vw, 330px); }
+      .intro-flake { top: -36vh; }
+      .greeting { top: 52%; }
+      .greeting h1 { font-size: clamp(2.7rem, 12vw, 4.5rem); }
+      .greeting p { letter-spacing: .2em; }
+      .mini-tree { bottom: 9%; }
+      .mini-tree.left { left: 2%; }
+      .mini-tree.right { right: 2%; }
+      .replay-btn { bottom: 14px; right: 14px; padding: 8px 13px; font-size: 11px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene" id="scene" aria-label="Cảnh Giáng sinh với rèm nhung đỏ, ông già Noel bay qua bầu trời, tuyết rơi và cây thông Noel">
+
+    <!-- ================= GIAI ĐOẠN 1: RÈM NHUNG ĐỎ TRANG TRÍ GIÁNG SINH ================= -->
+    <div class="curtain-stage" id="curtainStage" role="button" tabindex="0" aria-label="Màn nhung Giáng sinh, nhấn để mở màn">
+      <!-- Diềm rèm phía trên cùng dây đèn nhấp nháy -->
+      <svg class="curtain-valance" viewBox="0 0 1200 140" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="valanceGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#9e1422"/>
+            <stop offset="65%" stop-color="#6e0913"/>
+            <stop offset="100%" stop-color="#4a040b"/>
+          </linearGradient>
+        </defs>
+        <!-- Phần vải uốn lượn của diềm rèm -->
+        <path d="M0,0 H1200 V75
+                 Q1125,135 1050,75
+                 Q975,135 900,75
+                 Q825,135 750,75
+                 Q675,135 600,75
+                 Q525,135 450,75
+                 Q375,135 300,75
+                 Q225,135 150,75
+                 Q75,135 0,75 Z"
+              fill="url(#valanceGrad)" stroke="#f2c66d" stroke-width="5"/>
+        <!-- Dây kim tuyến nối các bóng đèn -->
+        <path d="M0,32 Q150,95 300,35 Q450,95 600,35 Q750,95 900,35 Q1050,95 1200,32"
+              fill="none" stroke="#265c3b" stroke-width="4" stroke-linecap="round"/>
+        <!-- Dàn đèn nhấp nháy nhiều màu -->
+        <g>
+          <circle class="bulb-a" cx="75" cy="56" r="8" fill="#ffd966" style="color:#ffd966"/>
+          <circle class="bulb-b" cx="150" cy="64" r="8" fill="#ff5252" style="color:#ff5252"/>
+          <circle class="bulb-c" cx="225" cy="56" r="8" fill="#5ce67e" style="color:#5ce67e"/>
+          <circle class="bulb-a" cx="300" cy="36" r="8" fill="#70d6ff" style="color:#70d6ff"/>
+          <circle class="bulb-b" cx="375" cy="56" r="8" fill="#ffd966" style="color:#ffd966"/>
+          <circle class="bulb-c" cx="450" cy="64" r="8" fill="#ff5252" style="color:#ff5252"/>
+          <circle class="bulb-a" cx="525" cy="56" r="8" fill="#5ce67e" style="color:#5ce67e"/>
+          <circle class="bulb-b" cx="600" cy="36" r="9" fill="#ffd966" style="color:#ffd966"/>
+          <circle class="bulb-c" cx="675" cy="56" r="8" fill="#70d6ff" style="color:#70d6ff"/>
+          <circle class="bulb-a" cx="750" cy="64" r="8" fill="#ff5252" style="color:#ff5252"/>
+          <circle class="bulb-b" cx="825" cy="56" r="8" fill="#ffd966" style="color:#ffd966"/>
+          <circle class="bulb-c" cx="900" cy="36" r="8" fill="#5ce67e" style="color:#5ce67e"/>
+          <circle class="bulb-a" cx="975" cy="56" r="8" fill="#ff5252" style="color:#ff5252"/>
+          <circle class="bulb-b" cx="1050" cy="64" r="8" fill="#70d6ff" style="color:#70d6ff"/>
+          <circle class="bulb-c" cx="1125" cy="56" r="8" fill="#ffd966" style="color:#ffd966"/>
+        </g>
+      </svg>
+
+      <!-- CÁNH RÈM BÊN TRÁI -->
+      <div class="curtain-panel left">
+        <svg class="curtain-decor" viewBox="0 0 500 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="goldBallL" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#fff9db"/>
+              <stop offset="35%" stop-color="#ffd46b"/>
+              <stop offset="100%" stop-color="#b57114"/>
+            </radialGradient>
+            <radialGradient id="greenBallL" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#d8f9e4"/>
+              <stop offset="40%" stop-color="#2ca368"/>
+              <stop offset="100%" stop-color="#0b4f2e"/>
+            </radialGradient>
+            <radialGradient id="redBallL" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stop-color="#ffe0e3"/>
+              <stop offset="40%" stop-color="#f24957"/>
+              <stop offset="100%" stop-color="#8a0e19"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Dây đèn nhấp nháy dọc mép rèm trái -->
+          <path d="M480,70 Q435,180 480,290 Q435,400 480,510 Q435,620 480,730 Q445,815 480,890"
+                fill="none" stroke="#f0c465" stroke-width="2.5" stroke-dasharray="5 4" opacity=".8"/>
+          <circle class="bulb-a" cx="458" cy="180" r="7" fill="#ffd966" style="color:#ffd966"/>
+          <circle class="bulb-b" cx="480" cy="290" r="7" fill="#5ce67e" style="color:#5ce67e"/>
+          <circle class="bulb-c" cx="458" cy="400" r="7" fill="#70d6ff" style="color:#70d6ff"/>
+          <circle class="bulb-a" cx="480" cy="510" r="7" fill="#ff6b6b" style="color:#ff6b6b"/>
+          <circle class="bulb-b" cx="458" cy="620" r="7" fill="#ffd966" style="color:#ffd966"/>
+          <circle class="bulb-c" cx="480" cy="730" r="7" fill="#5ce67e" style="color:#5ce67e"/>
+
+          <!-- 1. Quả châu treo (Baubles) -->
+          <g class="ornament-swing" style="--sway-dur:3s">
+            <line x1="115" y1="60" x2="115" y2="210" stroke="#f7d586" stroke-width="2.5"/>
+            <rect x="106" y="206" width="18" height="10" rx="3" fill="#f7d586"/>
+            <circle cx="115" cy="242" r="30" fill="url(#goldBallL)"/>
+            <path d="M90 242 Q115 256 140 242" fill="none" stroke="#fff5cf" stroke-width="3" opacity=".7"/>
+          </g>
+          <g class="ornament-swing" style="--sway-dur:3.7s">
+            <line x1="385" y1="60" x2="385" y2="175" stroke="#f7d586" stroke-width="2.5"/>
+            <rect x="377" y="171" width="16" height="9" rx="2" fill="#f7d586"/>
+            <circle cx="385" cy="202" r="25" fill="url(#greenBallL)"/>
+          </g>
+
+          <!-- 2. Vòng nguyệt quế (Christmas Wreath) -->
+          <g class="ornament-float" transform="translate(250, 275)">
+            <circle cx="0" cy="0" r="64" fill="none" stroke="#0d4a2d" stroke-width="34"/>
+            <circle cx="0" cy="0" r="64" fill="none" stroke="#1e7a4c" stroke-width="26" stroke-dasharray="18 10"/>
+            <circle cx="0" cy="0" r="64" fill="none" stroke="#39a86e" stroke-width="14" stroke-dasharray="8 16"/>
+            <!-- Quả holly đỏ & đèn vàng trên vòng nguyệt quế -->
+            <circle cx="-45" cy="-42" r="6" fill="#ff3b47"/><circle cx="-35" cy="-48" r="5" fill="#ff3b47"/>
+            <circle cx="46" cy="-40" r="6" fill="#ff3b47"/><circle cx="52" cy="-29" r="5" fill="#ff3b47"/>
+            <circle cx="-58" cy="18" r="6" fill="#ff3b47"/><circle cx="56" cy="22" r="6" fill="#ff3b47"/>
+            <circle cx="-22" cy="58" r="6" fill="#ff3b47"/><circle cx="24" cy="58" r="6" fill="#ff3b47"/>
+            <circle class="bulb-a" cx="0" cy="-64" r="5" fill="#ffe680" style="color:#ffe680"/>
+            <circle class="bulb-b" cx="-62" cy="-12" r="5" fill="#ffe680" style="color:#ffe680"/>
+            <circle class="bulb-c" cx="62" cy="-8" r="5" fill="#ffe680" style="color:#ffe680"/>
+            <circle class="bulb-a" cx="0" cy="64" r="5" fill="#ffe680" style="color:#ffe680"/>
+            <!-- Nơ đỏ lớn -->
+            <path d="M0,-58 C-28,-85 -52,-55 -28,-38 C-14,-30 -4,-44 0,-52 Z" fill="#e62e3d" stroke="#ffd887" stroke-width="2"/>
+            <path d="M0,-58 C28,-85 52,-55 28,-38 C14,-30 4,-44 0,-52 Z" fill="#e62e3d" stroke="#ffd887" stroke-width="2"/>
+            <path d="M-6,-48 L-24,-6 L-8,-12 L-2,-44 Z" fill="#c91e2c"/>
+            <path d="M6,-48 L24,-6 L8,-12 L2,-44 Z" fill="#c91e2c"/>
+            <circle cx="0" cy="-52" r="9" fill="#ff4d5a" stroke="#ffd887" stroke-width="2.5"/>
+          </g>
+
+          <!-- 3. Cây kẹo Giáng sinh (Candy Cane) -->
+          <g class="ornament-swing" style="--sway-dur:3.4s" transform="translate(125, 470) rotate(-14)">
+            <path d="M0,70 V-15 A26,26 0 0,1 52,-15 V5" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round"/>
+            <path d="M0,70 V-15 A26,26 0 0,1 52,-15 V5" fill="none" stroke="#e02434" stroke-width="20" stroke-linecap="butt" stroke-dasharray="14 14"/>
+            <!-- Nơ xanh trên cây kẹo -->
+            <path d="M0,18 L-18,6 L-18,30 Z M0,18 L18,6 L18,30 Z" fill="#187a49" stroke="#ffd887" stroke-width="1.5"/>
+            <circle cx="0" cy="18" r="5" fill="#ffd887"/>
+          </g>
+
+          <!-- 4. Tất Giáng sinh (Christmas Stocking) -->
+          <g class="ornament-swing" style="--sway-dur:2.9s" transform="translate(355, 465) rotate(8)">
+            <!-- Kẹo nhỏ nhô ra khỏi tất -->
+            <path d="M18,-8 V-26 A10,10 0 0,1 38,-26" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+            <path d="M18,-8 V-26 A10,10 0 0,1 38,-26" fill="none" stroke="#e02434" stroke-width="7" stroke-dasharray="6 6"/>
+            <!-- Thân tất đỏ -->
+            <path d="M-24,0 H34 V65 C34,88 18,98 -4,98 H-36 C-52,98 -62,86 -62,72 C-62,56 -48,48 -32,48 H-24 Z"
+                  fill="#d92638" stroke="#ffd887" stroke-width="3" stroke-linejoin="round"/>
+            <!-- Miếng đáp mũi & gót tất -->
+            <path d="M-44,48 C-55,52 -62,60 -62,72 C-62,85 -53,96 -40,98 Z" fill="#f7e7ce"/>
+            <path d="M14,68 A22,22 0 0,1 34,82 C30,93 18,98 4,98 Z" fill="#f7e7ce"/>
+            <!-- Cổ lông trắng mịn -->
+            <rect x="-30" y="-14" width="70" height="24" rx="11" fill="#fffDF7" stroke="#e0d6c3" stroke-width="2"/>
+            <circle cx="-12" cy="-2" r="3" fill="#1e7a4c"/><circle cx="5" cy="-2" r="3" fill="#d92638"/><circle cx="22" cy="-2" r="3" fill="#1e7a4c"/>
+          </g>
+
+          <!-- 5. Cây thông Noel trang trí trên rèm -->
+          <g class="ornament-float" transform="translate(235, 675)">
+            <rect x="-12" y="78" width="24" height="28" rx="3" fill="#633a22" stroke="#cfa16b" stroke-width="2"/>
+            <path d="M0,-65 L-42,0 H-18 L-58,45 H-28 L-72,82 H72 L28,45 H58 L18,0 H42 Z"
+                  fill="#146b48" stroke="#85cfa4" stroke-width="3" stroke-linejoin="round"/>
+            <!-- Ngôi sao & châu trên cây thông mini -->
+            <polygon points="0,-82 5,-69 19,-68 8,-59 12,-46 0,-54 -12,-46 -8,-59 -19,-68 -5,-69" fill="#ffe484"/>
+            <circle class="bulb-a" cx="-16" cy="14" r="5.5" fill="#ff4d58" style="color:#ff4d58"/>
+            <circle class="bulb-b" cx="18" cy="24" r="5.5" fill="#ffd966" style="color:#ffd966"/>
+            <circle class="bulb-c" cx="-26" cy="58" r="5.5" fill="#ffd966" style="color:#ffd966"/>
+            <circle class="bulb-a" cx="6" cy="52" r="5.5" fill="#70d6ff" style="color:#70d6ff"/>
+            <circle class="bulb-b" cx="32" cy="64" r="5.5" fill="#ff4d58" style="color:#ff4d58"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- CÁNH RÈM BÊN PHẢI -->
+      <div class="curtain-panel right">
+        <svg class="curtain-decor" viewBox="0 0 500 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <!-- Dây đèn nhấp nháy dọc mép rèm phải -->
+          <path d="M20,70 Q65,180 20,290 Q65,400 20,510 Q65,620 20,730 Q55,815 20,890"
+                fill="none" stroke="#f0c465" stroke-width="2.5" stroke-dasharray="5 4" opacity=".8"/>
+          <circle class="bulb-b" cx="42" cy="180" r="7" fill="#5ce67e" style="color:#5ce67e"/>
+          <circle class="bulb-c" cx="20" cy="290" r="7" fill="#ffd966" style="color:#ffd966"/>
+          <circle class="bulb-a" cx="42" cy="400" r="7" fill="#ff6b6b" style="color:#ff6b6b"/>
+          <circle class="bulb-b" cx="20" cy="510" r="7" fill="#70d6ff" style="color:#70d6ff"/>
+          <circle class="bulb-c" cx="42" cy="620" r="7" fill="#5ce67e" style="color:#5ce67e"/>
+          <circle class="bulb-a" cx="20" cy="730" r="7" fill="#ffd966" style="color:#ffd966"/>
+
+          <!-- 1. Quả châu treo (Baubles) -->
+          <g class="ornament-swing" style="--sway-dur:3.5s">
+            <line x1="115" y1="60" x2="115" y2="180" stroke="#f7d586" stroke-width="2.5"/>
+            <rect x="107" y="176" width="16" height="9" rx="2" fill="#f7d586"/>
+            <circle cx="115" cy="207" r="25" fill="url(#redBallL)"/>
+          </g>
+          <g class="ornament-swing" style="--sway-dur:2.8s">
+            <line x1="385" y1="60" x2="385" y2="215" stroke="#f7d586" stroke-width="2.5"/>
+            <rect x="376" y="211" width="18" height="10" rx="3" fill="#f7d586"/>
+            <circle cx="385" cy="247" r="30" fill="url(#goldBallL)"/>
+            <path d="M360 247 Q385 261 410 247" fill="none" stroke="#fff5cf" stroke-width="3" opacity=".7"/>
+          </g>
+
+          <!-- 2. Vòng nguyệt quế (Christmas Wreath) -->
+          <g class="ornament-float" transform="translate(250, 275)">
+            <circle cx="0" cy="0" r="64" fill="none" stroke="#0d4a2d" stroke-width="34"/>
+            <circle cx="0" cy="0" r="64" fill="none" stroke="#1e7a4c" stroke-width="26" stroke-dasharray="18 10"/>
+            <circle cx="0" cy="0" r="64" fill="none" stroke="#39a86e" stroke-width="14" stroke-dasharray="8 16"/>
+            <circle cx="-45" cy="-42" r="6" fill="#ff3b47"/><circle cx="-35" cy="-48" r="5" fill="#ff3b47"/>
+            <circle cx="46" cy="-40" r="6" fill="#ff3b47"/><circle cx="52" cy="-29" r="5" fill="#ff3b47"/>
+            <circle cx="-58" cy="18" r="6" fill="#ff3b47"/><circle cx="56" cy="22" r="6" fill="#ff3b47"/>
+            <circle cx="-22" cy="58" r="6" fill="#ff3b47"/><circle cx="24" cy="58" r="6" fill="#ff3b47"/>
+            <circle class="bulb-b" cx="0" cy="-64" r="5" fill="#ffe680" style="color:#ffe680"/>
+            <circle class="bulb-c" cx="-62" cy="-12" r="5" fill="#ffe680" style="color:#ffe680"/>
+            <circle class="bulb-a" cx="62" cy="-8" r="5" fill="#ffe680" style="color:#ffe680"/>
+            <circle class="bulb-b" cx="0" cy="64" r="5" fill="#ffe680" style="color:#ffe680"/>
+            <!-- Nơ đỏ lớn -->
+            <path d="M0,-58 C-28,-85 -52,-55 -28,-38 C-14,-30 -4,-44 0,-52 Z" fill="#e62e3d" stroke="#ffd887" stroke-width="2"/>
+            <path d="M0,-58 C28,-85 52,-55 28,-38 C14,-30 4,-44 0,-52 Z" fill="#e62e3d" stroke="#ffd887" stroke-width="2"/>
+            <path d="M-6,-48 L-24,-6 L-8,-12 L-2,-44 Z" fill="#c91e2c"/>
+            <path d="M6,-48 L24,-6 L8,-12 L2,-44 Z" fill="#c91e2c"/>
+            <circle cx="0" cy="-52" r="9" fill="#ff4d5a" stroke="#ffd887" stroke-width="2.5"/>
+          </g>
+
+          <!-- 3. Tất Giáng sinh (Christmas Stocking) -->
+          <g class="ornament-swing" style="--sway-dur:3.1s" transform="translate(145, 465) scale(-1, 1) rotate(8)">
+            <path d="M18,-8 V-26 A10,10 0 0,1 38,-26" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+            <path d="M18,-8 V-26 A10,10 0 0,1 38,-26" fill="none" stroke="#e02434" stroke-width="7" stroke-dasharray="6 6"/>
+            <path d="M-24,0 H34 V65 C34,88 18,98 -4,98 H-36 C-52,98 -62,86 -62,72 C-62,56 -48,48 -32,48 H-24 Z"
+                  fill="#d92638" stroke="#ffd887" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M-44,48 C-55,52 -62,60 -62,72 C-62,85 -53,96 -40,98 Z" fill="#f7e7ce"/>
+            <path d="M14,68 A22,22 0 0,1 34,82 C30,93 18,98 4,98 Z" fill="#f7e7ce"/>
+            <rect x="-30" y="-14" width="70" height="24" rx="11" fill="#fffDF7" stroke="#e0d6c3" stroke-width="2"/>
+            <circle cx="-12" cy="-2" r="3" fill="#1e7a4c"/><circle cx="5" cy="-2" r="3" fill="#d92638"/><circle cx="22" cy="-2" r="3" fill="#1e7a4c"/>
+          </g>
+
+          <!-- 4. Cây kẹo Giáng sinh (Candy Cane) -->
+          <g class="ornament-swing" style="--sway-dur:3.3s" transform="translate(375, 470) scale(-1, 1) rotate(-14)">
+            <path d="M0,70 V-15 A26,26 0 0,1 52,-15 V5" fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round"/>
+            <path d="M0,70 V-15 A26,26 0 0,1 52,-15 V5" fill="none" stroke="#e02434" stroke-width="20" stroke-linecap="butt" stroke-dasharray="14 14"/>
+            <path d="M0,18 L-18,6 L-18,30 Z M0,18 L18,6 L18,30 Z" fill="#187a49" stroke="#ffd887" stroke-width="1.5"/>
+            <circle cx="0" cy="18" r="5" fill="#ffd887"/>
+          </g>
+
+          <!-- 5. Cây thông Noel trang trí trên rèm -->
+          <g class="ornament-float" transform="translate(265, 675)">
+            <rect x="-12" y="78" width="24" height="28" rx="3" fill="#633a22" stroke="#cfa16b" stroke-width="2"/>
+            <path d="M0,-65 L-42,0 H-18 L-58,45 H-28 L-72,82 H72 L28,45 H58 L18,0 H42 Z"
+                  fill="#146b48" stroke="#85cfa4" stroke-width="3" stroke-linejoin="round"/>
+            <polygon points="0,-82 5,-69 19,-68 8,-59 12,-46 0,-54 -12,-46 -8,-59 -19,-68 -5,-69" fill="#ffe484"/>
+            <circle class="bulb-b" cx="-16" cy="14" r="5.5" fill="#ffd966" style="color:#ffd966"/>
+            <circle class="bulb-c" cx="18" cy="24" r="5.5" fill="#ff4d58" style="color:#ff4d58"/>
+            <circle class="bulb-a" cx="-26" cy="58" r="5.5" fill="#70d6ff" style="color:#70d6ff"/>
+            <circle class="bulb-b" cx="6" cy="52" r="5.5" fill="#ff4d58" style="color:#ff4d58"/>
+            <circle class="bulb-c" cx="32" cy="64" r="5.5" fill="#ffd966" style="color:#ffd966"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="curtain-prompt">🎄 Chạm vào rèm để mở màn Giáng sinh 🎄</div>
+    </div>
+
+    <!-- ================= BẦU TRỜI ĐÊM, TRĂNG & SAO ================= -->
+    <div class="sky-glow" aria-hidden="true"></div>
+    <div class="moon" aria-hidden="true"></div>
+    <div class="stars" id="stars" aria-hidden="true"></div>
+    <canvas id="snow" aria-hidden="true"></canvas>
+
+    <!-- ================= GIAI ĐOẠN 2 & ĐOẠN KẾT: SANTA CLAUS BAY ================= -->
+    <svg class="orbit" viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <g id="santaSleighArt">
+          <svg class="sleigh" x="-110" y="-50" width="220" height="100" viewBox="0 0 420 190">
+            <!-- Vệt bụi phép thuật lấp lánh phía sau xe trượt -->
+            <g class="magic-sparkle" fill="#ffe7aa">
+              <circle cx="8" cy="94" r="3.5"/>
+              <circle cx="28" cy="96" r="2.5"/>
+              <circle cx="42" cy="82" r="3.5"/>
+              <circle cx="53" cy="108" r="2.8"/>
+              <circle cx="19" cy="117" r="3"/>
+              <circle cx="31" cy="70" r="2.5"/>
+              <circle cx="72" cy="112" r="3"/>
+            </g>
+            <!-- Hai chú tuần lộc bay dẫn đầu -->
+            <g fill="#b9774d" stroke="#f0c08d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <g transform="translate(205 54)">
+                <path d="M6 49q17-18 37-8l20 12 30 1q12 0 17 10l-13 5-29-4-27 12-9 28h-8l3-31-22 4-8 24h-8l3-33q-18-4-21-18l17-3z"/>
+                <path d="M18 42Q0 31 5 8m0 13Q-9 11-12 1m17 22Q22 11 19-1M34 39q-7-16-1-32m0 19Q47 16 52 4" fill="none" stroke-width="6"/>
+                <path d="M97 55q17-8 24 3l-10 7" fill="#d94c4d" stroke="none"/><circle cx="110" cy="60" r="4" fill="#fff4cf" stroke="none"/>
+              </g>
+              <g transform="translate(301 38) scale(.82)">
+                <path d="M6 49q17-18 37-8l20 12 30 1q12 0 17 10l-13 5-29-4-27 12-9 28h-8l3-31-22 4-8 24h-8l3-33q-18-4-21-18l17-3z"/>
+                <path d="M18 42Q0 31 5 8m0 13Q-9 11-12 1m17 22Q22 11 19-1M34 39q-7-16-1-32m0 19Q47 16 52 4" fill="none" stroke-width="6"/>
+                <path d="M97 55q17-8 24 3l-10 7" fill="#d94c4d" stroke="none"/><circle cx="110" cy="60" r="4" fill="#fff4cf" stroke="none"/>
+              </g>
+            </g>
+            <path d="M288 112q-27-22-52-12l-16 10m91 7-33 8m-58-25-15 5" fill="none" stroke="#e5bc76" stroke-width="3"/>
+            <!-- Cỗ xe trượt -->
+            <path d="M54 126q13 29 59 31h89q30-2 44-23l-15-9q-12 14-31 15h-83q-34 0-43-21l-20 7z" fill="#b52f3c" stroke="#f2c773" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M49 154q11 20 38 20h98q29 0 45-18" fill="none" stroke="#f6d992" stroke-width="5" stroke-linecap="round"/>
+            <path d="M85 121q12-24 44-24h50q24 0 35 19l-15 12H95z" fill="#d94b50" stroke="#f4c875" stroke-width="4"/>
+            <path d="M119 99q2-23 24-29 18-5 33 8l14 24z" fill="#f4ddbd" stroke="#fff2d7" stroke-width="3"/>
+            <!-- Ông già Noel (Santa Claus) -->
+            <circle cx="155" cy="76" r="18" fill="#f1c8a6"/>
+            <path d="M137 72q3-24 27-26 21-1 27 19l-8 6q-14-9-46 1z" fill="#c53243"/>
+            <path d="m153 48 7-17 11 16" fill="#c53243" stroke="#f6e9d4" stroke-width="5" stroke-linejoin="round"/>
+            <circle cx="171" cy="47" r="7" fill="#fff4df"/>
+            <path d="M140 82q15 10 31 0l8 14q-22 16-45 0z" fill="#fff5df"/>
+            <circle cx="151" cy="75" r="2.3" fill="#25334a"/><circle cx="163" cy="75" r="2.3" fill="#25334a"/>
+            <path d="M152 83q5 5 10 0" fill="none" stroke="#aa4545" stroke-width="2" stroke-linecap="round"/>
+            <path d="M139 88q-10 2-13 12l18 2m34-12q13-2 19 7l-16 7" fill="none" stroke="#c53243" stroke-width="10" stroke-linecap="round"/>
+            <path d="M133 99h50" stroke="#f3d897" stroke-width="4"/>
+          </svg>
+        </g>
+      </defs>
+
+      <!-- Lượt 1: Santa bay ngang qua bầu trời từ trái sang phải khi vừa mở rèm -->
+      <g class="flight-sleigh">
+        <use href="#santaSleighArt"/>
+      </g>
+
+      <!-- Lượt 2 (Đoạn cuối): Santa bay theo đường cong elip/tròn quanh cây thông Noel liên tục -->
+      <g class="orbit-sleigh-wrap" id="orbitSleighWrap" transform="translate(175 405) scale(0.62)">
+        <g class="orbit-sleigh-flip" id="orbitSleighFlip">
+          <use href="#santaSleighArt"/>
+        </g>
+      </g>
+    </svg>
+
+    <!-- ================= GIAI ĐOẠN 3: BÔNG TUYẾT KHỔNG LỒ, CÂY THÔNG & LỜI CHÚC ================= -->
+    <div class="intro-snow" aria-hidden="true">
+      <svg class="intro-flake" style="--x:8%; --size:clamp(135px,22vw,280px); --delay:0s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:25%; --size:clamp(125px,19vw,245px); --delay:.12s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:43%; --size:clamp(155px,25vw,320px); --delay:.2s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:62%; --size:clamp(125px,20vw,255px); --delay:.08s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:81%; --size:clamp(145px,23vw,290px); --delay:.25s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+      <svg class="intro-flake" style="--x:96%; --size:clamp(120px,18vw,230px); --delay:.16s" viewBox="0 0 100 100"><path d="M50 7v86M13 28l74 44M13 72l74-44M38 18l12 12 12-12M38 82l12-12 12 12M12 43l17-4 4-17M88 57l-17 4-4 17M31 82l-4-17-17-4M69 18l4 17 17 4"/></svg>
+    </div>
+
+    <div class="tree-wrap" aria-hidden="true">
+      <svg class="tree-svg" viewBox="0 0 500 650" role="img" aria-label="Cây thông Giáng sinh lấp lánh">
+        <defs>
+          <linearGradient id="pine" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#238463"/><stop offset=".48" stop-color="#126347"/><stop offset="1" stop-color="#073b36"/></linearGradient>
+          <linearGradient id="edge" x1="0" x2="1"><stop stop-color="#3da47b"/><stop offset="1" stop-color="#0b4a3d"/></linearGradient>
+          <radialGradient id="bauble"><stop stop-color="#fff8d5"/><stop offset=".24" stop-color="#ffd274"/><stop offset="1" stop-color="#c9822f"/></radialGradient>
+          <filter id="soft"><feGaussianBlur stdDeviation="8"/></filter>
+        </defs>
+        <ellipse cx="250" cy="586" rx="148" ry="22" fill="#7caea9" opacity=".32" filter="url(#soft)"/>
+        <path d="M229 525h42v85h-42z" fill="#6e422c"/><path d="M218 600h64v12h-64z" fill="#523421"/>
+        <path d="M249 40 188 170 219 157 137 282 176 264 91 402 144 378 58 507Q250 559 442 507l-86-129 53 24-86-138 40 18-82-125 31 13z" fill="url(#pine)" stroke="#59a67e" stroke-opacity=".43" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M249 59 206 166 236 153 166 275 201 258 123 394 172 371 91 496q159 39 318 0l-81-125 48 22-77-135 36 16-74-114 27 11z" fill="url(#edge)" opacity=".5"/>
+        <path d="M175 246q45 30 93 26t75 28q-47 11-89 0t-96 0M133 359q60 30 124 25t105 29q-61 17-125 2t-120 4M93 464q74 29 157 24t151 28" fill="none" stroke="#f2c875" stroke-width="5" stroke-linecap="round" opacity=".86"/>
+        <g class="tree-lights" fill="#fff1ad">
+          <circle cx="246" cy="176" r="5"/><circle cx="205" cy="238" r="5"/><circle cx="287" cy="261" r="5"/><circle cx="161" cy="331" r="5"/><circle cx="244" cy="319" r="5"/><circle cx="337" cy="343" r="5"/><circle cx="123" cy="427" r="5"/><circle cx="207" cy="415" r="5"/><circle cx="288" cy="444" r="5"/><circle cx="377" cy="429" r="5"/><circle cx="164" cy="490" r="5"/><circle cx="247" cy="502" r="5"/><circle cx="331" cy="496" r="5"/>
+        </g>
+        <g stroke="#ffe9ac" stroke-width="2" opacity=".72">
+          <path d="M158 300v29M143.5 314.5h29M151 307l14 14m0-14-14 14"/><path d="M333 212v26M320 225h26M324 216l18 18m0-18-18 18"/><path d="M273 387v28M259 401h28M263 391l20 20m0-20-20 20"/>
+        </g>
+        <g stroke="#fae3a6" stroke-width="2">
+          <path d="M203 286v29"/><circle cx="203" cy="323" r="15" fill="url(#bauble)"/><path d="M300 300v27"/><circle cx="300" cy="339" r="14" fill="#cf4d4b" stroke="#ffd28a"/>
+          <path d="M111 392v28"/><circle cx="111" cy="430" r="16" fill="#d8e9e2" stroke="#fff3d2"/><path d="M245 377v30"/><circle cx="245" cy="421" r="17" fill="url(#bauble)"/>
+          <path d="M354 382v28"/><circle cx="354" cy="420" r="16" fill="#c94c4a"/><path d="M183 450v27"/><circle cx="183" cy="488" r="14" fill="#dce9e2"/><path d="M314 451v27"/><circle cx="314" cy="489" r="15" fill="url(#bauble)"/>
+        </g>
+        <!-- Ngôi sao gắn cố định ngay tại đỉnh cây thông (x=249, y=38) -->
+        <g transform="translate(249 38)">
+          <g class="top-star-inner">
+            <circle r="24" fill="#ffd97d" opacity=".28" filter="url(#soft)"/>
+            <path d="m0-28 7.5 18.5 20 1.2-15.2 12.8 5.2 19.5L0 12.5-17.5 24l5.2-19.5-15.2-12.8 20-1.2z" fill="#ffe9a3" stroke="#fff7d9" stroke-width="2" stroke-linejoin="round"/>
+            <circle r="5.5" fill="#fff"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <svg class="mini-tree left" viewBox="0 0 120 170" aria-hidden="true">
+      <path d="M60 5 36 53h14L25 89h17L14 131h92L78 89h17L70 53h14z" fill="#176449" stroke="#73ad82" stroke-width="2"/>
+      <path d="M56 123h9v29h-9z" fill="#755039"/><circle cx="60" cy="16" r="5" fill="#ffdf89"/><circle cx="44" cy="72" r="4" fill="#d84e4d"/><circle cx="75" cy="102" r="4" fill="#ffdc87"/><circle cx="43" cy="116" r="4" fill="#e2f3e8"/>
+    </svg>
+    <svg class="mini-tree right" viewBox="0 0 120 170" aria-hidden="true">
+      <path d="M60 5 36 53h14L25 89h17L14 131h92L78 89h17L70 53h14z" fill="#155d47" stroke="#73ad82" stroke-width="2"/>
+      <path d="M56 123h9v29h-9z" fill="#755039"/><circle cx="60" cy="16" r="5" fill="#ffdf89"/><circle cx="44" cy="72" r="4" fill="#ffdc87"/><circle cx="75" cy="102" r="4" fill="#d84e4d"/><circle cx="43" cy="116" r="4" fill="#e2f3e8"/>
+    </svg>
+
+    <div class="greeting" aria-live="polite">
+      <h1>Merry<br>Christmas</h1>
+      <p>Giáng sinh an lành</p>
+    </div>
+    <div class="snowbanks" aria-hidden="true"></div>
+    <div class="caption">A little Christmas magic</div>
+
+    <button type="button" class="replay-btn" id="replayBtn" aria-label="Xem lại hoạt cảnh Giáng sinh">
+      ↻ Xem lại
+    </button>
+  </main>
+
+  <script>
+    (() => {
+      const scene = document.getElementById('scene');
+      const curtainStage = document.getElementById('curtainStage');
+      const replayBtn = document.getElementById('replayBtn');
+      const orbitSleighWrap = document.getElementById('orbitSleighWrap');
+      const orbitSleighFlip = document.getElementById('orbitSleighFlip');
+      const canvas = document.getElementById('snow');
+      const ctx = canvas.getContext('2d');
+      const stars = document.getElementById('stars');
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let width = 0, height = 0, flakes = [], crystalFlakes = [], last = 0;
+      let timers = [];
+      let sequenceStarted = false;
+      let orbitActive = false;
+      let orbitAngle = Math.PI; // Bắt đầu từ phía bên trái cây thông
+
+      const rand = (min, max) => Math.random() * (max - min) + min;
+
+      // Khởi tạo 46 ngôi sao lấp lánh trên bầu trời
+      for (let i = 0; i < 46; i++) {
+        const star = document.createElement('i');
+        star.className = 'star';
+        star.style.left = `${rand(3, 97)}%`;
+        star.style.top = `${rand(3, 74)}%`;
+        star.style.setProperty('--twinkle', `${rand(1.8, 4.8)}s`);
+        star.style.animationDelay = `${rand(-5, 0)}s`;
+        stars.appendChild(star);
+      }
+
+      // Quản lý bộ đếm thời gian cho kịch bản 3 giai đoạn
+      function clearTimers() {
+        while (timers.length) {
+          clearTimeout(timers.pop());
+        }
+      }
+
+      function schedule(fn, delay) {
+        const id = setTimeout(fn, delay);
+        timers.push(id);
+      }
+
+      // Cập nhật vị trí Ông già Noel bay theo phương trình đường tròn/elip quanh cây thông
+      function updateOrbitPosition() {
+        const centerX = 500;
+        const centerY = 405;
+        const radiusX = 325;
+        const radiusY = 215;
+
+        const x = centerX + radiusX * Math.cos(orbitAngle);
+        const y = centerY + radiusY * Math.sin(orbitAngle);
+
+        // Vận tốc tiếp tuyến trên đường cong elip để xác định hướng quay và độ nghiêng tự nhiên
+        const vx = -radiusX * Math.sin(orbitAngle);
+        const vy = radiusY * Math.cos(orbitAngle);
+        const dir = vx >= 0 ? 1 : -1;
+        const tiltDeg = Math.atan2(vy, Math.abs(vx)) * (180 / Math.PI) * 0.28;
+
+        // Hiệu ứng chiều sâu nhẹ: khi bay qua phía trước cây thông sẽ lớn hơn một chút so với phía trên
+        const scale = 0.62 + 0.08 * Math.sin(orbitAngle);
+
+        orbitSleighWrap.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${scale.toFixed(3)})`);
+        orbitSleighFlip.setAttribute('transform', `scale(${dir} 1) rotate(${tiltDeg.toFixed(1)})`);
+      }
+
+      // Kịch bản chỉ bắt đầu khi người dùng nhấn vào rèm:
+      // 1. Mở tấm rèm nhung đỏ sang 2 bên
+      // 2. Ông già Noel bay từ ngoài màn hình trái sang phải rồi biến mất
+      // 3. Bông tuyết khổng lồ rơi xuống -> Cây thông Noel hiện lên -> Chữ "Merry Christmas / Giáng sinh an lành" xuất hiện
+      function openCurtainAndPlay() {
+        if (sequenceStarted) return;
+        sequenceStarted = true;
+        clearTimers();
+
+        // Bước 1: Mở rèm đỏ
+        curtainStage.classList.add('is-open');
+
+        // Bước 2: Ngay khi rèm hé mở (0.45s), Santa Claus bay từ ngoài bên trái sang bên phải (mất 4s)
+        schedule(() => {
+          scene.classList.add('play-santa');
+        }, 450);
+
+        // Bước 3A: Ngay khi Santa vừa bay khuất sang bên phải (4.35s), bông tuyết khổng lồ rơi xuống & mưa tuyết hiện ra
+        schedule(() => {
+          scene.classList.add('play-snow');
+        }, 4350);
+
+        // Bước 3B: Tiếp đến cây thông Noel lớn và 2 cây thông nhỏ hiện lên ở giữa (6.15s)
+        schedule(() => {
+          scene.classList.add('play-tree');
+        }, 6150);
+
+        // Bước 3C: Cuối cùng dòng chữ "Merry Christmas" và "Giáng sinh an lành" bung ra ở chính giữa (8.15s)
+        schedule(() => {
+          scene.classList.add('play-greeting');
+        }, 8150);
+
+        // Bước 3D: Đoạn kết (8.9s), Santa Claus xuất hiện và bay theo quỹ đạo elip/tròn quanh cây thông liên tục
+        schedule(() => {
+          orbitAngle = Math.PI;
+          updateOrbitPosition();
+          orbitActive = true;
+          scene.classList.add('play-orbit');
+        }, 8900);
+      }
+
+      // Hàm đưa về trạng thái đóng rèm ban đầu khi nhấn nút "Xem lại" (chờ người dùng ấn mở rèm)
+      function resetAndReplay() {
+        clearTimers();
+        sequenceStarted = false;
+        orbitActive = false;
+
+        // Đóng màn nhung đỏ lại và reset các hiệu ứng phía sau
+        curtainStage.classList.remove('is-open');
+        scene.classList.remove('play-santa', 'play-snow', 'play-tree', 'play-greeting', 'play-orbit');
+      }
+
+      // Chỉ mở rèm khi người dùng nhấp chuột / chạm vào rèm hoặc nhấn phím Enter/Space
+      curtainStage.addEventListener('click', openCurtainAndPlay);
+      curtainStage.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openCurtainAndPlay();
+        }
+      });
+      replayBtn.addEventListener('click', resetAndReplay);
+
+      // Tạo đối tượng bông tuyết 6 cánh nhỏ rơi ngẫu nhiên
+      function createCrystalFlake(randomY = false) {
+        return {
+          x: rand(0, width),
+          y: randomY ? rand(-height, height) : rand(-60, -12),
+          size: rand(5.5, 11.5), // Đường kính khoảng 11px - 23px
+          speed: rand(.55, 1.45),
+          drift: rand(-.35, .35),
+          phase: rand(0, Math.PI * 2),
+          angle: rand(0, Math.PI * 2),
+          spin: rand(-.018, .018),
+          alpha: rand(.55, .95)
+        };
+      }
+
+      // Vẽ bông tuyết 6 cánh tinh xảo trên Canvas
+      function drawCrystalFlake(f) {
+        ctx.save();
+        ctx.translate(f.x, f.y);
+        ctx.rotate(f.angle);
+        ctx.strokeStyle = `rgba(245, 252, 255, ${f.alpha})`;
+        ctx.lineWidth = Math.max(1.1, f.size * 0.14);
+        ctx.lineCap = 'round';
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(220, 245, 255, .85)';
+
+        const s = f.size;
+        const b1 = s * 0.52;
+        const b2 = s * 0.28;
+
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          // Nhánh chính
+          ctx.moveTo(0, 0);
+          ctx.lineTo(0, -s);
+          // Nhánh phụ nhỏ trên mỗi cánh
+          ctx.moveTo(0, -b1);
+          ctx.lineTo(-b2, -b1 - b2 * 0.75);
+          ctx.moveTo(0, -b1);
+          ctx.lineTo(b2, -b1 - b2 * 0.75);
+          ctx.rotate(Math.PI / 3);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Thiết lập Canvas tuyết rơi liên tục
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = canvas.clientWidth; height = canvas.clientHeight;
+        canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const count = Math.max(90, Math.min(220, Math.round(width * height / 6500)));
+        flakes = Array.from({ length: count }, () => ({
+          x: rand(0, width), y: rand(-height, height), r: rand(1, 4.2),
+          speed: rand(.45, 2.2), drift: rand(-.45, .45), phase: rand(0, Math.PI * 2),
+          alpha: rand(.36, .91)
+        }));
+        const crystalCount = Math.max(14, Math.min(32, Math.round(width / 48)));
+        crystalFlakes = Array.from({ length: crystalCount }, () => createCrystalFlake(true));
+      }
+
+      function draw(time) {
+        if (reduced) {
+          ctx.clearRect(0, 0, width, height);
+          flakes.forEach(f => {
+            ctx.beginPath(); ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
+            ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+          });
+          crystalFlakes.forEach(drawCrystalFlake);
+          return;
+        }
+        const delta = Math.min((time - (last || time)) / 16.7, 2.5); last = time;
+        ctx.clearRect(0, 0, width, height);
+
+        // Vẽ các hạt tuyết tròn mềm mại
+        for (const f of flakes) {
+          f.y += f.speed * delta; f.x += (f.drift + Math.sin(time / 1000 + f.phase) * .34) * delta;
+          if (f.y > height + 7) { f.y = -8; f.x = rand(0, width); }
+          if (f.x < -8) f.x = width + 8; else if (f.x > width + 8) f.x = -8;
+          ctx.beginPath(); ctx.fillStyle = `rgba(255,255,255,${f.alpha})`;
+          ctx.shadowBlur = f.r > 3.2 ? 12 : 4; ctx.shadowColor = 'rgba(232,247,255,.9)';
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.shadowBlur = 0;
+
+        // Vẽ các bông tuyết 6 cánh nhỏ xoay tròn và rơi ngẫu nhiên
+        for (let i = 0; i < crystalFlakes.length; i++) {
+          const cf = crystalFlakes[i];
+          cf.y += cf.speed * delta;
+          cf.x += (cf.drift + Math.cos(time / 900 + cf.phase) * .42) * delta;
+          cf.angle += cf.spin * delta;
+
+          if (cf.y > height + 20) {
+            crystalFlakes[i] = createCrystalFlake(false);
+          } else {
+            if (cf.x < -20) cf.x = width + 20;
+            else if (cf.x > width + 20) cf.x = -20;
+            drawCrystalFlake(cf);
+          }
+        }
+
+        // Cập nhật chuyển động elip/tròn mượt mà của Ông già Noel quanh cây thông
+        if (orbitActive) {
+          orbitAngle = (orbitAngle + 0.0095 * delta) % (Math.PI * 2);
+          updateOrbitPosition();
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize, { passive: true });
+      resize();
+      updateOrbitPosition();
+      if (reduced) draw(0); else requestAnimationFrame(draw);
+    })();
+  </script>
+</body>
+</html>
