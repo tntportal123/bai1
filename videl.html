@@ -1,0 +1,793 @@
+<button class="control-btn" id="snapshotCardBtn" type="button" title="Chụp lại khung cảnh 3D hiện tại thành thiệp ảnh PNG">📸 Chụp thiệp 3D</button>
+<button class="control-btn" id="fireworkBtn" type="button" title="Bấm hoặc nhấp đúp lên bầu trời để bắn pháo hoa 3D">🎆 Bắn pháo hoa</button>
+<button class="control-btn" id="weatherBtn" type="button" title="Chuyển đổi 3 chế độ thời tiết Bắc Cực">❄️ Thời tiết: Tuyết dịu êm</button>
+/* ==================== MÔ-ĐUN 1: BẢNG GỖ 3D KHẮC NỔI ĐẾM NGƯỢC GIÁNG SINH ==================== */
+      let lastCountdownSec = -1;
+      const signCanvas = document.createElement('canvas');
+      signCanvas.width = 512;
+      signCanvas.height = 256;
+      const signCtx = signCanvas.getContext('2d');
+      const signTexture = new THREE.CanvasTexture(signCanvas);
+
+      function updateCountdownSignCanvas() {
+        const now = new Date();
+        let targetYear = now.getFullYear();
+        let xmasDate = new Date(targetYear, 11, 25, 0, 0, 0);
+        if (now > new Date(targetYear, 11, 26, 0, 0, 0)) {
+          xmasDate = new Date(targetYear + 1, 11, 25, 0, 0, 0);
+        }
+        const diff = Math.max(0, xmasDate - now);
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+        const pad = (n) => String(n).padStart(2, '0');
+
+        // Vẽ nền vân gỗ thông Bắc Cực
+        const bgGrad = signCtx.createLinearGradient(0, 0, 0, 256);
+        bgGrad.addColorStop(0, '#4a2811');
+        bgGrad.addColorStop(0.5, '#3b1f0c');
+        bgGrad.addColorStop(1, '#2a1507');
+        signCtx.fillStyle = bgGrad;
+        signCtx.fillRect(0, 0, 512, 256);
+
+        // Vân gỗ ngang & viền khắc vàng kim
+        signCtx.strokeStyle = 'rgba(20, 8, 2, 0.45)';
+        signCtx.lineWidth = 3;
+        for (let y = 32; y < 256; y += 36) {
+          signCtx.beginPath();
+          signCtx.moveTo(0, y);
+          signCtx.lineTo(512, y);
+          signCtx.stroke();
+        }
+        signCtx.strokeStyle = '#e5b85c';
+        signCtx.lineWidth = 6;
+        signCtx.strokeRect(12, 12, 488, 232);
+        signCtx.strokeStyle = 'rgba(255, 235, 175, 0.35)';
+        signCtx.lineWidth = 2;
+        signCtx.strokeRect(20, 20, 472, 216);
+
+        // Tiêu đề khắc nổi
+        signCtx.textAlign = 'center';
+        signCtx.font = '700 24px "Be Vietnam Pro", sans-serif';
+        signCtx.fillStyle = '#1a0902';
+        signCtx.fillText('🎄 ĐẾM NGƯỢC ĐÊM GIÁNG SINH 🎄', 258, 56);
+        signCtx.fillStyle = '#ffd97d';
+        signCtx.fillText('🎄 ĐẾM NGƯỢC ĐÊM GIÁNG SINH 🎄', 256, 54);
+
+        // 4 Ô số khắc nổi: NGÀY - GIỜ - PHÚT - GIÂY
+        const units = [
+          { val: pad(days), label: 'NGÀY' },
+          { val: pad(hours), label: 'GIỜ' },
+          { val: pad(mins), label: 'PHÚT' },
+          { val: pad(secs), label: 'GIÂY' }
+        ];
+        units.forEach((u, idx) => {
+          const cx = 76 + idx * 120;
+          // Hốc gỗ khắc chìm
+          signCtx.fillStyle = 'rgba(18, 7, 2, 0.65)';
+          signCtx.fillRect(cx - 48, 76, 96, 96);
+          signCtx.strokeStyle = 'rgba(255, 216, 130, 0.55)';
+          signCtx.lineWidth = 2;
+          signCtx.strokeRect(cx - 48, 76, 96, 96);
+
+          // Số khắc nổi phát sáng ấm
+          signCtx.font = '800 54px "Playfair Display", Georgia, serif';
+          signCtx.fillStyle = '#140600';
+          signCtx.fillText(u.val, cx + 2, 144);
+          signCtx.fillStyle = '#fff3cf';
+          signCtx.shadowColor = 'rgba(255, 195, 75, 0.85)';
+          signCtx.shadowBlur = 10;
+          signCtx.fillText(u.val, cx, 142);
+          signCtx.shadowBlur = 0;
+
+          // Nhãn đơn vị bên dưới
+          signCtx.font = '700 18px "Be Vietnam Pro", sans-serif';
+          signCtx.fillStyle = '#f5c869';
+          signCtx.fillText(u.label, cx, 206);
+        });
+
+        signTexture.needsUpdate = true;
+      }
+      updateCountdownSignCanvas();
+
+      function createCountdownSignboard3D() {
+        const signGroup = new THREE.Group();
+        const woodMat = new THREE.MeshStandardMaterial({ color: 0x543018, roughness: 0.82 });
+        const snowMat = new THREE.MeshStandardMaterial({ color: 0xf2fbfb, roughness: 0.6 });
+        const goldMat = new THREE.MeshStandardMaterial({ color: 0xffd86b, emissive: 0xffa826, emissiveIntensity: 0.5, metalness: 0.85, roughness: 0.2 });
+
+        // 2 Trụ gỗ cắm xuống sân tuyết trước nhà
+        const postGeo = new THREE.CylinderGeometry(0.18, 0.22, 3.6, 10);
+        [-1.85, 1.85].forEach((px) => {
+          const post = new THREE.Mesh(postGeo, woodMat);
+          post.position.set(px, 1.7, 0);
+          post.castShadow = true;
+          signGroup.add(post);
+        });
+
+        // Thân bảng gỗ & Mặt hiển thị đồng hồ đếm ngược khắc nổi
+        const boardBox = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.1, 0.26), woodMat);
+        boardBox.position.set(0, 2.35, 0);
+        boardBox.castShadow = true;
+        signGroup.add(boardBox);
+
+        const facePlane = new THREE.Mesh(
+          new THREE.PlaneGeometry(4.0, 1.94),
+          new THREE.MeshStandardMaterial({
+            map: signTexture,
+            emissiveMap: signTexture,
+            emissive: new THREE.Color(0xffe099),
+            emissiveIntensity: 0.55,
+            roughness: 0.45
+          })
+        );
+        facePlane.position.set(0, 2.35, 0.14);
+        signGroup.add(facePlane);
+
+        // Lớp tuyết trắng đắp dày trên nóc bảng gỗ
+        const snowCap = new THREE.Mesh(new THREE.BoxGeometry(4.45, 0.28, 0.48), snowMat);
+        snowCap.position.set(0, 3.48, 0.04);
+        const snowMoundBase = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.6, 0.35, 16), snowMat);
+        snowMoundBase.scale.set(1, 1, 0.45);
+        snowMoundBase.position.set(0, 0.15, 0);
+        signGroup.add(snowCap, snowMoundBase);
+
+        // Đèn lồng vàng rọi sáng mặt bảng gỗ
+        const lampOrb = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 10), goldMat);
+        lampOrb.position.set(0, 3.68, 0.35);
+        const signLight = new THREE.PointLight(0xffcb6b, 1.35, 12);
+        signLight.position.set(0, 3.2, 1.2);
+        signGroup.add(lampOrb, signLight);
+
+        return signGroup;
+      }
+
+      // Cắm bảng gỗ đếm ngược ngay trước sân Ngôi nhà gỗ & Hồ băng
+      const countdownSign3D = createCountdownSignboard3D();
+      countdownSign3D.position.set(-14.2, -1.42, -5.8);
+      countdownSign3D.rotation.y = 0.42;
+      worldTreeGroup.add(countdownSign3D);
+
+      /* ==================== MÔ-ĐUN 2: GIA ĐÌNH CHIM CÁNH CỤT & CÁO TUYẾT BẮC CỰC 3D ==================== */
+      function createPenguinMember3D(scale = 1, hatColorHex = 0xe63946, isBaby = false) {
+        const pGroup = new THREE.Group();
+        const darkMat = new THREE.MeshStandardMaterial({ color: isBaby ? 0x4a5568 : 0x1a202c, roughness: 0.45 });
+        const whiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+        const orangeMat = new THREE.MeshStandardMaterial({ color: 0xff8c1a, roughness: 0.4 });
+        const hatMat = new THREE.MeshStandardMaterial({ color: hatColorHex, roughness: 0.5 });
+
+        const body = new THREE.Mesh(new THREE.SphereGeometry(0.46, 12, 12), darkMat);
+        body.scale.set(0.9, 1.22, 0.82);
+        body.position.y = 0.56;
+        const belly = new THREE.Mesh(new THREE.SphereGeometry(0.39, 10, 10), whiteMat);
+        belly.scale.set(0.8, 1.08, 0.56);
+        belly.position.set(0, 0.52, 0.21);
+
+        // Cánh vẫy hai bên
+        const wingGeo = new THREE.SphereGeometry(0.18, 8, 8);
+        [-1, 1].forEach((side) => {
+          const wing = new THREE.Mesh(wingGeo, darkMat);
+          wing.scale.set(0.35, 1.3, 0.6);
+          wing.position.set(side * 0.42, 0.58, 0);
+          wing.rotation.z = -side * 0.25;
+          pGroup.add(wing);
+        });
+
+        // Mắt & Mỏ cam
+        [-0.14, 0.14].forEach((ex) => {
+          const eye = new THREE.Mesh(new THREE.SphereGeometry(0.055, 6, 6), new THREE.MeshBasicMaterial({ color: 0x111111 }));
+          eye.position.set(ex, 0.92, 0.36);
+          pGroup.add(eye);
+        });
+        const beak = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.26, 8), orangeMat);
+        beak.rotation.x = Math.PI / 2;
+        beak.position.set(0, 0.85, 0.44);
+
+        // Khăn & Mũ len Giáng sinh
+        const scarf = new THREE.Mesh(new THREE.TorusGeometry(0.33, 0.075, 8, 14), hatMat);
+        scarf.rotation.x = Math.PI / 2;
+        scarf.position.y = 0.74;
+        const hat = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 10), hatMat);
+        hat.position.y = 1.26;
+        const pom = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), whiteMat);
+        pom.position.y = 1.52;
+
+        pGroup.add(body, belly, beak, scarf, hat, pom);
+        pGroup.scale.setScalar(scale);
+        return pGroup;
+      }
+
+      function createArcticFox3D() {
+        const fox = new THREE.Group();
+        const whiteFurMat = new THREE.MeshStandardMaterial({ color: 0xfcfdff, roughness: 0.55 });
+        const creamFurMat = new THREE.MeshStandardMaterial({ color: 0xf2eee4, roughness: 0.6 });
+        const earPinkMat = new THREE.MeshStandardMaterial({ color: 0xf4a2a8, roughness: 0.5 });
+        const darkMat = new THREE.MeshBasicMaterial({ color: 0x1a1615 });
+
+        // Thân Cáo tuyết Bắc Cực thon gọn
+        const torso = new THREE.Mesh(new THREE.SphereGeometry(0.45, 14, 12), whiteFurMat);
+        torso.scale.set(0.78, 0.82, 1.55);
+        torso.position.set(0, 0.65, 0);
+        const chest = new THREE.Mesh(new THREE.SphereGeometry(0.38, 12, 10), creamFurMat);
+        chest.scale.set(0.85, 0.95, 0.9);
+        chest.position.set(0, 0.72, 0.48);
+        fox.add(torso, chest);
+
+        // Đầu & Mõm nhọn đặc trưng của Cáo tuyết
+        const headGroup = new THREE.Group();
+        headGroup.position.set(0, 1.08, 0.68);
+        const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.34, 12, 12), whiteFurMat);
+        const snout = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.45, 10), whiteFurMat);
+        snout.rotation.x = Math.PI / 2;
+        snout.position.set(0, -0.06, 0.34);
+        const noseTip = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 8), darkMat);
+        noseTip.position.set(0, -0.05, 0.56);
+        headGroup.add(cranium, snout, noseTip);
+
+        [-0.14, 0.14].forEach((ex) => {
+          const eye = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), darkMat);
+          eye.position.set(ex, 0.06, 0.28);
+          headGroup.add(eye);
+        });
+
+        // Đôi tai tam giác vểnh cao
+        const earGeo = new THREE.ConeGeometry(0.13, 0.34, 8);
+        [-1, 1].forEach((side) => {
+          const ear = new THREE.Mesh(earGeo, creamFurMat);
+          ear.position.set(side * 0.2, 0.34, -0.02);
+          ear.rotation.z = -side * 0.22;
+          const innerEar = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.22, 6), earPinkMat);
+          innerEar.position.set(side * 0.2, 0.32, 0.04);
+          innerEar.rotation.z = -side * 0.22;
+          headGroup.add(ear, innerEar);
+        });
+        fox.add(headGroup);
+
+        // 4 Chân nhỏ xinh
+        const legGeo = new THREE.CylinderGeometry(0.08, 0.06, 0.55, 8);
+        [
+          [-0.2, 0.42], [0.2, 0.42],
+          [-0.22, -0.42], [0.22, -0.42]
+        ].forEach(([lx, lz]) => {
+          const leg = new THREE.Mesh(legGeo, whiteFurMat);
+          leg.position.set(lx, 0.28, lz);
+          fox.add(leg);
+        });
+
+        // Chiếc đuôi bông xù to bản vẫy nhịp nhàng
+        const tailPivot = new THREE.Group();
+        tailPivot.position.set(0, 0.68, -0.62);
+        const tailMain = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), creamFurMat);
+        tailMain.scale.set(0.75, 0.85, 2.1);
+        tailMain.position.set(0, 0.18, -0.48);
+        tailMain.rotation.x = 0.35;
+        const tailTip = new THREE.Mesh(new THREE.SphereGeometry(0.18, 10, 10), whiteFurMat);
+        tailTip.position.set(0, 0.38, -0.95);
+        tailPivot.add(tailMain, tailTip);
+        fox.add(tailPivot);
+
+        fox.userData = { headGroup, tailPivot };
+        return fox;
+      }
+
+      const arcticWildlifeGroup = new THREE.Group();
+      // Gia đình 3 chú chim cánh cụt (1 Bố mẹ + 2 Cánh cụt con lạch bạch theo sau)
+      const penguinParent = createPenguinMember3D(1.05, 0xe63946, false);
+      const penguinBaby1 = createPenguinMember3D(0.68, 0x2ecc71, true);
+      const penguinBaby2 = createPenguinMember3D(0.58, 0x3b82f6, true);
+      const penguinFamily = [
+        { mesh: penguinParent, lag: 0, waddleSpeed: 9.0 },
+        { mesh: penguinBaby1, lag: 0.55, waddleSpeed: 12.5 },
+        { mesh: penguinBaby2, lag: 1.05, waddleSpeed: 14.0 }
+      ];
+      penguinFamily.forEach((p) => arcticWildlifeGroup.add(p.mesh));
+
+      // Chú Cáo tuyết Bắc Cực đứng gần Bảng gỗ đếm ngược trước sân nhà
+      const arcticFox3D = createArcticFox3D();
+      arcticFox3D.position.set(-11.8, -1.38, -4.2);
+      arcticFox3D.rotation.y = 0.55;
+      arcticWildlifeGroup.add(arcticFox3D);
+      worldTreeGroup.add(arcticWildlifeGroup);
+
+      /* ==================== MÔ-ĐUN 3: CHỤP ẢNH THIỆP 3D (3D POSTCARD SNAPSHOT) ==================== */
+      const snapshotCardBtn = document.getElementById('snapshotCardBtn');
+      if (snapshotCardBtn) {
+        snapshotCardBtn.addEventListener('click', () => {
+          playSleighBellShake(0.18, 0.09);
+          // Bắt buộc render ngay lập tức để buffer WebGL không bị rỗng
+          renderer.render(scene3D, camera);
+
+          const srcCanvas = renderer.domElement;
+          const outW = srcCanvas.width;
+          const outH = srcCanvas.height;
+          const cardCanvas = document.createElement('canvas');
+          cardCanvas.width = outW;
+          cardCanvas.height = outH;
+          const ctx = cardCanvas.getContext('2d');
+
+          // 1. Vẽ nền bầu trời đêm Bắc Cực (vì WebGLRenderer để alpha trong suốt)
+          const skyGrad = ctx.createLinearGradient(0, 0, 0, outH);
+          skyGrad.addColorStop(0, '#02060f');
+          skyGrad.addColorStop(0.46, '#051428');
+          skyGrad.addColorStop(0.78, '#0a2238');
+          skyGrad.addColorStop(1, '#071826');
+          ctx.fillStyle = skyGrad;
+          ctx.fillRect(0, 0, outW, outH);
+
+          // 2. Vẽ toàn bộ khung cảnh 3D lên thiệp
+          ctx.drawImage(srcCanvas, 0, 0, outW, outH);
+
+          // 3. Vẽ khung viền vàng kim lễ hội & Tiêu đề thiệp Giáng sinh
+          const pad = Math.round(Math.min(outW, outH) * 0.028);
+          ctx.strokeStyle = '#f5ca72';
+          ctx.lineWidth = Math.max(3, Math.round(outW * 0.0035));
+          ctx.strokeRect(pad, pad, outW - pad * 2, outH - pad * 2);
+          ctx.strokeStyle = 'rgba(255, 240, 195, 0.45)';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(pad + 8, pad + 8, outW - (pad + 8) * 2, outH - (pad + 8) * 2);
+
+          // Chữ ký thiệp ở góc dưới
+          const titleFontSize = Math.max(22, Math.round(outW * 0.028));
+          const subFontSize = Math.max(13, Math.round(outW * 0.013));
+          ctx.textAlign = 'center';
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+          ctx.shadowBlur = 12;
+          ctx.font = `700 ${titleFontSize}px "Playfair Display", Georgia, serif`;
+          ctx.fillStyle = '#fff6df';
+          ctx.fillText('✨ Merry Christmas · Giáng Sinh An Lành ✨', outW / 2, outH - pad - subFontSize * 2.1);
+
+          ctx.font = `600 ${subFontSize}px "Be Vietnam Pro", sans-serif`;
+          ctx.fillStyle = '#ffd887';
+          const receiverLine = customCardData.to ? `Dành tặng ${customCardData.to} yêu quý!` : 'Chúc bạn một mùa lễ hội ấm áp, an lành & tràn ngập phép màu!';
+          ctx.fillText(receiverLine, outW / 2, outH - pad - subFontSize * 0.6);
+
+          // 4. Xuất file PNG tải về máy
+          const link = document.createElement('a');
+          link.download = 'Thiep-Giang-Sinh-3D.png';
+          link.href = cardCanvas.toDataURL('image/png');
+          link.click();
+        });
+      }
+
+      /* ==================== MÔ-ĐUN 4: TỰ ĐỘNG TỐI ƯU HÓA FPS THEO THIẾT BỊ (SMART FPS AUTO-SCALER) ==================== */
+      const fpsAutoScaler = {
+        frames: 0,
+        elapsed: 0,
+        qualityTier: 2, // 2: Cao nhất, 1: Cân bằng, 0: Siêu mượt cho máy yếu
+        basePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+        update(dt) {
+          if (document.hidden) return;
+          this.frames++;
+          this.elapsed += dt;
+          if (this.elapsed >= 2.5) {
+            const avgFps = this.frames / this.elapsed;
+            if (avgFps < 38 && this.qualityTier > 0) {
+              this.qualityTier--;
+              this.applyTier();
+            } else if (avgFps > 57 && this.qualityTier < 2) {
+              this.qualityTier++;
+              this.applyTier();
+            }
+            this.frames = 0;
+            this.elapsed = 0;
+          }
+        },
+        applyTier() {
+          if (this.qualityTier === 2) {
+            renderer.setPixelRatio(this.basePixelRatio);
+            moonLight.castShadow = true;
+          } else if (this.qualityTier === 1) {
+            renderer.setPixelRatio(Math.min(this.basePixelRatio, 1.25));
+            moonLight.castShadow = true;
+          } else {
+            renderer.setPixelRatio(1.0);
+            moonLight.castShadow = false;
+          }
+        }
+      };
+      // 1. Tự động đo & tối ưu hóa FPS theo thiết bị
+        fpsAutoScaler.update(dt);
+
+        // 2. Cập nhật Bảng gỗ 3D đếm ngược Giáng sinh (chỉ vẽ lại đúng 1 lần mỗi giây)
+        const currentWholeSec = Math.floor(timeSec);
+        if (currentWholeSec !== lastCountdownSec) {
+          lastCountdownSec = currentWholeSec;
+          updateCountdownSignCanvas();
+        }
+
+        // 3. Cập nhật Gia đình Chim cánh cụt đi dạo & Cáo tuyết Bắc Cực vẫy đuôi
+        if (arcticWildlifeGroup && worldTreeGroup.visible) {
+          penguinFamily.forEach((pf) => {
+            const t = timeSec * 0.75 - pf.lag;
+            // Đi bộ vòng cung quanh bờ hồ băng & trước hiên nhà gỗ
+            const px = -19.5 + Math.cos(t) * 4.2;
+            const pz = -1.2 + Math.sin(t) * 2.8;
+            const dx = -Math.sin(t) * 4.2;
+            const dz = Math.cos(t) * 2.8;
+            const hop = Math.abs(Math.sin(timeSec * pf.waddleSpeed)) * 0.14;
+            pf.mesh.position.set(px, -1.42 + hop, pz);
+            pf.mesh.rotation.y = Math.atan2(dx, dz);
+            pf.mesh.rotation.z = Math.sin(timeSec * pf.waddleSpeed) * 0.18; // Dáng đi lạch bạch
+          });
+
+          if (arcticFox3D) {
+            const fd = arcticFox3D.userData;
+            // Cáo tuyết vẫy chiếc đuôi bông xù, nghiêng đầu ngước nhìn và nhún nhảy nhẹ
+            fd.tailPivot.rotation.y = Math.sin(timeSec * 6.5) * 0.38;
+            fd.tailPivot.rotation.x = Math.cos(timeSec * 3.2) * 0.12;
+            fd.headGroup.rotation.z = Math.sin(timeSec * 2.4) * 0.16;
+            fd.headGroup.rotation.y = Math.cos(timeSec * 1.8) * 0.25;
+            const foxHop = Math.max(0, Math.sin(timeSec * 3.6) - 0.65) * 0.85;
+            arcticFox3D.position.y = -1.38 + foxHop;
+          }
+        }
+        /* ==================== TỰ ĐỘNG THÊM GÓC NHÌN THỨ NHẤT TRÊN CỖ XE VÀO CAMERA_MODES ==================== */
+      CAMERA_MODES.push({
+        id: 'sleigh_pov',
+        label: '🎥 Góc máy: Ngồi Trên Cỗ Xe Ông Già Noel (POV Mới)',
+        pos: new THREE.Vector3(0, 16, 25),
+        look: new THREE.Vector3(0, 14, 0)
+      });
+
+      /* ==================== MÔ-ĐUN 1: MƯA SAO BĂNG & PHÁO HOA ĐÊM NOEL 3D ==================== */
+      const shootingStars = [];
+      const shootingStarGroup = new THREE.Group();
+      scene3D.add(shootingStarGroup);
+
+      for (let i = 0; i < 3; i++) {
+        const lineGeo = new THREE.BufferGeometry();
+        lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
+        const lineMat = new THREE.LineBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0,
+          blending: THREE.AdditiveBlending
+        });
+        const line = new THREE.Line(lineGeo, lineMat);
+        shootingStarGroup.add(line);
+        shootingStars.push({
+          line,
+          mat: lineMat,
+          active: false,
+          delay: rand(1.0, 5.5) + i * 2.5,
+          x: 0, y: 0, z: 0,
+          vx: 0, vy: 0, vz: 0,
+          life: 0, maxLife: 0.85
+        });
+      }
+
+      // Âm thanh pháo hoa tổng hợp bằng Web Audio API
+      function playFireworkBoomSound() {
+        if (isMuted) return;
+        const ctx = ensureAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const dur = 0.65;
+        const bufSize = Math.floor(ctx.sampleRate * dur);
+        const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < bufSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.22));
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buf;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(520, now);
+        filter.frequency.exponentialRampToValueAtTime(95, now + dur);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.24, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(now);
+      }
+
+      // Hệ thống chùm pháo hoa 3D nổ trên bầu trời
+      const fireworkBursts = [];
+      const fireworkGroup = new THREE.Group();
+      scene3D.add(fireworkGroup);
+      const FW_COLORS = [0xff4757, 0xffd166, 0x38ffba, 0x63d2ff, 0xe056fd, 0xfff3b0];
+
+      function launchFireworkShow(count = 3) {
+        for (let k = 0; k < count; k++) {
+          setTimeout(() => {
+            if (!isCurtainOpened) return;
+            const sparkCount = 120;
+            const geo = new THREE.BufferGeometry();
+            const pos = new Float32Array(sparkCount * 3);
+            const vels = [];
+            const cx = rand(-36, 36);
+            const cy = rand(26, 48);
+            const cz = rand(-45, -18);
+
+            for (let i = 0; i < sparkCount; i++) {
+              pos[i * 3] = cx;
+              pos[i * 3 + 1] = cy;
+              pos[i * 3 + 2] = cz;
+              const theta = rand(0, Math.PI * 2);
+              const phi = Math.acos(rand(-1, 1));
+              const speed = rand(8, 26);
+              vels.push({
+                vx: Math.sin(phi) * Math.cos(theta) * speed,
+                vy: Math.cos(phi) * speed,
+                vz: Math.sin(phi) * Math.sin(theta) * speed
+              });
+            }
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const colorHex = FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)];
+            const mat = new THREE.PointsMaterial({
+              color: colorHex,
+              size: 2.1,
+              map: snowTexture,
+              transparent: true,
+              opacity: 1,
+              blending: THREE.AdditiveBlending,
+              depthWrite: false
+            });
+            const points = new THREE.Points(geo, mat);
+            const fwLight = new THREE.PointLight(colorHex, 2.5, 65);
+            fwLight.position.set(cx, cy, cz);
+            fireworkGroup.add(points, fwLight);
+            playFireworkBoomSound();
+
+            fireworkBursts.push({ points, geo, mat, vels, fwLight, life: 1.0 });
+          }, k * 380);
+        }
+      }
+
+      const fireworkBtn = document.getElementById('fireworkBtn');
+      if (fireworkBtn) {
+        fireworkBtn.addEventListener('click', () => launchFireworkShow(3));
+      }
+      renderer.domElement.addEventListener('dblclick', () => {
+        if (isCurtainOpened) launchFireworkShow(2);
+      });
+
+      /* ==================== MÔ-ĐUN 4: BỘ ĐIỀU KHIỂN 3 CHẾ ĐỘ THỜI TIẾT THỜI GIAN THỰC ==================== */
+      let weatherMode = 0; // 0: Tuyết dịu êm, 1: Bão tuyết Bắc Cực, 2: Đêm quang ngắm Sao băng
+      const WEATHER_CONFIGS = [
+        { label: '❄️ Thời tiết: Tuyết dịu êm', speedMult: 1.0, windX: 0.0, fogDensity: 0.0028, snowOpacity: 0.86, starRate: 1.0 },
+        { label: '🌨️ Thời tiết: Bão tuyết Bắc Cực', speedMult: 2.8, windX: 16.5, fogDensity: 0.0052, snowOpacity: 0.98, starRate: 0.5 },
+        { label: '🌌 Thời tiết: Đêm quang ngắm Sao băng', speedMult: 0.35, windX: 0.0, fogDensity: 0.0014, snowOpacity: 0.15, starRate: 3.2 }
+      ];
+
+      const weatherBtn = document.getElementById('weatherBtn');
+      if (weatherBtn) {
+        weatherBtn.addEventListener('click', () => {
+          weatherMode = (weatherMode + 1) % WEATHER_CONFIGS.length;
+          const cfg = WEATHER_CONFIGS[weatherMode];
+          weatherBtn.textContent = cfg.label;
+          scene3D.fog.density = cfg.fogDensity;
+          snowParticles.material.opacity = cfg.snowOpacity;
+          smallCrystalMaterials.forEach((m) => { m.opacity = cfg.snowOpacity; });
+          playSleighBellShake(0.14, 0.07);
+        });
+      }
+
+      /* ==================== MÔ-ĐUN 5: QUẢ CHÂU LƯU GIỮ LỜI CHÚC TRÊN CÂY THÔNG ==================== */
+      const customWishBaubleGroup = new THREE.Group();
+      const wishBaubleCore = new THREE.Mesh(
+        new THREE.SphereGeometry(1.15, 24, 24),
+        new THREE.MeshStandardMaterial({
+          color: 0xffd700,
+          emissive: 0xff6b00,
+          emissiveIntensity: 0.85,
+          metalness: 0.92,
+          roughness: 0.08
+        })
+      );
+      const wishBaubleRing = new THREE.Mesh(
+        new THREE.TorusGeometry(1.45, 0.09, 10, 32),
+        new THREE.MeshBasicMaterial({ color: 0xfff3a8, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending })
+      );
+      const wishBaubleHalo = new THREE.Mesh(
+        new THREE.SphereGeometry(1.85, 18, 18),
+        new THREE.MeshBasicMaterial({ color: 0xffd86b, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false })
+      );
+      customWishBaubleGroup.add(wishBaubleCore, wishBaubleRing, wishBaubleHalo);
+      // Treo Quả châu Lời chúc ở vị trí nổi bật mặt trước Cây thông Noel
+      customWishBaubleGroup.position.set(0, 11.2, 7.6);
+      giantTree3D.add(customWishBaubleGroup);
+
+      // Lưu lời chúc vào Quả châu khi người dùng bấm Tạo Link Thiệp
+      let treeSavedWish = {
+        title: customCardData.to ? `Quả Châu Dành Tặng ${customCardData.to} 🌟` : 'Quả Châu Ước Nguyện Đêm Noel 🌟',
+        text: customCardData.msg || 'Chúc bạn và gia đình một mùa Giáng sinh an lành, mọi điều ước treo trên cây thông đều hóa thành sự thật!',
+        sender: customCardData.from || 'Ông già Noel Bắc Cực'
+      };
+      copyShareLinkBtn.addEventListener('click', () => {
+        const toVal = sanitizeText(inputReceiver.value, 45);
+        const fromVal = sanitizeText(inputSender.value, 45);
+        const msgVal = sanitizeText(inputCustomWish.value, 240);
+        if (toVal || msgVal) {
+          treeSavedWish = {
+            title: toVal ? `Quả Châu Dành Tặng ${toVal} 🌟` : 'Quả Châu Ước Nguyện Đêm Noel 🌟',
+            text: msgVal || 'Chúc bạn một mùa Giáng sinh tràn ngập phép màu!',
+            sender: fromVal
+          };
+          wishBaubleCore.material.color.setHex(0xff2e63);
+          wishBaubleCore.material.emissive.setHex(0xff9f1c);
+        }
+      });
+
+      /* ==================== MÔ-ĐUN 3: TƯƠNG TÁC BẤT NGỜ KHI CHẠM VẬT THỂ 3D (EASTER EGGS) ==================== */
+      let treeMagicPulse = 0;
+      const interactiveTargets = [wishBaubleCore];
+      if (giantTree3D.userData.topStarMesh) interactiveTargets.push(giantTree3D.userData.topStarMesh);
+      snowmenPair.forEach((sm) => {
+        sm.userData.jumpAnim = 0;
+        sm.userData.baseY = sm.position.y;
+        sm.userData.baseRotY = sm.rotation.y;
+        sm.traverse((child) => {
+          if (child.isMesh) {
+            child.userData.snowmanRoot = sm;
+            interactiveTargets.push(child);
+          }
+        });
+      });
+
+      window.addEventListener('pointerup', (e) => {
+        if (!isCurtainOpened || Math.hypot(e.clientX - dragStartPos.x, e.clientY - dragStartPos.y) >= 6) return;
+        if (wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active')) return;
+        if (getIntersectedGiftRoot(e.clientX, e.clientY)) return; // Ưu tiên mở hộp quà đang rơi nếu bấm trúng hộp quà
+
+        const rect = renderer.domElement.getBoundingClientRect();
+        pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(pointerNDC, camera);
+
+        const hits = raycaster.intersectObjects(interactiveTargets, false);
+        if (hits.length === 0) return;
+        const hitObj = hits[0].object;
+
+        // 1) Bấm vào Quả Châu Lưu Giữ Lời Chúc trên cây thông
+        if (hitObj === wishBaubleCore) {
+          const worldPos = new THREE.Vector3();
+          wishBaubleCore.getWorldPosition(worldPos);
+          triggerGiftSparkleBurst(worldPos, 0xffd700);
+          openGiftWish(treeSavedWish, GIFT_PALETTES[4], true);
+          return;
+        }
+
+        // 2) Bấm vào Ngôi Sao Đỉnh Cây Thông -> Phát sóng phép thuật + Chuông ngân + Pháo hoa
+        if (hitObj === giantTree3D.userData.topStarMesh) {
+          treeMagicPulse = 1.0;
+          launchFireworkShow(2);
+          const ctx = ensureAudioContext();
+          if (ctx && !isMuted) {
+            [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+              playChimeNote(freq, ctx.currentTime + idx * 0.09, 0.45, 0.18);
+            });
+          }
+          return;
+        }
+
+        // 3) Bấm vào Người Tuyết -> Nhảy bật lên cao & Xoay tròn 360 độ vui nhộn
+        if (hitObj.userData.snowmanRoot) {
+          const sm = hitObj.userData.snowmanRoot;
+          sm.userData.jumpAnim = 1.0;
+          playSleighBellShake(0.22, 0.12);
+        }
+      });
+      // ==================== CẬP NHẬT 5 MÔ-ĐUN NÂNG CẤP TRONG ANIMATE3D ====================
+        const wCfg = WEATHER_CONFIGS[weatherMode];
+
+        // 1. Hiệu ứng gió lốc Bắc Cực hoặc Tuyết dịu theo chế độ thời tiết
+        if (wCfg.windX !== 0 || wCfg.speedMult !== 1.0) {
+          const extraVy = (wCfg.speedMult - 1.0) * 6.5 * dt;
+          const extraVx = wCfg.windX * dt;
+          const sPos = snowParticles.geometry.attributes.position;
+          for (let i = 0; i < snowParticleCount; i++) {
+            let x = sPos.getX(i) + extraVx;
+            let y = sPos.getY(i) - extraVy;
+            if (x > 95) x = -95;
+            if (y < -12) y = 88;
+            sPos.setX(i, x);
+            sPos.setY(i, y);
+          }
+          sPos.needsUpdate = true;
+        }
+
+        // 2. Cập nhật Mưa Sao Băng 3D xẹt ngang bầu trời đêm
+        shootingStars.forEach((st) => {
+          if (!st.active) {
+            st.delay -= dt * wCfg.starRate;
+            if (st.delay <= 0) {
+              st.active = true;
+              st.life = 0;
+              st.maxLife = rand(0.65, 1.05);
+              st.x = rand(-95, 65);
+              st.y = rand(52, 95);
+              st.z = rand(-150, -85);
+              const dir = Math.random() > 0.5 ? 1 : -1;
+              st.vx = dir * rand(75, 115);
+              st.vy = -rand(28, 46);
+              st.vz = rand(-15, 15);
+            }
+          } else {
+            st.life += dt;
+            const p = st.life / st.maxLife;
+            if (p >= 1) {
+              st.active = false;
+              st.mat.opacity = 0;
+              st.delay = rand(2.5, 6.8);
+            } else {
+              st.x += st.vx * dt;
+              st.y += st.vy * dt;
+              st.z += st.vz * dt;
+              const tailLen = 0.11;
+              const posArr = st.line.geometry.attributes.position;
+              posArr.setXYZ(0, st.x, st.y, st.z);
+              posArr.setXYZ(1, st.x - st.vx * tailLen, st.y - st.vy * tailLen, st.z - st.vz * tailLen);
+              posArr.needsUpdate = true;
+              st.mat.opacity = Math.sin(p * Math.PI) * 0.95;
+            }
+          }
+        });
+
+        // 3. Cập nhật Pháo hoa 3D nổ trên bầu trời
+        for (let i = fireworkBursts.length - 1; i >= 0; i--) {
+          const fw = fireworkBursts[i];
+          fw.life -= dt * 0.72;
+          if (fw.life <= 0) {
+            fireworkGroup.remove(fw.points, fw.fwLight);
+            fw.geo.dispose();
+            fw.mat.dispose();
+            fireworkBursts.splice(i, 1);
+          } else {
+            fw.mat.opacity = fw.life;
+            fw.fwLight.intensity = fw.life * 2.5;
+            const attr = fw.geo.attributes.position;
+            for (let j = 0; j < fw.vels.length; j++) {
+              const v = fw.vels[j];
+              v.vy -= 12.5 * dt; // Trọng lực kéo tia pháo hoa rơi cong xuống
+              attr.setXYZ(
+                j,
+                attr.getX(j) + v.vx * dt * 0.92,
+                attr.getY(j) + v.vy * dt * 0.92,
+                attr.getZ(j) + v.vz * dt * 0.92
+              );
+            }
+            attr.needsUpdate = true;
+          }
+        }
+
+        // 4. Cập nhật Quả Châu Lời Chúc & Tương tác Easter Eggs (Ngôi sao + Người tuyết nhảy 360°)
+        customWishBaubleGroup.rotation.y = timeSec * 1.4;
+        wishBaubleRing.rotation.x = timeSec * 2.2;
+        wishBaubleHalo.scale.setScalar(1 + Math.sin(timeSec * 4.5) * 0.18);
+
+        if (treeMagicPulse > 0) {
+          treeMagicPulse = Math.max(0, treeMagicPulse - dt * 0.85);
+          const wave = Math.sin(treeMagicPulse * Math.PI);
+          if (giantTree3D.userData.topStarMesh) {
+            giantTree3D.userData.topStarMesh.rotation.y += dt * 12;
+            giantTree3D.userData.starGlowHalo.scale.setScalar(1 + wave * 1.4);
+          }
+          giantTree3D.userData.lightBulbs.forEach((b) => {
+            b.mesh.material.emissiveIntensity = 1.2 + wave * 2.2;
+          });
+        }
+
+        snowmenPair.forEach((sm) => {
+          if (sm.userData.jumpAnim > 0) {
+            sm.userData.jumpAnim = Math.max(0, sm.userData.jumpAnim - dt * 1.35);
+            const jp = sm.userData.jumpAnim;
+            sm.position.y = sm.userData.baseY + Math.sin(jp * Math.PI) * 3.8;
+            sm.rotation.y = sm.userData.baseRotY + (1 - jp) * Math.PI * 2;
+          }
+        });
+
+        // 5. Góc nhìn thứ nhất "Ngồi Trên Cỗ Xe Ông Già Noel" (First-Person Sleigh POV)
+        if (CAMERA_MODES[cameraMode] && CAMERA_MODES[cameraMode].id === 'sleigh_pov' && orbitSantaActive && !hasDraggedManual360) {
+          const seatWorldPos = orbitSanta3D.localToWorld(new THREE.Vector3(0, 6.2, -4.5));
+          const reindeerLookPos = orbitSanta3D.localToWorld(new THREE.Vector3(0, 3.8, 12.0));
+          camera.position.lerp(seatWorldPos, 0.25);
+          camera.lookAt(reindeerLookPos);
+        }
