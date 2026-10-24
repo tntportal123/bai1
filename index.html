@@ -1412,7 +1412,6 @@
         cvs.height = h;
         const c = cvs.getContext('2d');
 
-        // Nền vàng kem ấm rõ nét, không bị cháy sáng trắng
         const baseGrad = c.createLinearGradient(0, 0, 0, h);
         baseGrad.addColorStop(0, '#fff7dc');
         baseGrad.addColorStop(0.5, '#f7e5b4');
@@ -1420,7 +1419,6 @@
         c.fillStyle = baseGrad;
         c.fillRect(0, 0, w, h);
 
-        // Các vùng biển trăng (Lunar Maria) có độ tương phản đậm rõ để nhìn từ xa vẫn thấy hình dáng mặt trăng
         const mariaSpots = [
           { x: 145, y: 92,  rx: 72, ry: 46, alpha: 0.36 },
           { x: 215, y: 128, rx: 58, ry: 42, alpha: 0.32 },
@@ -1440,7 +1438,6 @@
           c.fill();
         });
 
-        // Các miệng hố thiên thạch (Lunar Craters) sắc nét
         for (let i = 0; i < 75; i++) {
           const cx = rand(14, w - 14);
           const cy = rand(14, h - 14);
@@ -1476,7 +1473,6 @@
         const cx = size / 2;
         const cy = size / 2;
 
-        // Quầng hào quang mềm xung quanh rìa trăng (tránh làm lóa tâm mặt trăng)
         const g = c.createRadialGradient(cx, cy, size * 0.16, cx, cy, size * 0.48);
         g.addColorStop(0, 'rgba(255, 244, 198, 0.62)');
         g.addColorStop(0.35, 'rgba(255, 228, 150, 0.34)');
@@ -1494,7 +1490,6 @@
       const lunarTex = createRealisticLunarTexture();
       const moonCoronaTex = createMoonCoronaTexture();
 
-      // Khối cầu Mặt trăng 3D đặt ở phía trước tất cả các dải cực quang, hiển thị rõ từng hố thiên thạch
       const moonSphere = new THREE.Mesh(
         new THREE.SphereGeometry(9.2, 48, 48),
         new THREE.MeshStandardMaterial({
@@ -1510,7 +1505,6 @@
       );
       moonSphere.renderOrder = 5;
 
-      // Viền khí quyển mỏng ôm sát rìa mặt trăng
       const moonInnerRim = new THREE.Mesh(
         new THREE.SphereGeometry(9.75, 32, 32),
         new THREE.MeshBasicMaterial({
@@ -1522,7 +1516,6 @@
         })
       );
 
-      // Hào quang tỏa phía sau mặt trăng (không đè lên bề mặt trăng)
       const moonCoronaSprite = new THREE.Sprite(
         new THREE.SpriteMaterial({
           map: moonCoronaTex,
@@ -1537,11 +1530,10 @@
       moonCoronaSprite.position.set(0, 0, -2);
 
       moonGroup.add(moonCoronaSprite, moonInnerRim, moonSphere);
-      // Đặt Mặt trăng ở z = -82 (gần hơn hẳn so với Cực quang ở z = -175..-220) để không bao giờ bị che khuất
       moonGroup.position.set(36, 46, -82);
       scene3D.add(moonGroup);
 
-      /* ==================== CỰC QUANG TOÀN BẦU TRỜI DỊU MẮT & TRÁNH HOÀN TOÀN VÙNG MẶT TRĂNG ==================== */
+      /* ==================== CỰC QUANG TOÀN BẦU TRỜI DỊU MẮT & TRÁNH VÙNG MẶT TRĂNG ==================== */
       function createFullSkyAuroraDomeTexture() {
         const w = 1024;
         const h = 512;
@@ -1552,7 +1544,6 @@
 
         c.clearRect(0, 0, w, h);
 
-        // Nền hào quang dịu nhẹ bao phủ bầu trời 360 độ
         const skyGlow = c.createLinearGradient(0, 0, 0, h * 0.72);
         skyGlow.addColorStop(0, 'rgba(110, 70, 225, 0.18)');
         skyGlow.addColorStop(0.3, 'rgba(38, 205, 200, 0.22)');
@@ -1562,7 +1553,6 @@
         c.fillStyle = skyGlow;
         c.fillRect(0, 0, w, h);
 
-        // Các dải sóng cực quang mềm mại chạy quanh 360 độ
         c.globalCompositeOperation = 'lighter';
         for (let band = 0; band < 5; band++) {
           c.beginPath();
@@ -1606,7 +1596,6 @@
         return tex;
       }
 
-      // Texture rèm cực quang có tích hợp "Cửa Sổ Trời Quang" (Moon Cutout) để không làm mờ Mặt trăng
       function createAuroraCurtainTexture(paletteType = 0, cutoutMoonRight = false) {
         const w = 512;
         const h = 256;
@@ -1651,7 +1640,6 @@
           c.fillRect(rx, 0, rw, h);
         }
 
-        // Làm mềm hai đầu dải lụa
         c.globalCompositeOperation = 'destination-in';
         const edgeMask = c.createLinearGradient(0, 0, w, 0);
         edgeMask.addColorStop(0, 'rgba(0, 0, 0, 0)');
@@ -1661,7 +1649,6 @@
         c.fillStyle = edgeMask;
         c.fillRect(0, 0, w, h);
 
-        // Khoét khoảng trời trong trẻo tại khu vực Mặt trăng đứng để Mặt trăng luôn tỏa sáng rõ nét
         if (cutoutMoonRight) {
           c.globalCompositeOperation = 'destination-out';
           const clearGrad = c.createRadialGradient(w * 0.61, h * 0.55, 18, w * 0.61, h * 0.55, 92);
@@ -1682,7 +1669,6 @@
       const auroraGroup = new THREE.Group();
       scene3D.add(auroraGroup);
 
-      // Vòm Cực quang 360 độ dịu nhẹ
       const auroraDomeTex = createFullSkyAuroraDomeTexture();
       const auroraSkyDome = new THREE.Mesh(
         new THREE.SphereGeometry(380, 48, 32),
@@ -1698,7 +1684,6 @@
       auroraSkyDome.position.set(0, -18, 0);
       auroraGroup.add(auroraSkyDome);
 
-      // 8 Dải lụa Cực quang bao quanh 360 độ bầu trời, lùi sâu ra xa (z = -185..-215) và có khoảng trống nhường chỗ cho Mặt trăng
       const auroraLayers = [];
       const auroraTextures = [
         createAuroraCurtainTexture(0, true),
@@ -1711,7 +1696,6 @@
         { width: 540, height: 70, x: -45, y: 68,  z: -205, rotX: 0.22, rotY: 0.12,      speed: 0.88, amp: 14.5, texIdx: 1, opacity: 0.38 },
         { width: 520, height: 72, x: 0,   y: 102, z: -195, rotX: 0.42, rotY: -0.08,     speed: 1.18, amp: 15.0, texIdx: 2, opacity: 0.36 },
         { width: 480, height: 76, x: 0,   y: 136, z: -160, rotX: 0.65, rotY: 0.05,      speed: 0.82, amp: 15.5, texIdx: 2, opacity: 0.34 },
-        // Hai bên Đông - Tây và phía Nam (để khi xoay 360 độ nhìn hướng nào cũng có cực quang)
         { width: 460, height: 64, x: -195,y: 54,  z: 0,    rotX: 0.14, rotY: Math.PI/2, speed: 1.24, amp: 12.0, texIdx: 2, opacity: 0.38 },
         { width: 460, height: 64, x: 195, y: 54,  z: 0,    rotX: 0.14, rotY: -Math.PI/2,speed: 1.16, amp: 12.0, texIdx: 1, opacity: 0.38 },
         { width: 520, height: 68, x: 0,   y: 52,  z: 195,  rotX: -0.14,rotY: Math.PI,   speed: 1.04, amp: 13.5, texIdx: 2, opacity: 0.38 }
@@ -1800,14 +1784,13 @@
       }
 
       const glowingStarTex = createGlowingStarDotTexture();
-      const totalStarCount = 800; // Đúng 800 ngôi sao phát sáng phân bổ khắp vòm trời 360 độ
+      const totalStarCount = 800;
       const groupStarCount = totalStarCount / 2;
 
       function createStarGroup(count, size, colorHex) {
         const geo = new THREE.BufferGeometry();
         const positions = new Float32Array(count * 3);
         for (let i = 0; i < count; i++) {
-          // Phân bố đều trên vòm cầu 360 độ để xoay góc nào cũng thấy sao phát sáng
           const theta = rand(0, Math.PI * 2);
           const phi = rand(0.06, Math.PI * 0.46);
           const radius = rand(155, 310);
@@ -1847,7 +1830,6 @@
       mainSnowHill.receiveShadow = true;
       scene3D.add(mainSnowHill);
 
-      // Các dãy đồi tuyết bao quanh 4 phía (Đông, Tây, Nam, Bắc) phục vụ góc nhìn 360 độ
       [
         { x: -52, z: -24, sx: 1.3, sz: 1.0 },
         { x:  52, z: -24, sx: 1.3, sz: 1.0 },
@@ -2003,7 +1985,7 @@
         createIceCrystalTexture(2)
       ];
 
-      /* ==================== CÂY THÔNG NOEL 3D, NGƯỜI TUYẾT & RỪNG THÔNG 360 ĐỘ ==================== */
+      /* ==================== CÂY THÔNG NOEL 3D, CẶP NGƯỜI TUYẾT ĐỐI XỨNG & RỪNG THÔNG 360 ĐỘ ==================== */
       const worldTreeGroup = new THREE.Group();
       scene3D.add(worldTreeGroup);
 
@@ -2121,8 +2103,11 @@
         return bow;
       }
 
-      function createSnowman3D() {
+      // Hàm tạo Người Tuyết 3D hỗ trợ đối xứng gương (isMirrored = false cho bên trái, true cho bên phải)
+      function createSnowman3D(isMirrored = false) {
         const sm = new THREE.Group();
+        const dir = isMirrored ? -1 : 1;
+
         const snowMat = new THREE.MeshStandardMaterial({ color: 0xf8ffff, roughness: 0.55, metalness: 0.05 });
         const coalMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.3 });
         const carrotMat = new THREE.MeshStandardMaterial({ color: 0xff6b1a, roughness: 0.35 });
@@ -2149,8 +2134,8 @@
         sm.add(scarfRing);
 
         const scarfTail = new THREE.Mesh(new THREE.BoxGeometry(0.32, 1.15, 0.14), scarfMat);
-        scarfTail.position.set(0.45, 3.45, 0.72);
-        scarfTail.rotation.z = -0.2;
+        scarfTail.position.set(dir * 0.45, 3.45, 0.72);
+        scarfTail.rotation.z = -dir * 0.2;
         sm.add(scarfTail);
 
         const nose = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.85, 12), carrotMat);
@@ -2178,27 +2163,39 @@
         hatBand.position.y = 5.54;
         sm.add(hatBrim, hatTop, hatBand);
 
-        const leftBranch = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 1.8, 8), woodMat);
-        leftBranch.position.set(-1.55, 3.45, 0);
-        leftBranch.rotation.z = 1.1;
-        sm.add(leftBranch);
+        // Tay tĩnh bên ngoài & Tay vẫy chào đối xứng bên trong
+        const staticBranch = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 1.8, 8), woodMat);
+        staticBranch.position.set(-dir * 1.55, 3.45, 0);
+        staticBranch.rotation.z = dir * 1.1;
+        sm.add(staticBranch);
 
-        const rightArmPivot = new THREE.Group();
-        rightArmPivot.position.set(1.0, 3.35, 0);
-        const rightBranch = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 1.8, 8), woodMat);
-        rightBranch.position.set(0.75, 0.45, 0);
-        rightBranch.rotation.z = -0.95;
-        rightArmPivot.add(rightBranch);
-        sm.add(rightArmPivot);
-        sm.userData.wavingArm = rightArmPivot;
+        const wavingArmPivot = new THREE.Group();
+        wavingArmPivot.position.set(dir * 1.0, 3.35, 0);
+        const wavingBranch = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 1.8, 8), woodMat);
+        wavingBranch.position.set(dir * 0.75, 0.45, 0);
+        wavingBranch.rotation.z = -dir * 0.95;
+        wavingArmPivot.add(wavingBranch);
+        sm.add(wavingArmPivot);
+
+        sm.userData.wavingArm = wavingArmPivot;
+        sm.userData.mirrorDir = dir;
 
         return sm;
       }
 
-      const snowman3D = createSnowman3D();
-      snowman3D.position.set(-11.8, -1.6, 8.5);
-      snowman3D.rotation.y = 0.45;
-      worldTreeGroup.add(snowman3D);
+      // 1) Người tuyết ban đầu (Bên trái gốc thông)
+      const snowmanLeft3D = createSnowman3D(false);
+      snowmanLeft3D.position.set(-11.8, -1.6, 8.5);
+      snowmanLeft3D.rotation.y = 0.45;
+      worldTreeGroup.add(snowmanLeft3D);
+
+      // 2) Người tuyết thứ 2 (Đứng đối xứng hoàn hảo bên phải gốc thông)
+      const snowmanRight3D = createSnowman3D(true);
+      snowmanRight3D.position.set(11.8, -1.6, 8.5);
+      snowmanRight3D.rotation.y = -0.45;
+      worldTreeGroup.add(snowmanRight3D);
+
+      const snowmenPair = [snowmanLeft3D, snowmanRight3D];
 
       function createGiantChristmasTree3D() {
         const treeGroup = new THREE.Group();
@@ -2470,19 +2467,18 @@
         return mini;
       }
 
-      // Trồng rừng thông nhỏ bao quanh đủ 360 độ quanh Cây thông chính
+      // Rừng thông nhỏ đối xứng 2 bên và bao quanh 360 độ
       const miniTreePositions = [
         { x: -26, y: -1.8, z: -6,  s: 1.05 },
         { x: -20, y: -1.3, z: 3,   s: 0.85 },
         { x: -15, y: -1.6, z: -9,  s: 0.92 },
         { x: -32, y: -2.5, z: 2,   s: 1.15 },
         { x: -11, y: -1.2, z: 4,   s: 0.68 },
-        { x: 11,  y: -1.2, z: 6,   s: 0.68 },
+        { x: 11,  y: -1.2, z: 4,   s: 0.68 },
         { x: 15,  y: -1.6, z: -9,  s: 0.92 },
         { x: 20,  y: -1.3, z: 3,   s: 0.85 },
         { x: 26,  y: -1.8, z: -6,  s: 1.05 },
         { x: 32,  y: -2.5, z: 2,   s: 1.15 },
-        // Các cây thông ở phía sau & hai bên sườn phục vụ góc xoay 360 độ
         { x: -24, y: -1.9, z: 22,  s: 0.95 },
         { x:  24, y: -1.9, z: 22,  s: 0.95 },
         { x: -16, y: -2.1, z: -24, s: 1.02 },
@@ -3345,16 +3341,15 @@
         });
       }
 
-      /* ==================== GÓC NHÌN 360 ĐỘ TỰ DO + 5 GÓC MÁY (CÓ THÊM GÓC NHÌN MỚI) ==================== */
+      /* ==================== GÓC NHÌN 360 ĐỘ TỰ DO + 5 GÓC MÁY ==================== */
       const raycaster = new THREE.Raycaster();
       const pointerNDC = new THREE.Vector2();
       const userLookOffset = new THREE.Vector2(0, 0);
       let hoveredGiftRoot = null;
 
-      // Hệ tọa độ cầu 360 độ (Spherical Orbit) cho phép người dùng xoay tròn đủ 360 độ quanh khung cảnh
-      let orbitAzimuth = 0;          // Góc xoay ngang 360 độ (-Infinity .. +Infinity)
-      let orbitPolar = 1.38;         // Góc ngẩng/cúi (giới hạn an toàn không xuyên xuống đất)
-      let orbitRadius = 56;          // Khoảng cách từ camera tới tâm
+      let orbitAzimuth = 0;
+      let orbitPolar = 1.38;
+      let orbitRadius = 56;
       let isDraggingOrbit = false;
       let hasDraggedManual360 = false;
       let dragStartPos = { x: 0, y: 0 };
@@ -3382,9 +3377,9 @@
         },
         {
           id: 'snowman_low',
-          label: '🎥 Góc máy: Cạnh Người Tuyết & Mặt Trăng (Mới)',
-          pos: new THREE.Vector3(-19, 4.5, 22),
-          look: new THREE.Vector3(8, 18, -18)
+          label: '🎥 Góc máy: Cận Cảnh Cặp Người Tuyết & Trăng (Mới)',
+          pos: new THREE.Vector3(0, 5.2, 28),
+          look: new THREE.Vector3(0, 12.5, -12)
         },
         {
           id: 'moon_aurora',
@@ -3401,7 +3396,6 @@
         cameraViewBtn.textContent = modeObj.label;
         cameraViewBtn.classList.toggle('active-360', modeObj.id === 'orbit360');
 
-        // Đồng bộ góc tọa độ cầu ban đầu theo góc máy vừa chọn
         const offset = modeObj.pos.clone().sub(modeObj.look);
         orbitRadius = offset.length();
         orbitAzimuth = Math.atan2(offset.x, offset.z);
@@ -3442,7 +3436,7 @@
 
           if (totalMoved > 5) {
             hasDraggedManual360 = true;
-            orbitAzimuth -= dx * 0.0075; // Xoay tròn đủ 360 độ không giới hạn
+            orbitAzimuth -= dx * 0.0075;
             orbitPolar = clamp(orbitPolar - dy * 0.0055, 0.32, 1.53);
             renderer.domElement.style.cursor = 'grabbing';
           }
@@ -3469,7 +3463,6 @@
         renderer.domElement.style.cursor = 'grab';
 
         const totalMoved = Math.hypot(e.clientX - dragStartPos.x, e.clientY - dragStartPos.y);
-        // Nếu người dùng nhấp nhẹ (< 6px) vào hộp quà thay vì kéo xoay 360 độ -> Mở hộp quà!
         if (totalMoved < 6) {
           if (wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active')) return;
           const hitRoot = getIntersectedGiftRoot(e.clientX, e.clientY);
@@ -3482,7 +3475,6 @@
         }
       });
 
-      // Hỗ trợ lăn chuột phóng to / thu nhỏ khoảng cách trong góc nhìn 360 độ
       renderer.domElement.addEventListener('wheel', (e) => {
         if (!isCurtainOpened) return;
         e.preventDefault();
@@ -3607,10 +3599,9 @@
           const blendWeight = smoothstep(6.50, 8.0, elapsed);
           const preset = CAMERA_MODES[cameraMode];
 
-          // Nếu đang ở chế độ Xoay 360° tự động hoặc người dùng dùng chuột kéo 360°
           if (preset.id === 'orbit360' || hasDraggedManual360) {
             if (preset.id === 'orbit360' && !isDraggingOrbit) {
-              orbitAzimuth += dt * 0.38; // Xoay tròn 360 độ mượt mà quanh cây thông
+              orbitAzimuth += dt * 0.38;
             }
             const centerLook = new THREE.Vector3(0, 11.5, 0);
             const cx = centerLook.x + orbitRadius * Math.sin(orbitPolar) * Math.sin(orbitAzimuth);
@@ -3673,12 +3664,12 @@
           sAttr.needsUpdate = true;
         }
 
-        // 3. Cập nhật Mặt trăng 3D xoay nhẹ & hào quang dịu không bị cực quang lấn át
+        // 3. Cập nhật Mặt trăng 3D xoay nhẹ & hào quang dịu
         moonSphere.rotation.y = timeSec * 0.04;
         const moonPulse = 1 + Math.sin(timeSec * 1.8) * 0.035;
         moonCoronaSprite.scale.set(38 * moonPulse, 38 * moonPulse, 1);
 
-        // 4. Cập nhật Vòm Cực quang 360 độ & các dải Cực quang uốn lượn dịu mắt
+        // 4. Cập nhật Vòm Cực quang 360 độ & các dải Cực quang uốn lượn
         auroraSkyDome.rotation.y = timeSec * 0.02;
         auroraSkyDome.material.opacity = 0.30 + Math.sin(timeSec * 1.1) * 0.06;
 
@@ -3703,7 +3694,7 @@
         starLayerA.mat.opacity = 0.84 + Math.sin(timeSec * 2.8) * 0.16;
         starLayerB.mat.opacity = 0.82 + Math.cos(timeSec * 2.2 + 1.2) * 0.18;
 
-        // 6. Nhấp nháy đèn cây thông, xoay ngôi sao & Người tuyết vẫy tay
+        // 6. Nhấp nháy đèn cây thông, xoay ngôi sao & Cặp Người Tuyết đối xứng cùng vẫy tay
         if (giantTree3D.userData.topStarMesh) {
           giantTree3D.userData.topStarMesh.rotation.y = Math.sin(timeSec * 1.8) * 0.35;
           const pulse = 1 + Math.sin(timeSec * 3.5) * 0.14;
@@ -3714,9 +3705,12 @@
             b.mesh.material.emissiveIntensity = 0.6 + 0.55 * Math.sin(timeSec * 4.2 + b.phase);
           });
         }
-        if (snowman3D.userData.wavingArm) {
-          snowman3D.userData.wavingArm.rotation.z = Math.sin(timeSec * 4.2) * 0.25;
-        }
+        snowmenPair.forEach((sm) => {
+          if (sm.userData.wavingArm) {
+            const dir = sm.userData.mirrorDir || 1;
+            sm.userData.wavingArm.rotation.z = dir * Math.sin(timeSec * 4.2) * 0.25;
+          }
+        });
 
         // 7. Cử động tuần lộc của Ông già Noel bay ra từ cổng không gian
         if (introSanta3D.visible) {
