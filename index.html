@@ -13,7 +13,7 @@
   <style>
     :root {
       color-scheme: dark;
-      --night: #061226;
+      --night: #050f20;
       --gold: #ffd887;
       --cream: #fff7e8;
       --red: #d94850;
@@ -35,8 +35,9 @@
       width: 100%; height: 100%;
       overflow: hidden; isolation: isolate;
       background:
-        radial-gradient(ellipse at 50% 22%, rgba(36, 118, 158, .42), transparent 64%),
-        linear-gradient(180deg, #020710 0%, #07172e 46%, #0c2740 78%, #081b2b 100%);
+        radial-gradient(ellipse at 50% 25%, rgba(20, 95, 110, .24), transparent 70%),
+        radial-gradient(ellipse at 20% 15%, rgba(65, 50, 135, .20), transparent 60%),
+        linear-gradient(180deg, #02060f 0%, #051428 46%, #0a2238 78%, #071826 100%);
     }
 
     /* Canvas 3D Three.js */
@@ -47,6 +48,7 @@
       height: 100%;
       z-index: 2;
       display: block;
+      touch-action: none;
     }
     #webgl-container canvas {
       display: block;
@@ -172,9 +174,8 @@
         transform 1.35s cubic-bezier(.22, .88, .26, 1),
         opacity .5s ease;
     }
-    /* Thu gọn lên góc trên sau khi đã xuất hiện đầy đủ */
     .scene.dock-greeting .greeting {
-      top: clamp(48px, 8.2vh, 76px);
+      top: clamp(42px, 7.2vh, 68px);
       transform: translate(-50%, -50%) scale(0.42);
     }
     .greeting h1 {
@@ -183,7 +184,6 @@
       font-size: clamp(2.6rem, 7.6vw, 6.4rem);
       font-weight: 700; line-height: 1.04;
       letter-spacing: .03em;
-      /* Đảm bảo khoảng cách giữa chữ "Merry" và "Christmas" luôn rõ ràng */
       word-spacing: .22em;
       text-shadow:
         0 3px 0 #b88235,
@@ -210,37 +210,6 @@
     }
     .scene.show-subtitle .greeting p {
       animation: subtitle-rise-in .95s cubic-bezier(.2, .88, .28, 1.15) forwards;
-    }
-
-    /* ==================== THANH HUD THEO DÕI HỘP QUÀ & HƯỚNG DẪN ==================== */
-    .top-hud {
-      position: absolute; z-index: 20; top: 16px; left: 18px; right: 18px;
-      display: flex; justify-content: space-between; align-items: center;
-      pointer-events: none;
-      opacity: 0; transform: translateY(-12px);
-      transition: opacity .65s ease, transform .65s ease;
-    }
-    .scene.show-subtitle .top-hud {
-      opacity: 1; transform: translateY(0);
-    }
-    .hud-pill {
-      pointer-events: auto;
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 8px 16px; border-radius: 999px;
-      background: rgba(8, 28, 48, .82);
-      border: 1px solid rgba(255, 220, 145, .55);
-      color: #fff2d0;
-      font-size: 13px; font-weight: 600;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .4), 0 0 18px rgba(255, 210, 120, .2);
-      backdrop-filter: blur(8px);
-    }
-    .hud-pill strong {
-      color: #ffd875;
-      font-weight: 800;
-    }
-    .hud-hint {
-      font-size: 12px;
-      color: rgba(255, 242, 214, .88);
     }
 
     /* ==================== NÚT ĐIỀU KHIỂN GÓC DƯỚI ==================== */
@@ -275,6 +244,11 @@
       background: linear-gradient(135deg, rgba(168, 24, 42, .92), rgba(110, 14, 26, .95));
       border-color: #ffd885;
       color: #fff8e6;
+    }
+    .control-btn.active-360 {
+      background: linear-gradient(135deg, rgba(16, 94, 72, .94), rgba(10, 58, 46, .96));
+      border-color: #6df7c1;
+      color: #eafff6;
     }
 
     /* ==================== POPUP MỞ LỜI CHÚC TRONG HỘP QUÀ 3D ==================== */
@@ -437,12 +411,11 @@
     @media (max-width: 680px) {
       .greeting { top: 45%; }
       .scene.dock-greeting .greeting {
-        top: 66px;
+        top: 52px;
         transform: translate(-50%, -50%) scale(0.46);
       }
       .greeting h1 { font-size: clamp(2.1rem, 9.8vw, 3.8rem); }
       .greeting p { font-size: clamp(.9rem, 3.6vw, 1.18rem); letter-spacing: .12em; }
-      .hud-hint { display: none; }
       .bottom-controls { justify-content: center; }
     }
   </style>
@@ -652,21 +625,10 @@
     </div>
 
     <!-- ==================== KHUNG CẢNH 3D WEBGL ==================== -->
-    <div id="webgl-container" aria-label="Không gian 3D Giáng sinh"></div>
+    <div id="webgl-container" aria-label="Không gian 3D Giáng sinh (Kéo để xoay 360 độ)"></div>
     <div class="snow-whiteout" id="snowWhiteout" aria-hidden="true"></div>
 
-    <!-- ==================== THANH HUD THEO DÕI QUÀ ==================== -->
-    <div class="top-hud">
-      <div class="hud-pill" title="Nhấp vào những hộp quà 3D đang rơi để mở lời chúc!">
-        <span>🎁 Bộ sưu tập quà:</span>
-        <strong id="giftCounterText">0 / 15</strong>
-      </div>
-      <div class="hud-pill hud-hint">
-        ✨ Di chuột / vuốt nhẹ để nghiêng góc nhìn 3D · Nhấp hộp quà để nhận pháo hoa & lời chúc
-      </div>
-    </div>
-
-    <!-- ==================== LỜI CHÚC CHÍNH (ĐÃ TÁCH KHOẢNG CÁCH 1 PHÍM SPACE RÕ RÀNG) ==================== -->
+    <!-- ==================== LỜI CHÚC CHÍNH ==================== -->
     <div class="greeting" aria-live="polite">
       <h1>Merry Christmas</h1>
       <p id="greetingSubtitle">Giáng sinh an lành</p>
@@ -676,7 +638,7 @@
     <div class="bottom-controls">
       <div class="controls-group">
         <button class="control-btn highlight" id="createCardBtn" type="button">💌 Tạo thiệp gửi bạn bè</button>
-        <button class="control-btn" id="cameraViewBtn" type="button">🎥 Góc máy: Toàn cảnh</button>
+        <button class="control-btn" id="cameraViewBtn" type="button" title="Bấm để đổi góc nhìn hoặc nhấn giữ kéo chuột trên màn hình để xoay 360°">🎥 Góc máy: Toàn cảnh (Kéo chuột xoay 360°)</button>
       </div>
       <div class="controls-group">
         <button class="control-btn" id="soundToggleBtn" type="button">🔊 Tắt nhạc</button>
@@ -735,7 +697,6 @@
       const soundToggleBtn = document.getElementById('soundToggleBtn');
       const cameraViewBtn = document.getElementById('cameraViewBtn');
       const createCardBtn = document.getElementById('createCardBtn');
-      const giftCounterText = document.getElementById('giftCounterText');
       const greetingSubtitle = document.getElementById('greetingSubtitle');
 
       const wishModalBackdrop = document.getElementById('wishModalBackdrop');
@@ -760,7 +721,6 @@
       let isCurtainOpened = false;
       let isMuted = false;
       let timers = [];
-      let openedGiftIds = new Set();
 
       const rand = (min, max) => Math.random() * (max - min) + min;
       const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
@@ -776,7 +736,7 @@
         return x * x * (3 - 2 * x);
       };
 
-      /* ==================== BẢO MẬT NHÓM 10 & LƯU TRỮ NHÓM 9 ==================== */
+      /* ==================== BẢO MẬT NHÓM 10 & DỮ LIỆU THIỆP ==================== */
       function sanitizeText(str, maxLen = 240) {
         if (typeof str !== 'string') return '';
         return str.replace(/[\u0000-\u001F\u007F<>]/g, '').trim().slice(0, maxLen);
@@ -790,10 +750,6 @@
       };
       if (customCardData.to) {
         greetingSubtitle.textContent = `Dành tặng ${customCardData.to} · Giáng sinh an lành`;
-      }
-
-      function updateGiftCounterUI() {
-        giftCounterText.textContent = `${openedGiftIds.size} / 15`;
       }
 
       /* ==================== HỆ THỐNG ÂM THANH (2 FILE NHẠC + WEB AUDIO DỰ PHÒNG) ==================== */
@@ -1067,21 +1023,21 @@
 
       /* ==================== 15 LỜI CHÚC GIÁNG SINH NGẪU NHIÊN ==================== */
       const WISHES_POOL = [
-        { id: 1, title: "Giáng Sinh Ấm Áp", text: "Chúc bạn một mùa Giáng sinh ngập tràn hơi ấm bên gia đình, mọi ước nguyện đêm Noel đều sớm trở thành hiện thực!" },
-        { id: 2, title: "Bình An & Hạnh Phúc", text: "Chúc bạn luôn giữ được nụ cười rạng rỡ, tâm hồn bình yên và trái tim tràn đầy yêu thương trong mùa lễ hội này." },
-        { id: 3, title: "May Mắn Ngập Tràn", text: "Ông già Noel gửi tặng bạn một túi đầy ắp may mắn, sức khỏe dồi dào và những niềm vui bất ngờ mỗi ngày!" },
-        { id: 4, title: "Thành Công Rực Rỡ", text: "Chúc mọi dự định, học tập và công việc của bạn trong chặng đường sắp tới đều tỏa sáng rực rỡ như ngôi sao trên đỉnh thông!" },
-        { id: 5, title: "Ngọt Ngào Như Kẹo Gậy", text: "Chúc mùa Giáng sinh của bạn ngọt ngào như những chiếc kẹo gậy, lung linh như ánh đèn vàng và trọn vẹn từng khoảnh khắc." },
-        { id: 6, title: "Vạn Sự Như Ý", text: "Mong rằng tiếng chuông Giáng sinh ngân vang sẽ mang đến cho bạn khởi đầu mới thuận lợi, vạn sự hanh thông và tốt lành." },
-        { id: 7, title: "Tràn Đầy Năng Lượng", text: "Chúc bạn luôn tràn đầy nhiệt huyết, vượt qua mọi thử thách nhẹ nhàng như cưỡi xe tuần lộc bay trên bầu trời đêm!" },
-        { id: 8, title: "Yêu Thương Đong Đầy", text: "Giáng sinh là mùa sẻ chia — chúc bạn luôn được bao bọc bởi tình yêu thương chân thành từ những người thân yêu nhất." },
-        { id: 9, title: "Niềm Vui Bất Tận", text: "Chúc những muộn phiền tan biến theo từng bông tuyết rơi, nhường chỗ cho niềm vui và tiếng cười ngập tràn ngôi nhà bạn." },
-        { id: 10, title: "Phép Màu Đêm Đông", text: "Chúc phép màu của đêm Giáng sinh chạm đến trái tim bạn, mang theo những điều kỳ diệu đẹp đẽ nhất mà bạn hằng mong đợi." },
-        { id: 11, title: "Sức Khỏe & An Khang", text: "Món quà quý giá nhất chính là sức khỏe. Chúc bạn và gia đình một mùa đông ấm áp, bình an và thật nhiều sức khỏe!" },
-        { id: 12, title: "Tỏa Sáng Theo Cách Riêng", text: "Hãy luôn tự tin và tỏa sáng lấp lánh như những vì sao trên bầu trời đêm Giáng sinh. Chúc bạn luôn vững bước và hạnh phúc!" },
-        { id: 13, title: "Tài Lộc Gõ Cửa", text: "Chúc mùa lễ hội cuối năm mang tới cho bạn thật nhiều tin vui, tài lộc rủng rỉnh và những cơ hội tuyệt vời mới." },
-        { id: 14, title: "Kỷ Niệm Đáng Nhớ", text: "Chúc bạn có một đêm Noel thật đáng nhớ bên bạn bè và người thân, lưu giữ thêm thật nhiều kỷ niệm đẹp trong thanh xuân." },
-        { id: 15, title: "Một Năm Mới Tuyệt Vời", text: "Merry Christmas & Happy New Year! Chúc bạn khép lại năm cũ thật trọn vẹn và sẵn sàng đón chào năm mới rực rỡ!" }
+        { title: "Giáng Sinh Ấm Áp", text: "Chúc bạn một mùa Giáng sinh ngập tràn hơi ấm bên gia đình, mọi ước nguyện đêm Noel đều sớm trở thành hiện thực!" },
+        { title: "Bình An & Hạnh Phúc", text: "Chúc bạn luôn giữ được nụ cười rạng rỡ, tâm hồn bình yên và trái tim tràn đầy yêu thương trong mùa lễ hội này." },
+        { title: "May Mắn Ngập Tràn", text: "Ông già Noel gửi tặng bạn một túi đầy ắp may mắn, sức khỏe dồi dào và những niềm vui bất ngờ mỗi ngày!" },
+        { title: "Thành Công Rực Rỡ", text: "Chúc mọi dự định, học tập và công việc của bạn trong chặng đường sắp tới đều tỏa sáng rực rỡ như ngôi sao trên đỉnh thông!" },
+        { title: "Ngọt Ngào Như Kẹo Gậy", text: "Chúc mùa Giáng sinh của bạn ngọt ngào như những chiếc kẹo gậy, lung linh như ánh đèn vàng và trọn vẹn từng khoảnh khắc." },
+        { title: "Vạn Sự Như Ý", text: "Mong rằng tiếng chuông Giáng sinh ngân vang sẽ mang đến cho bạn khởi đầu mới thuận lợi, vạn sự hanh thông và tốt lành." },
+        { title: "Tràn Đầy Năng Lượng", text: "Chúc bạn luôn tràn đầy nhiệt huyết, vượt qua mọi thử thách nhẹ nhàng như cưỡi xe tuần lộc bay trên bầu trời đêm!" },
+        { title: "Yêu Thương Đong Đầy", text: "Giáng sinh là mùa sẻ chia — chúc bạn luôn được bao bọc bởi tình yêu thương chân thành từ những người thân yêu nhất." },
+        { title: "Niềm Vui Bất Tận", text: "Chúc những muộn phiền tan biến theo từng bông tuyết rơi, nhường chỗ cho niềm vui và tiếng cười ngập tràn ngôi nhà bạn." },
+        { title: "Phép Màu Đêm Đông", text: "Chúc phép màu của đêm Giáng sinh chạm đến trái tim bạn, mang theo những điều kỳ diệu đẹp đẽ nhất mà bạn hằng mong đợi." },
+        { title: "Sức Khỏe & An Khang", text: "Món quà quý giá nhất chính là sức khỏe. Chúc bạn và gia đình một mùa đông ấm áp, bình an và thật nhiều sức khỏe!" },
+        { title: "Tỏa Sáng Theo Cách Riêng", text: "Hãy luôn tự tin và tỏa sáng lấp lánh như những vì sao trên bầu trời đêm Giáng sinh. Chúc bạn luôn vững bước và hạnh phúc!" },
+        { title: "Tài Lộc Gõ Cửa", text: "Chúc mùa lễ hội cuối năm mang tới cho bạn thật nhiều tin vui, tài lộc rủng rỉnh và những cơ hội tuyệt vời mới." },
+        { title: "Kỷ Niệm Đáng Nhớ", text: "Chúc bạn có một đêm Noel thật đáng nhớ bên bạn bè và người thân, lưu giữ thêm thật nhiều kỷ niệm đẹp trong thanh xuân." },
+        { title: "Một Năm Mới Tuyệt Vời", text: "Merry Christmas & Happy New Year! Chúc bạn khép lại năm cũ thật trọn vẹn và sẵn sàng đón chào năm mới rực rỡ!" }
       ];
 
       const GIFT_PALETTES = [
@@ -1121,13 +1077,9 @@
 
       function openGiftWish(wish, palette, isCustomCard = false) {
         playSleighBellShake(0.18, 0.09);
-        if (wish.id) {
-          openedGiftIds.add(wish.id);
-          updateGiftCounterUI();
-        }
         wishModalBadge.textContent = isCustomCard
           ? 'Thiệp Giáng Sinh Đặc Biệt 💌'
-          : `Món quà Giáng sinh #${openedGiftIds.size} 🎁`;
+          : 'Món quà Giáng sinh 🎁';
         wishModalTitle.textContent = wish.title;
         wishModalText.textContent = wish.text;
 
@@ -1193,13 +1145,13 @@
 
       /* ==================== KHỞI TẠO KHÔNG GIAN 3D VỚI THREE.JS ==================== */
       const scene3D = new THREE.Scene();
-      scene3D.fog = new THREE.FogExp2(0x061529, 0.0042);
+      scene3D.fog = new THREE.FogExp2(0x051326, 0.0028);
 
       const camera = new THREE.PerspectiveCamera(
         50,
         window.innerWidth / window.innerHeight,
         0.5,
-        700
+        900
       );
 
       const camPos = new THREE.Vector3(0, 11, 56);
@@ -1213,7 +1165,7 @@
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.25;
+      renderer.toneMappingExposure = 1.18;
       webglContainer.appendChild(renderer.domElement);
 
       /* ==================== MÔI TRƯỜNG PHẢN CHIẾU KIM LOẠI PBR (PMREM) ==================== */
@@ -1249,15 +1201,15 @@
       buildProceduralEnvironmentMap();
 
       // Hệ thống ánh sáng
-      const ambientLight = new THREE.AmbientLight(0x9ac4f2, 0.82);
+      const ambientLight = new THREE.AmbientLight(0x9ac4f2, 0.8);
       scene3D.add(ambientLight);
 
-      const hemiLight = new THREE.HemisphereLight(0xd9f5ff, 0x163c46, 0.78);
+      const hemiLight = new THREE.HemisphereLight(0xd9f5ff, 0x163c46, 0.76);
       hemiLight.position.set(0, 90, 0);
       scene3D.add(hemiLight);
 
       const moonLight = new THREE.DirectionalLight(0xfff6de, 1.48);
-      moonLight.position.set(42, 76, 40);
+      moonLight.position.set(45, 76, -40);
       moonLight.castShadow = true;
       moonLight.shadow.mapSize.width = 1024;
       moonLight.shadow.mapSize.height = 1024;
@@ -1274,11 +1226,11 @@
       treeWarmLight.position.set(0, 14, 12);
       scene3D.add(treeWarmLight);
 
-      const frontFillLight = new THREE.DirectionalLight(0xffeed4, 0.56);
+      const frontFillLight = new THREE.DirectionalLight(0xffeed4, 0.54);
       frontFillLight.position.set(0, 22, 65);
       scene3D.add(frontFillLight);
 
-      /* ==================== GÓP Ý #1: CÁNH CỔNG KHÔNG GIAN 3D (MAGIC DIMENSIONAL PORTAL) ==================== */
+      /* ==================== CÁNH CỔNG KHÔNG GIAN 3D (MAGIC DIMENSIONAL PORTAL) ==================== */
       function createPortalVortexTexture() {
         const size = 512;
         const cvs = document.createElement('canvas');
@@ -1289,7 +1241,6 @@
         const cy = size / 2;
         const R = size * 0.48;
 
-        // Nền xoáy năng lượng đa sắc
         const baseGrad = c.createRadialGradient(cx, cy, 4, cx, cy, R);
         baseGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
         baseGrad.addColorStop(0.18, 'rgba(255, 238, 158, 0.95)');
@@ -1302,7 +1253,6 @@
         c.arc(cx, cy, R, 0, Math.PI * 2);
         c.fill();
 
-        // Các cánh xoáy ngân hà & tia năng lượng
         c.save();
         c.translate(cx, cy);
         for (let arm = 0; arm < 12; arm++) {
@@ -1322,7 +1272,6 @@
           c.restore();
         }
 
-        // Vòng cổ ngữ Bắc Cực (Runic Rings)
         c.strokeStyle = 'rgba(255, 230, 140, 0.9)';
         c.lineWidth = 3.5;
         c.setLineDash([12, 8, 4, 8]);
@@ -1347,7 +1296,6 @@
         const portalGroup = new THREE.Group();
         const vortexTex = createPortalVortexTexture();
 
-        // Mặt phẳng xoáy không gian chính
         const vortexDisc = new THREE.Mesh(
           new THREE.PlaneGeometry(24, 24),
           new THREE.MeshBasicMaterial({
@@ -1361,7 +1309,6 @@
         );
         portalGroup.add(vortexDisc);
 
-        // Lớp xoáy thứ 2 xoay ngược chiều tạo chiều sâu 3D
         const innerVortexDisc = new THREE.Mesh(
           new THREE.PlaneGeometry(18, 18),
           new THREE.MeshBasicMaterial({
@@ -1377,7 +1324,6 @@
         innerVortexDisc.position.z = 0.25;
         portalGroup.add(innerVortexDisc);
 
-        // Vòng khung vàng ma thuật gắn đá năng lượng quanh mép cổng
         const outerRingMat = new THREE.MeshStandardMaterial({
           color: 0xffe07d,
           emissive: 0xffa826,
@@ -1388,7 +1334,6 @@
         const outerRing = new THREE.Mesh(new THREE.TorusGeometry(9.6, 0.42, 16, 64), outerRingMat);
         portalGroup.add(outerRing);
 
-        // 12 viên pha lê năng lượng gắn trên vành cổng
         const gemMat = new THREE.MeshBasicMaterial({ color: 0x6df7ff });
         for (let i = 0; i < 12; i++) {
           const a = (i / 12) * Math.PI * 2;
@@ -1398,7 +1343,6 @@
           outerRing.add(gem);
         }
 
-        // Vòng năng lượng băng giá thứ 2
         const cyanRing = new THREE.Mesh(
           new THREE.TorusGeometry(7.6, 0.22, 12, 48),
           new THREE.MeshBasicMaterial({
@@ -1411,7 +1355,6 @@
         cyanRing.position.z = 0.4;
         portalGroup.add(cyanRing);
 
-        // Hạt tia lửa không gian bay quanh mép cổng
         const sparkCount = 90;
         const sparkGeo = new THREE.BufferGeometry();
         const sparkPos = new Float32Array(sparkCount * 3);
@@ -1438,7 +1381,6 @@
         );
         portalGroup.add(sparkPoints);
 
-        // Ánh sáng phát ra từ cổng không gian
         const portalLight = new THREE.PointLight(0x7ceeff, 3.2, 65);
         portalLight.position.set(0, 0, 3);
         portalGroup.add(portalLight);
@@ -1461,7 +1403,7 @@
       portal3DGroup.visible = false;
       scene3D.add(portal3DGroup);
 
-      /* ==================== GÓP Ý #2: MẶT TRĂNG 3D CHÂN THẬT & RỰC SÁNG HƠN ==================== */
+      /* ==================== MẶT TRĂNG 3D SẮC NÉT, TƯƠNG PHẢN CAO & KHÔNG BỊ CỰC QUANG CHE ==================== */
       function createRealisticLunarTexture() {
         const w = 512;
         const h = 256;
@@ -1470,52 +1412,50 @@
         cvs.height = h;
         const c = cvs.getContext('2d');
 
-        // Nền bề mặt trăng sáng ngà ấm
+        // Nền vàng kem ấm rõ nét, không bị cháy sáng trắng
         const baseGrad = c.createLinearGradient(0, 0, 0, h);
-        baseGrad.addColorStop(0, '#fffdf5');
-        baseGrad.addColorStop(0.5, '#fff6dc');
-        baseGrad.addColorStop(1, '#f7e8c4');
+        baseGrad.addColorStop(0, '#fff7dc');
+        baseGrad.addColorStop(0.5, '#f7e5b4');
+        baseGrad.addColorStop(1, '#e8ce92');
         c.fillStyle = baseGrad;
         c.fillRect(0, 0, w, h);
 
-        // Các vùng biển trăng (Lunar Maria) tạo mảng sáng tối tự nhiên như thật
+        // Các vùng biển trăng (Lunar Maria) có độ tương phản đậm rõ để nhìn từ xa vẫn thấy hình dáng mặt trăng
         const mariaSpots = [
-          { x: 140, y: 95, rx: 65, ry: 42, alpha: 0.16 },
-          { x: 210, y: 125, rx: 52, ry: 38, alpha: 0.14 },
-          { x: 285, y: 88, rx: 48, ry: 34, alpha: 0.15 },
-          { x: 345, y: 140, rx: 58, ry: 44, alpha: 0.13 },
-          { x: 175, y: 165, rx: 40, ry: 28, alpha: 0.11 },
-          { x: 95,  y: 140, rx: 36, ry: 26, alpha: 0.12 }
+          { x: 145, y: 92,  rx: 72, ry: 46, alpha: 0.36 },
+          { x: 215, y: 128, rx: 58, ry: 42, alpha: 0.32 },
+          { x: 290, y: 86,  rx: 52, ry: 38, alpha: 0.34 },
+          { x: 350, y: 142, rx: 64, ry: 48, alpha: 0.28 },
+          { x: 175, y: 168, rx: 44, ry: 32, alpha: 0.25 },
+          { x: 92,  y: 142, rx: 40, ry: 28, alpha: 0.26 }
         ];
         mariaSpots.forEach((m) => {
           const g = c.createRadialGradient(m.x, m.y, 4, m.x, m.y, m.rx);
-          g.addColorStop(0, `rgba(145, 132, 108, ${m.alpha})`);
-          g.addColorStop(0.65, `rgba(165, 150, 124, ${m.alpha * 0.6})`);
-          g.addColorStop(1, 'rgba(165, 150, 124, 0)');
+          g.addColorStop(0, `rgba(110, 92, 65, ${m.alpha})`);
+          g.addColorStop(0.65, `rgba(130, 110, 78, ${m.alpha * 0.65})`);
+          g.addColorStop(1, 'rgba(130, 110, 78, 0)');
           c.fillStyle = g;
           c.beginPath();
           c.ellipse(m.x, m.y, m.rx, m.ry, 0.2, 0, Math.PI * 2);
           c.fill();
         });
 
-        // Các miệng hố thiên thạch (Lunar Craters) có viền sáng và lòng hố có chiều sâu
-        for (let i = 0; i < 65; i++) {
-          const cx = rand(16, w - 16);
-          const cy = rand(16, h - 16);
-          const r = rand(3, 18);
+        // Các miệng hố thiên thạch (Lunar Craters) sắc nét
+        for (let i = 0; i < 75; i++) {
+          const cx = rand(14, w - 14);
+          const cy = rand(14, h - 14);
+          const r = rand(3.5, 19);
 
-          // Viền sáng hố thiên thạch
-          c.strokeStyle = 'rgba(255, 255, 250, 0.45)';
-          c.lineWidth = r > 9 ? 2.2 : 1.2;
+          c.strokeStyle = 'rgba(255, 252, 232, 0.62)';
+          c.lineWidth = r > 9 ? 2.4 : 1.3;
           c.beginPath();
           c.arc(cx, cy, r, 0, Math.PI * 2);
           c.stroke();
 
-          // Lòng hố
-          const cg = c.createRadialGradient(cx - r * 0.2, cy - r * 0.2, 1, cx, cy, r);
-          cg.addColorStop(0, 'rgba(155, 140, 115, 0.18)');
-          cg.addColorStop(0.8, 'rgba(135, 122, 98, 0.22)');
-          cg.addColorStop(1, 'rgba(255, 252, 240, 0.15)');
+          const cg = c.createRadialGradient(cx - r * 0.25, cy - r * 0.25, 1, cx, cy, r);
+          cg.addColorStop(0, 'rgba(115, 96, 68, 0.34)');
+          cg.addColorStop(0.78, 'rgba(98, 82, 56, 0.38)');
+          cg.addColorStop(1, 'rgba(255, 248, 220, 0.22)');
           c.fillStyle = cg;
           c.beginPath();
           c.arc(cx, cy, r, 0, Math.PI * 2);
@@ -1536,12 +1476,12 @@
         const cx = size / 2;
         const cy = size / 2;
 
-        const g = c.createRadialGradient(cx, cy, 8, cx, cy, size * 0.48);
-        g.addColorStop(0, 'rgba(255, 253, 240, 1)');
-        g.addColorStop(0.22, 'rgba(255, 244, 200, 0.82)');
-        g.addColorStop(0.48, 'rgba(255, 228, 155, 0.36)');
-        g.addColorStop(0.75, 'rgba(195, 225, 255, 0.12)');
-        g.addColorStop(1, 'rgba(195, 225, 255, 0)');
+        // Quầng hào quang mềm xung quanh rìa trăng (tránh làm lóa tâm mặt trăng)
+        const g = c.createRadialGradient(cx, cy, size * 0.16, cx, cy, size * 0.48);
+        g.addColorStop(0, 'rgba(255, 244, 198, 0.62)');
+        g.addColorStop(0.35, 'rgba(255, 228, 150, 0.34)');
+        g.addColorStop(0.7, 'rgba(255, 210, 120, 0.10)');
+        g.addColorStop(1, 'rgba(255, 210, 120, 0)');
         c.fillStyle = g;
         c.fillRect(0, 0, size, size);
 
@@ -1554,62 +1494,120 @@
       const lunarTex = createRealisticLunarTexture();
       const moonCoronaTex = createMoonCoronaTexture();
 
-      // Khối cầu Mặt trăng 3D có bề mặt lồi lõm & tự phát sáng rực rỡ
+      // Khối cầu Mặt trăng 3D đặt ở phía trước tất cả các dải cực quang, hiển thị rõ từng hố thiên thạch
       const moonSphere = new THREE.Mesh(
-        new THREE.SphereGeometry(8.6, 48, 48),
+        new THREE.SphereGeometry(9.2, 48, 48),
         new THREE.MeshStandardMaterial({
           map: lunarTex,
           bumpMap: lunarTex,
-          bumpScale: 0.22,
+          bumpScale: 0.32,
           emissiveMap: lunarTex,
-          emissive: new THREE.Color(0xfff5d6),
-          emissiveIntensity: 1.55,
-          roughness: 0.55,
-          metalness: 0.05
+          emissive: new THREE.Color(0xffe9b0),
+          emissiveIntensity: 0.92,
+          roughness: 0.65,
+          metalness: 0.02
         })
       );
-      // Lớp khí quyển phát sáng sát bề mặt
+      moonSphere.renderOrder = 5;
+
+      // Viền khí quyển mỏng ôm sát rìa mặt trăng
       const moonInnerRim = new THREE.Mesh(
-        new THREE.SphereGeometry(9.35, 32, 32),
+        new THREE.SphereGeometry(9.75, 32, 32),
         new THREE.MeshBasicMaterial({
-          color: 0xfff8e2,
+          color: 0xffe8a6,
           transparent: true,
-          opacity: 0.38,
-          blending: THREE.AdditiveBlending,
+          opacity: 0.28,
+          side: THREE.BackSide,
           depthWrite: false
         })
       );
-      // Quầng sáng hào quang lớn (Lunar Corona Sprite) tỏa rực trên bầu trời
+
+      // Hào quang tỏa phía sau mặt trăng (không đè lên bề mặt trăng)
       const moonCoronaSprite = new THREE.Sprite(
         new THREE.SpriteMaterial({
           map: moonCoronaTex,
-          color: 0xfff4cf,
+          color: 0xffeab5,
           transparent: true,
-          opacity: 0.92,
+          opacity: 0.72,
           blending: THREE.AdditiveBlending,
           depthWrite: false
         })
       );
-      moonCoronaSprite.scale.set(46, 46, 1);
+      moonCoronaSprite.scale.set(38, 38, 1);
+      moonCoronaSprite.position.set(0, 0, -2);
 
-      const moonOuterHaloSprite = new THREE.Sprite(
-        new THREE.SpriteMaterial({
-          map: moonCoronaTex,
-          color: 0xd8eeff,
-          transparent: true,
-          opacity: 0.45,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false
-        })
-      );
-      moonOuterHaloSprite.scale.set(74, 74, 1);
-
-      moonGroup.add(moonOuterHaloSprite, moonCoronaSprite, moonInnerRim, moonSphere);
-      moonGroup.position.set(42, 49, -92);
+      moonGroup.add(moonCoronaSprite, moonInnerRim, moonSphere);
+      // Đặt Mặt trăng ở z = -82 (gần hơn hẳn so với Cực quang ở z = -175..-220) để không bao giờ bị che khuất
+      moonGroup.position.set(36, 46, -82);
       scene3D.add(moonGroup);
 
-      /* ==================== GÓP Ý #3: CỰC QUANG ĐA TẦNG & HIỆU ỨNG ÁNH SÁNG CỰC QUANG ==================== */
-      function createAuroraCurtainTexture(paletteType = 0) {
+      /* ==================== CỰC QUANG TOÀN BẦU TRỜI DỊU MẮT & TRÁNH HOÀN TOÀN VÙNG MẶT TRĂNG ==================== */
+      function createFullSkyAuroraDomeTexture() {
+        const w = 1024;
+        const h = 512;
+        const cvs = document.createElement('canvas');
+        cvs.width = w;
+        cvs.height = h;
+        const c = cvs.getContext('2d');
+
+        c.clearRect(0, 0, w, h);
+
+        // Nền hào quang dịu nhẹ bao phủ bầu trời 360 độ
+        const skyGlow = c.createLinearGradient(0, 0, 0, h * 0.72);
+        skyGlow.addColorStop(0, 'rgba(110, 70, 225, 0.18)');
+        skyGlow.addColorStop(0.3, 'rgba(38, 205, 200, 0.22)');
+        skyGlow.addColorStop(0.6, 'rgba(35, 235, 155, 0.24)');
+        skyGlow.addColorStop(0.88, 'rgba(20, 160, 130, 0.08)');
+        skyGlow.addColorStop(1, 'rgba(10, 40, 70, 0)');
+        c.fillStyle = skyGlow;
+        c.fillRect(0, 0, w, h);
+
+        // Các dải sóng cực quang mềm mại chạy quanh 360 độ
+        c.globalCompositeOperation = 'lighter';
+        for (let band = 0; band < 5; band++) {
+          c.beginPath();
+          const baseY = 60 + band * 54;
+          for (let x = 0; x <= w; x += 8) {
+            const u = (x / w) * Math.PI * 2;
+            const y =
+              baseY +
+              Math.sin(u * (2 + (band % 3)) + band * 1.3) * 26 +
+              Math.cos(u * 5 - band) * 12;
+            if (x === 0) c.moveTo(x, y);
+            else c.lineTo(x, y);
+          }
+          c.strokeStyle =
+            band % 2 === 0
+              ? 'rgba(50, 240, 170, 0.20)'
+              : 'rgba(85, 195, 245, 0.18)';
+          c.lineWidth = 28;
+          c.stroke();
+        }
+
+        for (let i = 0; i < 160; i++) {
+          const rx = (i / 160) * w + rand(-4, 4);
+          const rw = rand(3, 10);
+          const topY = rand(15, 160);
+          const botY = topY + rand(80, 190);
+          const g = c.createLinearGradient(0, botY, 0, topY);
+          const alpha = rand(0.05, 0.15);
+          g.addColorStop(0, 'rgba(40, 245, 165, 0)');
+          g.addColorStop(0.35, `rgba(55, 245, 185, ${alpha})`);
+          g.addColorStop(0.7, `rgba(80, 210, 250, ${alpha * 0.8})`);
+          g.addColorStop(1, 'rgba(175, 105, 245, 0)');
+          c.fillStyle = g;
+          c.fillRect(rx, topY, rw, botY - topY);
+        }
+
+        const tex = new THREE.CanvasTexture(cvs);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+        tex.needsUpdate = true;
+        return tex;
+      }
+
+      // Texture rèm cực quang có tích hợp "Cửa Sổ Trời Quang" (Moon Cutout) để không làm mờ Mặt trăng
+      function createAuroraCurtainTexture(paletteType = 0, cutoutMoonRight = false) {
         const w = 512;
         const h = 256;
         const cvs = document.createElement('canvas');
@@ -1617,56 +1615,64 @@
         cvs.height = h;
         const c = cvs.getContext('2d');
 
-        // Lớp màu nền chuyển sắc của dải cực quang
         const baseGrad = c.createLinearGradient(0, h, 0, 0);
         if (paletteType === 0) {
-          // Xanh lục bảo Bắc Cực -> Xanh băng -> Tím hồng
-          baseGrad.addColorStop(0, 'rgba(30, 255, 160, 0)');
-          baseGrad.addColorStop(0.18, 'rgba(42, 255, 175, 0.72)');
-          baseGrad.addColorStop(0.48, 'rgba(55, 225, 255, 0.52)');
-          baseGrad.addColorStop(0.78, 'rgba(165, 95, 255, 0.28)');
-          baseGrad.addColorStop(1, 'rgba(165, 95, 255, 0)');
+          baseGrad.addColorStop(0, 'rgba(30, 245, 155, 0)');
+          baseGrad.addColorStop(0.2, 'rgba(42, 245, 170, 0.52)');
+          baseGrad.addColorStop(0.5, 'rgba(55, 215, 245, 0.38)');
+          baseGrad.addColorStop(0.8, 'rgba(155, 90, 245, 0.22)');
+          baseGrad.addColorStop(1, 'rgba(155, 90, 245, 0)');
         } else if (paletteType === 1) {
-          // Xanh ngọc bích -> Tím huyền ảo
-          baseGrad.addColorStop(0, 'rgba(45, 240, 215, 0)');
-          baseGrad.addColorStop(0.22, 'rgba(50, 255, 210, 0.62)');
-          baseGrad.addColorStop(0.55, 'rgba(110, 175, 255, 0.42)');
-          baseGrad.addColorStop(0.84, 'rgba(225, 95, 220, 0.24)');
-          baseGrad.addColorStop(1, 'rgba(225, 95, 220, 0)');
+          baseGrad.addColorStop(0, 'rgba(45, 235, 210, 0)');
+          baseGrad.addColorStop(0.22, 'rgba(50, 245, 205, 0.48)');
+          baseGrad.addColorStop(0.55, 'rgba(105, 170, 245, 0.34)');
+          baseGrad.addColorStop(0.85, 'rgba(215, 90, 210, 0.20)');
+          baseGrad.addColorStop(1, 'rgba(215, 90, 210, 0)');
         } else {
-          // Lục sáng rực -> Vàng lục nhẹ
-          baseGrad.addColorStop(0, 'rgba(80, 255, 150, 0)');
-          baseGrad.addColorStop(0.2, 'rgba(95, 255, 165, 0.56)');
-          baseGrad.addColorStop(0.6, 'rgba(40, 215, 195, 0.34)');
-          baseGrad.addColorStop(1, 'rgba(40, 215, 195, 0)');
+          baseGrad.addColorStop(0, 'rgba(75, 245, 145, 0)');
+          baseGrad.addColorStop(0.22, 'rgba(90, 245, 160, 0.46)');
+          baseGrad.addColorStop(0.62, 'rgba(40, 205, 190, 0.28)');
+          baseGrad.addColorStop(1, 'rgba(40, 205, 190, 0)');
         }
         c.fillStyle = baseGrad;
         c.fillRect(0, 0, w, h);
 
-        // Vẽ các tia sáng điện từ dọc (Vertical Aurora Rays / Striations) đặc trưng của Cực quang thật
         c.globalCompositeOperation = 'lighter';
-        for (let i = 0; i < 95; i++) {
+        for (let i = 0; i < 90; i++) {
           const rx = rand(0, w);
-          const rw = rand(2, 9);
-          const rayAlpha = rand(0.12, 0.38);
+          const rw = rand(2, 8);
+          const rayAlpha = rand(0.10, 0.28);
           const rayGrad = c.createLinearGradient(0, h * 0.92, 0, h * 0.08);
           rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-          rayGrad.addColorStop(0.25, `rgba(160, 255, 220, ${rayAlpha})`);
-          rayGrad.addColorStop(0.65, `rgba(120, 220, 255, ${rayAlpha * 0.65})`);
+          rayGrad.addColorStop(0.28, `rgba(150, 250, 215, ${rayAlpha})`);
+          rayGrad.addColorStop(0.68, `rgba(115, 215, 250, ${rayAlpha * 0.6})`);
           rayGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
           c.fillStyle = rayGrad;
           c.fillRect(rx, 0, rw, h);
         }
 
-        // Làm mờ mềm hai đầu trái phải của dải lụa cực quang
+        // Làm mềm hai đầu dải lụa
         c.globalCompositeOperation = 'destination-in';
         const edgeMask = c.createLinearGradient(0, 0, w, 0);
         edgeMask.addColorStop(0, 'rgba(0, 0, 0, 0)');
-        edgeMask.addColorStop(0.12, 'rgba(0, 0, 0, 1)');
-        edgeMask.addColorStop(0.88, 'rgba(0, 0, 0, 1)');
+        edgeMask.addColorStop(0.08, 'rgba(0, 0, 0, 1)');
+        edgeMask.addColorStop(0.92, 'rgba(0, 0, 0, 1)');
         edgeMask.addColorStop(1, 'rgba(0, 0, 0, 0)');
         c.fillStyle = edgeMask;
         c.fillRect(0, 0, w, h);
+
+        // Khoét khoảng trời trong trẻo tại khu vực Mặt trăng đứng để Mặt trăng luôn tỏa sáng rõ nét
+        if (cutoutMoonRight) {
+          c.globalCompositeOperation = 'destination-out';
+          const clearGrad = c.createRadialGradient(w * 0.61, h * 0.55, 18, w * 0.61, h * 0.55, 92);
+          clearGrad.addColorStop(0, 'rgba(0, 0, 0, 0.95)');
+          clearGrad.addColorStop(0.55, 'rgba(0, 0, 0, 0.65)');
+          clearGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          c.fillStyle = clearGrad;
+          c.beginPath();
+          c.arc(w * 0.61, h * 0.55, 92, 0, Math.PI * 2);
+          c.fill();
+        }
 
         const tex = new THREE.CanvasTexture(cvs);
         tex.needsUpdate = true;
@@ -1676,15 +1682,43 @@
       const auroraGroup = new THREE.Group();
       scene3D.add(auroraGroup);
 
+      // Vòm Cực quang 360 độ dịu nhẹ
+      const auroraDomeTex = createFullSkyAuroraDomeTexture();
+      const auroraSkyDome = new THREE.Mesh(
+        new THREE.SphereGeometry(380, 48, 32),
+        new THREE.MeshBasicMaterial({
+          map: auroraDomeTex,
+          transparent: true,
+          opacity: 0.34,
+          side: THREE.BackSide,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending
+        })
+      );
+      auroraSkyDome.position.set(0, -18, 0);
+      auroraGroup.add(auroraSkyDome);
+
+      // 8 Dải lụa Cực quang bao quanh 360 độ bầu trời, lùi sâu ra xa (z = -185..-215) và có khoảng trống nhường chỗ cho Mặt trăng
       const auroraLayers = [];
+      const auroraTextures = [
+        createAuroraCurtainTexture(0, true),
+        createAuroraCurtainTexture(1, true),
+        createAuroraCurtainTexture(2, false)
+      ];
+
       const auroraConfigs = [
-        { width: 280, height: 52, y: 54, z: -118, rotY: 0.04, speed: 1.15, amp: 8.5, texType: 0, opacity: 0.78 },
-        { width: 250, height: 46, y: 62, z: -132, rotY: -0.08, speed: 0.88, amp: 10.2, texType: 1, opacity: 0.64 },
-        { width: 220, height: 40, y: 46, z: -106, rotY: 0.12, speed: 1.42, amp: 6.8, texType: 2, opacity: 0.52 }
+        { width: 520, height: 64, x: -20, y: 38,  z: -185, rotX: 0.10, rotY: 0.0,       speed: 1.10, amp: 12.0, texIdx: 0, opacity: 0.42 },
+        { width: 540, height: 70, x: -45, y: 68,  z: -205, rotX: 0.22, rotY: 0.12,      speed: 0.88, amp: 14.5, texIdx: 1, opacity: 0.38 },
+        { width: 520, height: 72, x: 0,   y: 102, z: -195, rotX: 0.42, rotY: -0.08,     speed: 1.18, amp: 15.0, texIdx: 2, opacity: 0.36 },
+        { width: 480, height: 76, x: 0,   y: 136, z: -160, rotX: 0.65, rotY: 0.05,      speed: 0.82, amp: 15.5, texIdx: 2, opacity: 0.34 },
+        // Hai bên Đông - Tây và phía Nam (để khi xoay 360 độ nhìn hướng nào cũng có cực quang)
+        { width: 460, height: 64, x: -195,y: 54,  z: 0,    rotX: 0.14, rotY: Math.PI/2, speed: 1.24, amp: 12.0, texIdx: 2, opacity: 0.38 },
+        { width: 460, height: 64, x: 195, y: 54,  z: 0,    rotX: 0.14, rotY: -Math.PI/2,speed: 1.16, amp: 12.0, texIdx: 1, opacity: 0.38 },
+        { width: 520, height: 68, x: 0,   y: 52,  z: 195,  rotX: -0.14,rotY: Math.PI,   speed: 1.04, amp: 13.5, texIdx: 2, opacity: 0.38 }
       ];
 
       auroraConfigs.forEach((cfg, idx) => {
-        const geo = new THREE.PlaneGeometry(cfg.width, cfg.height, 72, 16);
+        const geo = new THREE.PlaneGeometry(cfg.width, cfg.height, 80, 16);
         const pos = geo.attributes.position;
         const baseX = [];
         const baseY = [];
@@ -1693,16 +1727,15 @@
         for (let i = 0; i < pos.count; i++) {
           const x = pos.getX(i);
           const y = pos.getY(i);
-          // Uốn cong dải cực quang ôm vòng cung bầu trời
-          const curveZ = -Math.pow(x / (cfg.width * 0.5), 2) * 18 + Math.sin(x * 0.04 + idx) * 9;
-          pos.setZ(i, curveZ);
+          const archZ = Math.pow(x / (cfg.width * 0.5), 2) * 32 + Math.sin(x * 0.028 + idx) * 11;
+          pos.setZ(i, archZ);
           baseX.push(x);
           baseY.push(y);
-          baseZ.push(curveZ);
+          baseZ.push(archZ);
         }
 
         const mat = new THREE.MeshBasicMaterial({
-          map: createAuroraCurtainTexture(cfg.texType),
+          map: auroraTextures[cfg.texIdx],
           transparent: true,
           opacity: cfg.opacity,
           depthWrite: false,
@@ -1711,9 +1744,10 @@
         });
 
         const mesh = new THREE.Mesh(geo, mat);
-        mesh.position.set(0, cfg.y, cfg.z);
-        mesh.rotation.x = 0.16;
+        mesh.position.set(cfg.x, cfg.y, cfg.z);
+        mesh.rotation.x = cfg.rotX;
         mesh.rotation.y = cfg.rotY;
+        mesh.renderOrder = 1;
         auroraGroup.add(mesh);
 
         auroraLayers.push({
@@ -1726,16 +1760,79 @@
           speed: cfg.speed,
           amp: cfg.amp,
           baseOpacity: cfg.opacity,
-          phase: idx * 2.1
+          phase: idx * 1.7
         });
       });
 
-      // Ánh sáng Cực quang hắt nhẹ từ bầu trời xuống đồi tuyết
-      const auroraSkyLight = new THREE.PointLight(0x38ffba, 0.85, 180);
-      auroraSkyLight.position.set(-15, 60, -45);
+      const auroraSkyLight = new THREE.PointLight(0x38ffba, 0.72, 220);
+      auroraSkyLight.position.set(0, 65, -40);
       scene3D.add(auroraSkyLight);
 
-      /* ==================== ĐỒI TUYẾT 3D & BẦU TRỜI SAO ==================== */
+      /* ==================== 800 CHẤM NHỎ NGÔI SAO PHÁT SÁNG TRÊN BẦU TRỜI 360 ĐỘ ==================== */
+      function createGlowingStarDotTexture() {
+        const size = 64;
+        const cvs = document.createElement('canvas');
+        cvs.width = size;
+        cvs.height = size;
+        const c = cvs.getContext('2d');
+        const cx = size / 2;
+        const cy = size / 2;
+
+        const glow = c.createRadialGradient(cx, cy, 1, cx, cy, 30);
+        glow.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        glow.addColorStop(0.18, 'rgba(255, 250, 220, 0.95)');
+        glow.addColorStop(0.42, 'rgba(200, 235, 255, 0.45)');
+        glow.addColorStop(0.75, 'rgba(160, 215, 255, 0.12)');
+        glow.addColorStop(1, 'rgba(160, 215, 255, 0)');
+        c.fillStyle = glow;
+        c.beginPath();
+        c.arc(cx, cy, 30, 0, Math.PI * 2);
+        c.fill();
+
+        c.fillStyle = '#ffffff';
+        c.beginPath();
+        c.arc(cx, cy, 4.2, 0, Math.PI * 2);
+        c.fill();
+
+        const tex = new THREE.CanvasTexture(cvs);
+        tex.needsUpdate = true;
+        return tex;
+      }
+
+      const glowingStarTex = createGlowingStarDotTexture();
+      const totalStarCount = 800; // Đúng 800 ngôi sao phát sáng phân bổ khắp vòm trời 360 độ
+      const groupStarCount = totalStarCount / 2;
+
+      function createStarGroup(count, size, colorHex) {
+        const geo = new THREE.BufferGeometry();
+        const positions = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+          // Phân bố đều trên vòm cầu 360 độ để xoay góc nào cũng thấy sao phát sáng
+          const theta = rand(0, Math.PI * 2);
+          const phi = rand(0.06, Math.PI * 0.46);
+          const radius = rand(155, 310);
+          positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+          positions[i * 3 + 1] = radius * Math.cos(phi) + 4;
+          positions[i * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+        }
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const mat = new THREE.PointsMaterial({
+          color: colorHex,
+          size: size,
+          map: glowingStarTex,
+          transparent: true,
+          opacity: 0.95,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending
+        });
+        return { points: new THREE.Points(geo, mat), mat };
+      }
+
+      const starLayerA = createStarGroup(groupStarCount, 2.5, 0xfff8df);
+      const starLayerB = createStarGroup(groupStarCount, 1.95, 0xdff4ff);
+      scene3D.add(starLayerA.points, starLayerB.points);
+
+      /* ==================== ĐỒI TUYẾT 3D BAO QUANH 360 ĐỘ ==================== */
       const snowGroundMat = new THREE.MeshStandardMaterial({
         color: 0xeaf7f6,
         roughness: 0.68,
@@ -1745,33 +1842,24 @@
         new THREE.SphereGeometry(95, 48, 32),
         snowGroundMat
       );
-      mainSnowHill.scale.set(1.5, 0.25, 1.2);
-      mainSnowHill.position.set(0, -24.2, -6);
+      mainSnowHill.scale.set(1.5, 0.25, 1.5);
+      mainSnowHill.position.set(0, -24.2, 0);
       mainSnowHill.receiveShadow = true;
       scene3D.add(mainSnowHill);
 
-      const leftRidge = new THREE.Mesh(new THREE.SphereGeometry(55, 32, 20), snowGroundMat);
-      leftRidge.scale.set(1.3, 0.22, 1);
-      leftRidge.position.set(-48, -14.5, -24);
-      scene3D.add(leftRidge);
-
-      const rightRidge = new THREE.Mesh(new THREE.SphereGeometry(55, 32, 20), snowGroundMat);
-      rightRidge.scale.set(1.3, 0.22, 1);
-      rightRidge.position.set(48, -14.5, -24);
-      scene3D.add(rightRidge);
-
-      const starGeo = new THREE.BufferGeometry();
-      const starCount = 480;
-      const starPositions = new Float32Array(starCount * 3);
-      for (let i = 0; i < starCount; i++) {
-        starPositions[i * 3] = rand(-220, 220);
-        starPositions[i * 3 + 1] = rand(8, 195);
-        starPositions[i * 3 + 2] = rand(-220, -30);
-      }
-      starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-      const starFieldMat = new THREE.PointsMaterial({ color: 0xfff4d4, size: 1.45, transparent: true, opacity: 0.92 });
-      const starField = new THREE.Points(starGeo, starFieldMat);
-      scene3D.add(starField);
+      // Các dãy đồi tuyết bao quanh 4 phía (Đông, Tây, Nam, Bắc) phục vụ góc nhìn 360 độ
+      [
+        { x: -52, z: -24, sx: 1.3, sz: 1.0 },
+        { x:  52, z: -24, sx: 1.3, sz: 1.0 },
+        { x: -48, z:  36, sx: 1.2, sz: 1.1 },
+        { x:  48, z:  36, sx: 1.2, sz: 1.1 },
+        { x:   0, z:  62, sx: 1.4, sz: 0.95 }
+      ].forEach((r) => {
+        const ridge = new THREE.Mesh(new THREE.SphereGeometry(52, 28, 18), snowGroundMat);
+        ridge.scale.set(r.sx, 0.22, r.sz);
+        ridge.position.set(r.x, -14.8, r.z);
+        scene3D.add(ridge);
+      });
 
       /* ==================== TEXTURE TINH THỂ BĂNG (DENDRITIC ICE CRYSTAL) ==================== */
       function createIceCrystalTexture(variant = 0) {
@@ -1915,7 +2003,7 @@
         createIceCrystalTexture(2)
       ];
 
-      /* ==================== CÂY THÔNG NOEL 3D, NGƯỜI TUYẾT & RỪNG THÔNG NHỎ ==================== */
+      /* ==================== CÂY THÔNG NOEL 3D, NGƯỜI TUYẾT & RỪNG THÔNG 360 ĐỘ ==================== */
       const worldTreeGroup = new THREE.Group();
       scene3D.add(worldTreeGroup);
 
@@ -2382,17 +2470,26 @@
         return mini;
       }
 
+      // Trồng rừng thông nhỏ bao quanh đủ 360 độ quanh Cây thông chính
       const miniTreePositions = [
-        { x: -26, y: -1.8, z: -6, s: 1.05 },
-        { x: -20, y: -1.3, z: 3,  s: 0.85 },
-        { x: -15, y: -1.6, z: -9, s: 0.92 },
-        { x: -32, y: -2.5, z: 2,  s: 1.15 },
-        { x: -11, y: -1.2, z: 4,  s: 0.68 },
-        { x: 11,  y: -1.2, z: 6,  s: 0.68 },
-        { x: 15,  y: -1.6, z: -9, s: 0.92 },
-        { x: 20,  y: -1.3, z: 3,  s: 0.85 },
-        { x: 26,  y: -1.8, z: -6, s: 1.05 },
-        { x: 32,  y: -2.5, z: 2,  s: 1.15 }
+        { x: -26, y: -1.8, z: -6,  s: 1.05 },
+        { x: -20, y: -1.3, z: 3,   s: 0.85 },
+        { x: -15, y: -1.6, z: -9,  s: 0.92 },
+        { x: -32, y: -2.5, z: 2,   s: 1.15 },
+        { x: -11, y: -1.2, z: 4,   s: 0.68 },
+        { x: 11,  y: -1.2, z: 6,   s: 0.68 },
+        { x: 15,  y: -1.6, z: -9,  s: 0.92 },
+        { x: 20,  y: -1.3, z: 3,   s: 0.85 },
+        { x: 26,  y: -1.8, z: -6,  s: 1.05 },
+        { x: 32,  y: -2.5, z: 2,   s: 1.15 },
+        // Các cây thông ở phía sau & hai bên sườn phục vụ góc xoay 360 độ
+        { x: -24, y: -1.9, z: 22,  s: 0.95 },
+        { x:  24, y: -1.9, z: 22,  s: 0.95 },
+        { x: -16, y: -2.1, z: -24, s: 1.02 },
+        { x:  16, y: -2.1, z: -24, s: 1.02 },
+        { x:   0, y: -2.2, z: -30, s: 1.12 },
+        { x: -28, y: -2.3, z: -20, s: 0.88 },
+        { x:  28, y: -2.3, z: -20, s: 0.88 }
       ];
       miniTreePositions.forEach((p) => {
         const mt = createMiniPineTree3D(p.s);
@@ -2879,7 +2976,6 @@
       orbitSanta3D.visible = false;
       scene3D.add(orbitSanta3D);
 
-      // Hệ thống Hạt Bụi Tiên Vàng (Magic Stardust Trail)
       const trailCount = 160;
       const trailGeo = new THREE.BufferGeometry();
       const trailPos = new Float32Array(trailCount * 3);
@@ -2984,7 +3080,6 @@
         giantSnowflakes.push({
           mesh: sf,
           offsetX: rand(-25, 25),
-          // Đảm bảo khi sp = 1.0, tất cả bông tuyết đều rơi vượt quá đáy màn hình
           offsetY: rand(16, 48),
           offsetZ: rand(-22, -4),
           fallSpeed: rand(56, 72),
@@ -3003,7 +3098,7 @@
       for (let i = 0; i < snowParticleCount; i++) {
         snowPos[i * 3] = rand(-95, 95);
         snowPos[i * 3 + 1] = rand(-12, 95);
-        snowPos[i * 3 + 2] = rand(-75, 45);
+        snowPos[i * 3 + 2] = rand(-95, 95);
         snowVel.push({
           vy: rand(4.5, 11.0),
           vx: rand(-1.4, 1.4),
@@ -3061,7 +3156,7 @@
         const flakeMesh = new THREE.Mesh(unitPlaneGeo, mat);
         const s = rand(1.15, 2.55);
         flakeMesh.scale.set(s, s, s);
-        flakeMesh.position.set(rand(-85, 85), rand(-12, 92), rand(-55, 42));
+        flakeMesh.position.set(rand(-85, 85), rand(-12, 92), rand(-85, 85));
         flakeMesh.rotation.set(rand(0, Math.PI), rand(0, Math.PI), rand(0, Math.PI));
         smallCrystalFlakesGroup.add(flakeMesh);
 
@@ -3222,7 +3317,7 @@
 
           const laneX = -32 + (laneIndices[i] / 14) * 64 + rand(-1.5, 1.5);
           const startY = 36 + i * 5.2 + rand(0, 4);
-          const startZ = rand(6, 22);
+          const startZ = rand(-18, 24);
 
           meshGroup.position.set(laneX, startY, startZ);
           meshGroup.userData.giftInfo = { wish, palette };
@@ -3250,11 +3345,68 @@
         });
       }
 
-      /* ==================== TƯƠNG TÁC NHẤP MỞ HỘP QUÀ 3D & DI CHUỘT NGHIÊNG GÓC NHÌN ==================== */
+      /* ==================== GÓC NHÌN 360 ĐỘ TỰ DO + 5 GÓC MÁY (CÓ THÊM GÓC NHÌN MỚI) ==================== */
       const raycaster = new THREE.Raycaster();
       const pointerNDC = new THREE.Vector2();
       const userLookOffset = new THREE.Vector2(0, 0);
       let hoveredGiftRoot = null;
+
+      // Hệ tọa độ cầu 360 độ (Spherical Orbit) cho phép người dùng xoay tròn đủ 360 độ quanh khung cảnh
+      let orbitAzimuth = 0;          // Góc xoay ngang 360 độ (-Infinity .. +Infinity)
+      let orbitPolar = 1.38;         // Góc ngẩng/cúi (giới hạn an toàn không xuyên xuống đất)
+      let orbitRadius = 56;          // Khoảng cách từ camera tới tâm
+      let isDraggingOrbit = false;
+      let hasDraggedManual360 = false;
+      let dragStartPos = { x: 0, y: 0 };
+      let prevDragPos = { x: 0, y: 0 };
+
+      let cameraMode = 0;
+      const CAMERA_MODES = [
+        {
+          id: 'panoramic',
+          label: '🎥 Góc máy: Toàn cảnh (Kéo chuột xoay 360°)',
+          pos: new THREE.Vector3(0, 11, 56),
+          look: new THREE.Vector3(0, 11.5, 0)
+        },
+        {
+          id: 'orbit360',
+          label: '🎥 Góc máy: Xoay 360° Quanh Cây Thông',
+          pos: new THREE.Vector3(0, 14, 56),
+          look: new THREE.Vector3(0, 11.5, 0)
+        },
+        {
+          id: 'aerial_sleigh',
+          label: '🎥 Góc máy: Từ Cỗ Xe Trên Cao Nhìn Xuống (Mới)',
+          pos: new THREE.Vector3(-22, 34, 42),
+          look: new THREE.Vector3(0, 10, 0)
+        },
+        {
+          id: 'snowman_low',
+          label: '🎥 Góc máy: Cạnh Người Tuyết & Mặt Trăng (Mới)',
+          pos: new THREE.Vector3(-19, 4.5, 22),
+          look: new THREE.Vector3(8, 18, -18)
+        },
+        {
+          id: 'moon_aurora',
+          label: '🎥 Góc máy: Ngước Nhìn Mặt Trăng & Cực Quang',
+          pos: new THREE.Vector3(-6, 7.5, 58),
+          look: new THREE.Vector3(18, 34, -45)
+        }
+      ];
+
+      cameraViewBtn.addEventListener('click', () => {
+        cameraMode = (cameraMode + 1) % CAMERA_MODES.length;
+        hasDraggedManual360 = false;
+        const modeObj = CAMERA_MODES[cameraMode];
+        cameraViewBtn.textContent = modeObj.label;
+        cameraViewBtn.classList.toggle('active-360', modeObj.id === 'orbit360');
+
+        // Đồng bộ góc tọa độ cầu ban đầu theo góc máy vừa chọn
+        const offset = modeObj.pos.clone().sub(modeObj.look);
+        orbitRadius = offset.length();
+        orbitAzimuth = Math.atan2(offset.x, offset.z);
+        orbitPolar = clamp(Math.acos(clamp(offset.y / orbitRadius, -1, 1)), 0.35, 1.52);
+      });
 
       function getIntersectedGiftRoot(clientX, clientY) {
         if (!giftsFallingActive || !gifts3DGroup.visible) return null;
@@ -3270,11 +3422,33 @@
         return null;
       }
 
-      renderer.domElement.addEventListener('pointermove', (e) => {
+      renderer.domElement.addEventListener('pointerdown', (e) => {
+        if (wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active')) return;
+        isDraggingOrbit = true;
+        dragStartPos = { x: e.clientX, y: e.clientY };
+        prevDragPos = { x: e.clientX, y: e.clientY };
+      });
+
+      window.addEventListener('pointermove', (e) => {
         const rect = renderer.domElement.getBoundingClientRect();
         const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
         const ny = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-        userLookOffset.set(nx * 5.2, ny * 2.8);
+        userLookOffset.set(nx * 4.5, ny * 2.5);
+
+        if (isDraggingOrbit && isCurtainOpened) {
+          const dx = e.clientX - prevDragPos.x;
+          const dy = e.clientY - prevDragPos.y;
+          const totalMoved = Math.hypot(e.clientX - dragStartPos.x, e.clientY - dragStartPos.y);
+
+          if (totalMoved > 5) {
+            hasDraggedManual360 = true;
+            orbitAzimuth -= dx * 0.0075; // Xoay tròn đủ 360 độ không giới hạn
+            orbitPolar = clamp(orbitPolar - dy * 0.0055, 0.32, 1.53);
+            renderer.domElement.style.cursor = 'grabbing';
+          }
+          prevDragPos = { x: e.clientX, y: e.clientY };
+          return;
+        }
 
         const hitRoot = getIntersectedGiftRoot(e.clientX, e.clientY);
         if (hoveredGiftRoot && hoveredGiftRoot !== hitRoot) {
@@ -3285,36 +3459,38 @@
           hoveredGiftRoot.scale.setScalar(1.24);
           renderer.domElement.style.cursor = 'pointer';
         } else {
-          renderer.domElement.style.cursor = 'default';
+          renderer.domElement.style.cursor = 'grab';
         }
       });
 
-      renderer.domElement.addEventListener('pointerdown', (e) => {
-        if (wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active')) return;
-        const hitRoot = getIntersectedGiftRoot(e.clientX, e.clientY);
-        if (hitRoot && hitRoot.userData.giftInfo) {
-          e.stopPropagation();
-          const { wish, palette } = hitRoot.userData.giftInfo;
-          hitRoot.userData.popAnim = 1.0;
-          triggerGiftSparkleBurst(hitRoot.position, palette.hexRibbon);
-          setTimeout(() => openGiftWish(wish, palette), 240);
+      window.addEventListener('pointerup', (e) => {
+        if (!isDraggingOrbit) return;
+        isDraggingOrbit = false;
+        renderer.domElement.style.cursor = 'grab';
+
+        const totalMoved = Math.hypot(e.clientX - dragStartPos.x, e.clientY - dragStartPos.y);
+        // Nếu người dùng nhấp nhẹ (< 6px) vào hộp quà thay vì kéo xoay 360 độ -> Mở hộp quà!
+        if (totalMoved < 6) {
+          if (wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active')) return;
+          const hitRoot = getIntersectedGiftRoot(e.clientX, e.clientY);
+          if (hitRoot && hitRoot.userData.giftInfo) {
+            const { wish, palette } = hitRoot.userData.giftInfo;
+            hitRoot.userData.popAnim = 1.0;
+            triggerGiftSparkleBurst(hitRoot.position, palette.hexRibbon);
+            setTimeout(() => openGiftWish(wish, palette), 240);
+          }
         }
       });
 
-      /* ==================== CHUYỂN ĐỔI GÓC MÁY CAMERA 3D ==================== */
-      let cameraMode = 0;
-      const CAMERA_MODES = [
-        { label: '🎥 Góc máy: Toàn cảnh', pos: new THREE.Vector3(0, 11, 56), look: new THREE.Vector3(0, 11.5, 0) },
-        { label: '🎥 Góc máy: Cận cảnh Cây thông', pos: new THREE.Vector3(-4, 7.5, 34), look: new THREE.Vector3(-2, 10.5, 0) },
-        { label: '🎥 Góc máy: Ngước nhìn Cực quang & Trăng', pos: new THREE.Vector3(0, 6.5, 62), look: new THREE.Vector3(10, 32, -45) }
-      ];
+      // Hỗ trợ lăn chuột phóng to / thu nhỏ khoảng cách trong góc nhìn 360 độ
+      renderer.domElement.addEventListener('wheel', (e) => {
+        if (!isCurtainOpened) return;
+        e.preventDefault();
+        hasDraggedManual360 = true;
+        orbitRadius = clamp(orbitRadius + e.deltaY * 0.035, 26, 92);
+      }, { passive: false });
 
-      cameraViewBtn.addEventListener('click', () => {
-        cameraMode = (cameraMode + 1) % CAMERA_MODES.length;
-        cameraViewBtn.textContent = CAMERA_MODES[cameraMode].label;
-      });
-
-      /* ==================== KỊCH BẢN ĐẠO DIỄN 3D (CỔNG KHÔNG GIAN -> TUYẾT RƠI HẾT -> HIỆN CHỮ) ==================== */
+      /* ==================== KỊCH BẢN ĐẠO DIỄN 3D ==================== */
       let timelineStart = 0;
       let timelineRunning = false;
       let orbitSantaActive = false;
@@ -3330,13 +3506,6 @@
         timers.push(setTimeout(fn, delay));
       }
 
-      // Kịch bản đạo diễn mới theo đúng góp ý của Sếp:
-      // - 0.15s -> 3.85s: Cây thông Noel chưa hiện. Cánh cổng không gian 3D bung mở ở z = -42.
-      // - 0.48s -> 3.70s: Ông già Noel bay trực tiếp từ tâm Cánh cổng không gian (z = -42) lao ra ngoài ống kính rồi vút lên trời. Cổng không gian đóng lại.
-      // - 3.50s -> 6.50s: Bão bông tuyết pha lê khổng lồ rơi phủ kín màn hình. Khi sương trắng (whiteout) lóe lên ở 4.15s, Cây thông Noel khổng lồ mới xuất hiện trên đồi tuyết.
-      // - 6.50s: Toàn bộ bông tuyết khổng lồ rơi khuất hoàn toàn khỏi đáy màn hình.
-      // - 6.80s: Sau khi tuyết khổng lồ đã rơi hết, chữ "Merry Christmas" mới xuất hiện.
-      // - 7.55s: Chữ "Giáng sinh an lành" xuất hiện bên dưới.
       function updateDirectorTimeline(now, dt) {
         if (!timelineRunning) {
           camera.position.set(0, 11, 56);
@@ -3370,7 +3539,6 @@
           const p = clamp((elapsed - 0.48) / 3.22, 0, 1);
           const easeP = easeOutCubic(p);
 
-          // Xuất phát đúng tại mặt phẳng của Cánh cổng không gian (z = -42) và lao ra ngoài ống kính (z = +52)
           const sz = -42 + 94 * easeP;
           const sx = 0;
 
@@ -3378,7 +3546,6 @@
           const climbLift = Math.pow(climbPhase, 1.85) * 58;
           const sy = 12.2 + p * 2.5 + climbLift;
 
-          // Khi vừa chui ra từ cổng không gian thì nhỏ (0.22), càng lao lại gần người xem càng to khổng lồ (2.25)
           const emergeFactor = smoothstep(0.0, 0.16, p);
           const growScale = (0.22 + Math.pow(p, 1.3) * 2.03) * Math.max(0.15, emergeFactor);
           introSanta3D.scale.setScalar(growScale);
@@ -3405,7 +3572,6 @@
           giantSnowflakesGroup.visible = true;
           const sp = clamp((elapsed - 3.50) / 3.00, 0, 1);
 
-          // Khi màn sương tuyết trắng xóa che ống kính (~4.10s), hiện Cây thông Noel khổng lồ trên đồi tuyết
           if (elapsed >= 4.05 && !worldTreeGroup.visible) {
             worldTreeGroup.visible = true;
           }
@@ -3435,27 +3601,42 @@
           giantSnowflakesGroup.visible = false;
         }
 
-        // 4. SAU KHI BÔNG TUYẾT KHỔNG LỒ ĐÃ RƠI HẾT (Sau 6.50s): Camera ổn định ngắm Cây thông Noel
+        // 4. SAU KHI BÔNG TUYẾT KHỔNG LỒ ĐÃ RƠI HẾT (Sau 6.50s): Điều khiển Góc máy & Chế độ Xoay 360 độ
         if (elapsed > 6.50) {
           worldTreeGroup.visible = true;
           const blendWeight = smoothstep(6.50, 8.0, elapsed);
           const preset = CAMERA_MODES[cameraMode];
-          const gentleSwayX = Math.sin((elapsed - 6.50) * 0.45) * 2.2;
-          const gentleSwayY = Math.cos((elapsed - 6.50) * 0.35) * 0.8;
 
-          targetCamPos.set(
-            preset.pos.x + (gentleSwayX + userLookOffset.x) * blendWeight,
-            preset.pos.y + (gentleSwayY + userLookOffset.y * 0.6) * blendWeight,
-            preset.pos.z
-          );
-          targetCamLook.set(
-            preset.look.x + userLookOffset.x * 0.45 * blendWeight,
-            preset.look.y + userLookOffset.y * 0.45 * blendWeight,
-            preset.look.z
-          );
+          // Nếu đang ở chế độ Xoay 360° tự động hoặc người dùng dùng chuột kéo 360°
+          if (preset.id === 'orbit360' || hasDraggedManual360) {
+            if (preset.id === 'orbit360' && !isDraggingOrbit) {
+              orbitAzimuth += dt * 0.38; // Xoay tròn 360 độ mượt mà quanh cây thông
+            }
+            const centerLook = new THREE.Vector3(0, 11.5, 0);
+            const cx = centerLook.x + orbitRadius * Math.sin(orbitPolar) * Math.sin(orbitAzimuth);
+            const cy = Math.max(2.2, centerLook.y + orbitRadius * Math.cos(orbitPolar) - 8);
+            const cz = centerLook.z + orbitRadius * Math.sin(orbitPolar) * Math.cos(orbitAzimuth);
+
+            targetCamPos.set(cx, cy, cz);
+            targetCamLook.copy(centerLook);
+          } else {
+            const gentleSwayX = Math.sin((elapsed - 6.50) * 0.45) * 2.0;
+            const gentleSwayY = Math.cos((elapsed - 6.50) * 0.35) * 0.7;
+
+            targetCamPos.set(
+              preset.pos.x + (gentleSwayX + userLookOffset.x) * blendWeight,
+              preset.pos.y + (gentleSwayY + userLookOffset.y * 0.5) * blendWeight,
+              preset.pos.z
+            );
+            targetCamLook.set(
+              preset.look.x + userLookOffset.x * 0.4 * blendWeight,
+              preset.look.y + userLookOffset.y * 0.4 * blendWeight,
+              preset.look.z
+            );
+          }
         }
 
-        const lerpFactor = elapsed <= 6.50 ? 1 : Math.min(1, dt * 4.5);
+        const lerpFactor = elapsed <= 6.50 ? 1 : Math.min(1, dt * (isDraggingOrbit ? 12 : 4.5));
         camPos.lerp(targetCamPos, lerpFactor);
         camLook.lerp(targetCamLook, lerpFactor);
         camera.position.copy(camPos);
@@ -3470,7 +3651,7 @@
         const timeSec = now / 1000;
         lastFrameTime = now;
 
-        // 1. Cập nhật đạo diễn Camera & kịch bản
+        // 1. Cập nhật đạo diễn Camera & Góc nhìn 360 độ
         updateDirectorTimeline(now, dt);
 
         // 2. Cập nhật chuyển động xoáy của Cánh cổng không gian 3D
@@ -3492,32 +3673,37 @@
           sAttr.needsUpdate = true;
         }
 
-        // 3. Cập nhật Mặt trăng 3D xoay nhẹ & hào quang lung linh
+        // 3. Cập nhật Mặt trăng 3D xoay nhẹ & hào quang dịu không bị cực quang lấn át
         moonSphere.rotation.y = timeSec * 0.04;
-        const moonPulse = 1 + Math.sin(timeSec * 1.8) * 0.045;
-        moonCoronaSprite.scale.set(46 * moonPulse, 46 * moonPulse, 1);
+        const moonPulse = 1 + Math.sin(timeSec * 1.8) * 0.035;
+        moonCoronaSprite.scale.set(38 * moonPulse, 38 * moonPulse, 1);
 
-        // 4. Cập nhật 3 tầng Cực quang Bắc Cực (Aurora Borealis) uốn lượn & đổi sắc
+        // 4. Cập nhật Vòm Cực quang 360 độ & các dải Cực quang uốn lượn dịu mắt
+        auroraSkyDome.rotation.y = timeSec * 0.02;
+        auroraSkyDome.material.opacity = 0.30 + Math.sin(timeSec * 1.1) * 0.06;
+
         auroraLayers.forEach((layer) => {
           const pos = layer.geo.attributes.position;
           for (let i = 0; i < pos.count; i++) {
             const x = layer.baseX[i];
             const y = layer.baseY[i];
             const waveZ =
-              Math.sin(x * 0.038 + timeSec * layer.speed + layer.phase) * layer.amp +
-              Math.cos(x * 0.018 - timeSec * (layer.speed * 0.7)) * (layer.amp * 0.55);
-            const waveY = Math.sin(x * 0.025 + timeSec * 0.9 + layer.phase) * 1.8;
+              Math.sin(x * 0.026 + timeSec * layer.speed + layer.phase) * layer.amp +
+              Math.cos(x * 0.014 - timeSec * (layer.speed * 0.7)) * (layer.amp * 0.55);
+            const waveY = Math.sin(x * 0.02 + timeSec * 0.85 + layer.phase) * 2.2;
             pos.setY(i, y + waveY);
             pos.setZ(i, layer.baseZ[i] + waveZ);
           }
           pos.needsUpdate = true;
-          layer.mat.opacity = layer.baseOpacity + Math.sin(timeSec * 1.4 + layer.phase) * 0.14;
+          layer.mat.opacity = layer.baseOpacity + Math.sin(timeSec * 1.3 + layer.phase) * 0.08;
         });
-        auroraSkyLight.intensity = 0.75 + Math.sin(timeSec * 1.6) * 0.28;
+        auroraSkyLight.intensity = 0.68 + Math.sin(timeSec * 1.6) * 0.18;
 
-        starFieldMat.opacity = 0.78 + Math.sin(timeSec * 2.6) * 0.18;
+        // 5. Cập nhật 800 chấm sao nhỏ phát sáng nhấp nháy trên bầu trời
+        starLayerA.mat.opacity = 0.84 + Math.sin(timeSec * 2.8) * 0.16;
+        starLayerB.mat.opacity = 0.82 + Math.cos(timeSec * 2.2 + 1.2) * 0.18;
 
-        // 5. Nhấp nháy đèn cây thông, xoay ngôi sao & Người tuyết vẫy tay
+        // 6. Nhấp nháy đèn cây thông, xoay ngôi sao & Người tuyết vẫy tay
         if (giantTree3D.userData.topStarMesh) {
           giantTree3D.userData.topStarMesh.rotation.y = Math.sin(timeSec * 1.8) * 0.35;
           const pulse = 1 + Math.sin(timeSec * 3.5) * 0.14;
@@ -3532,12 +3718,12 @@
           snowman3D.userData.wavingArm.rotation.z = Math.sin(timeSec * 4.2) * 0.25;
         }
 
-        // 6. Cử động tuần lộc của Ông già Noel bay ra từ cổng không gian
+        // 7. Cử động tuần lộc của Ông già Noel bay ra từ cổng không gian
         if (introSanta3D.visible) {
           animateRigReindeers(introSanta3D, timeSec);
         }
 
-        // 7. Ông già Noel bay theo quỹ đạo elip 3D xung quanh cây thông ở đoạn cuối
+        // 8. Ông già Noel bay theo quỹ đạo elip 3D xung quanh cây thông ở đoạn cuối
         if (orbitSantaActive) {
           orbitSanta3D.visible = true;
           const orbitSpeed = 0.52;
@@ -3559,7 +3745,7 @@
           orbitSanta3D.visible = false;
         }
 
-        // 8. Cập nhật hạt bụi tiên vàng (Magic Stardust Trail)
+        // 9. Cập nhật hạt bụi tiên vàng (Magic Stardust Trail)
         const trailAttr = trailPoints.geometry.attributes.position;
         for (let i = 0; i < trailCount; i++) {
           if (trailData[i].life > 0) {
@@ -3575,7 +3761,7 @@
         }
         trailAttr.needsUpdate = true;
 
-        // 9. Cập nhật pháo hoa hạt sáng khi mở hộp quà
+        // 10. Cập nhật pháo hoa hạt sáng khi mở hộp quà
         if (burstLife > 0) {
           burstLife = Math.max(0, burstLife - dt * 1.4);
           burstMat.opacity = burstLife;
@@ -3590,7 +3776,7 @@
           bAttr.needsUpdate = true;
         }
 
-        // 10. Đàn tuần lộc 3D bay qua lại trên bầu trời
+        // 11. Đàn tuần lộc 3D bay qua lại trên bầu trời
         skyReindeers3D.forEach((deer) => {
           deer.position.x += deer.userData.dir * deer.userData.speed * dt;
           deer.position.y = deer.userData.baseY + Math.sin(timeSec * 2.5 + deer.userData.phase) * 1.8;
@@ -3606,7 +3792,7 @@
           });
         });
 
-        // 11. Mưa hạt tuyết tròn & Bông tuyết tinh thể 6 cánh nhỏ
+        // 12. Mưa hạt tuyết tròn & Bông tuyết tinh thể 6 cánh nhỏ
         const posAttr = snowParticles.geometry.attributes.position;
         for (let i = 0; i < snowParticleCount; i++) {
           let x = posAttr.getX(i);
@@ -3621,7 +3807,7 @@
           if (y < -12) {
             y = 88;
             x = rand(-95, 95);
-            z = rand(-75, 45);
+            z = rand(-95, 95);
           }
           posAttr.setXYZ(i, x, y, z);
         }
@@ -3638,11 +3824,11 @@
           if (cf.mesh.position.y < -14) {
             cf.mesh.position.y = rand(82, 96);
             cf.mesh.position.x = rand(-85, 85);
-            cf.mesh.position.z = rand(-55, 42);
+            cf.mesh.position.z = rand(-85, 85);
           }
         }
 
-        // 12. 15 Hộp quà 3D khổng lồ rơi & Hiệu ứng bật nắp
+        // 13. 15 Hộp quà 3D khổng lồ rơi & Hiệu ứng bật nắp
         if (giftsFallingActive && gifts3DGroup.visible) {
           fallingGifts3D.forEach((g) => {
             g.y -= g.fallSpeed * dt;
@@ -3677,7 +3863,6 @@
 
         if (curtainHint) curtainHint.style.display = 'none';
 
-        // Ẩn cây thông ở giai đoạn đầu để Ông già Noel bay ra từ Cánh cổng không gian hoàn toàn hợp lý
         worldTreeGroup.visible = false;
 
         startJingleBellsMusic();
@@ -3686,36 +3871,33 @@
         timelineStart = performance.now();
         timelineRunning = true;
 
-        // Tiếng cười Ho Ho Ho vang lên khi Ông già Noel lao ra từ Cánh cổng không gian
         schedule(() => playSantaHoHoHoSound(), 520);
 
-        // Sương tuyết trắng xóa chuyển cảnh (4.10s - 4.85s) đồng thời làm xuất hiện Cây thông Noel
         schedule(() => {
           snowWhiteout.classList.add('active');
           worldTreeGroup.visible = true;
         }, 4100);
         schedule(() => snowWhiteout.classList.remove('active'), 4850);
 
-        // CHỜ ĐẾN KHI HIỆU ỨNG BÔNG TUYẾT KHỔNG LỒ RƠI HẾT HOÀN TOÀN (6.50s) MỚI HIỆN CHỮ:
-        // Bước 1: Hiện dòng chữ "Merry Christmas" (cách nhau 1 phím Space rõ ràng) ở 6.80s
+        // Chờ bông tuyết khổng lồ rơi hết hoàn toàn (6.50s) mới hiện chữ "Merry Christmas" (6.80s)
         schedule(() => {
           giantSnowflakesGroup.visible = false;
           sceneEl.classList.add('show-title');
         }, 6800);
 
-        // Bước 2: Hiện dòng chữ "Giáng sinh an lành" bên dưới ở 7.55s
+        // Tiếp theo hiện chữ "Giáng sinh an lành" bên dưới (7.55s)
         schedule(() => {
           sceneEl.classList.add('show-subtitle');
         }, 7550);
 
-        // Bước 3: 15 hộp quà khổng lồ rơi & Ông già Noel bay vòng quanh cây thông (8.20s)
+        // 15 hộp quà khổng lồ rơi & Ông già Noel bay vòng quanh cây thông (8.20s)
         schedule(() => {
           gifts3DGroup.visible = true;
           giftsFallingActive = true;
           orbitSantaActive = true;
         }, 8200);
 
-        // Bước 4: Thu nhỏ tiêu đề bay lên góc trên cùng (9.80s) để nhường chỗ ngắm trọn Cây thông & Cực quang
+        // Thu nhỏ tiêu đề bay lên góc trên cùng (9.80s)
         schedule(() => {
           sceneEl.classList.add('dock-greeting');
         }, 9800);
@@ -3742,7 +3924,12 @@
         giftsFallingActive = false;
         orbitSantaActive = false;
         cameraMode = 0;
+        hasDraggedManual360 = false;
+        orbitAzimuth = 0;
+        orbitPolar = 1.38;
+        orbitRadius = 56;
         cameraViewBtn.textContent = CAMERA_MODES[0].label;
+        cameraViewBtn.classList.remove('active-360');
 
         portal3DGroup.visible = false;
         introSanta3D.visible = false;
