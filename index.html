@@ -854,11 +854,11 @@
       camera.position.copy(camPos);
       camera.lookAt(camLook);
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1.5, 1.5));
       renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.18;
       webglContainer.appendChild(renderer.domElement);
@@ -1461,12 +1461,12 @@
         const mats = PALETTE_MATS[paletteIdx % PALETTE_MATS.length];
 
         const box = new THREE.Mesh(sharedStaticGiftGeos.box, mats.boxMat);
-        box.castShadow = true; box.receiveShadow = true;
+        box.receiveShadow = true;
         const ribX = new THREE.Mesh(sharedStaticGiftGeos.ribX, mats.ribbonMat);
         const ribZ = new THREE.Mesh(sharedStaticGiftGeos.ribZ, mats.ribbonMat);
 
         const lid = new THREE.Mesh(sharedStaticGiftGeos.lid, mats.lidMat);
-        lid.position.y = 0.46; lid.castShadow = true;
+        lid.position.y = 0.46;
         const lidRibX = new THREE.Mesh(sharedStaticGiftGeos.lidRibX, mats.ribbonMat);
         lidRibX.position.y = 0.46;
         const lidRibZ = new THREE.Mesh(sharedStaticGiftGeos.lidRibZ, mats.ribbonMat);
@@ -1943,10 +1943,11 @@
 
         const baubleColors = [0xe63946, 0xffd166, 0x48bfe3, 0x4cd97b, 0xff6b9d, 0xfff3c4, 0xff9f1c];
         const baubleMats = baubleColors.map((c) => new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 0.22, metalness: 0.92, roughness: 0.08 }));
-        const bulbGeo = new THREE.SphereGeometry(0.32, 10, 10);
-        const orbGeo = new THREE.SphereGeometry(0.58, 14, 14);
+        const sharedBulbMats = baubleColors.map((c) => new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 1.15, roughness: 0.15 }));
+        const bulbGeo = new THREE.SphereGeometry(0.32, 8, 8);
+        const orbGeo = new THREE.SphereGeometry(0.58, 12, 12);
         const capGeo = new THREE.CylinderGeometry(0.16, 0.18, 0.22, 8);
-        const lightBulbs = [];
+        const lightBulbs = sharedBulbMats.map((mat, idx) => ({ mesh: { material: mat }, phase: idx * 0.9 }));
 
         for (let i = 0; i < 82; i++) {
           const u = (i + 0.5) / 82, angle = i * 2.39996;
@@ -1955,13 +1956,9 @@
           const cIdx = i % baubleColors.length;
 
           if (i % 2 === 0) {
-            const bulb = new THREE.Mesh(
-              bulbGeo,
-              new THREE.MeshStandardMaterial({ color: baubleColors[cIdx], emissive: baubleColors[cIdx], emissiveIntensity: 1.15, roughness: 0.12 })
-            );
+            const bulb = new THREE.Mesh(bulbGeo, sharedBulbMats[cIdx]);
             bulb.position.set(bx, y, bz);
             treeGroup.add(bulb);
-            lightBulbs.push({ mesh: bulb, phase: rand(0, Math.PI * 2) });
           } else {
             const baubleGroup = new THREE.Group();
             const orb = new THREE.Mesh(orbGeo, baubleMats[cIdx]);
@@ -2018,6 +2015,201 @@
       const giantTree3D = createGiantChristmasTree3D();
       giantTree3D.position.set(0, -1, 0);
       worldTreeGroup.add(giantTree3D);
+/* ==================== MÔ-ĐUN: ĐOÀN TÀU 8 TOA BAY XOẮN ỐC & 2 CỔNG DỊCH CHUYỂN ==================== */
+      const skyTrainCarriages = [];
+      const TRAIN_TOTAL_CARS = 8;        // Đúng 8 toa tàu (1 Đầu máy + 7 Toa chở quà)
+      const TRAIN_CAR_SPACING = 0.012;   // Giữ các toa cách nhau khoảng 3.4 đơn vị trên quỹ đạo
+      const TRAIN_SPIRAL_TURNS = 2.25;   // Số vòng bay xoắn tròn từ dưới đất lên bầu trời
+      const _trainPosVec = new THREE.Vector3();
+      const _trainLookVec = new THREE.Vector3();
+
+      function getSkyTrainSpiralPoint(u, targetVec) {
+        const clampedU = clamp(u, 0, 1);
+        const angle = clampedU * Math.PI * 2 * TRAIN_SPIRAL_TURNS;
+        const radius = 24.0 - clampedU * 8.5;
+        const heightY = 2.2 + Math.pow(clampedU, 0.92) * 33.3;
+        targetVec.set(
+          Math.cos(angle) * radius,
+          heightY,
+          Math.sin(angle) * radius
+        );
+        return targetVec;
+      }
+
+      function createTrainPortalTexture(primaryColor, secondaryColor) {
+        const cvs = document.createElement('canvas');
+        cvs.width = cvs.height = 256;
+        const ctx = cvs.getContext('2d');
+        const cx = 128, cy = 128, R = 120;
+
+        const grad = ctx.createRadialGradient(cx, cy, 4, cx, cy, R);
+        grad.addColorStop(0, '#ffffff');
+        grad.addColorStop(0.22, primaryColor);
+        grad.addColorStop(0.58, secondaryColor);
+        grad.addColorStop(0.88, 'rgba(255, 215, 100, 0.35)');
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.strokeStyle = 'rgba(255, 250, 210, 0.85)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([10, 6]);
+        ctx.beginPath(); ctx.arc(0, 0, R * 0.76, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+
+        return new THREE.CanvasTexture(cvs);
+      }
+
+      function createTrainTeleportPortal3D(tex) {
+        const pGroup = new THREE.Group();
+        const discGeo = new THREE.PlaneGeometry(7.2, 7.2);
+        const outerDisc = new THREE.Mesh(
+          discGeo,
+          new THREE.MeshBasicMaterial({
+            map: tex, transparent: true, opacity: 0.95,
+            depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending
+          })
+        );
+        const innerDisc = new THREE.Mesh(
+          new THREE.PlaneGeometry(5.2, 5.2),
+          new THREE.MeshBasicMaterial({
+            map: tex, color: 0xffffff, transparent: true, opacity: 0.8,
+            depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending
+          })
+        );
+        innerDisc.position.z = 0.08;
+
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(3.1, 0.16, 10, 36),
+          SHARED_MATS.goldTrim
+        );
+        pGroup.add(outerDisc, innerDisc, ring);
+        pGroup.userData = { outerDisc, innerDisc, ring };
+        return pGroup;
+      }
+
+      function createSkySpiralTrainSystem3D() {
+        const system = new THREE.Group();
+
+        const startPortalTex = createTrainPortalTexture('rgba(80, 245, 255, 0.92)', 'rgba(130, 80, 255, 0.65)');
+        const endPortalTex = createTrainPortalTexture('rgba(255, 220, 110, 0.92)', 'rgba(255, 75, 110, 0.65)');
+
+        const startPortal = createTrainTeleportPortal3D(startPortalTex);
+        startPortal.scale.setScalar(0.001);
+        startPortal.visible = false;
+        getSkyTrainSpiralPoint(0.0, startPortal.position);
+        getSkyTrainSpiralPoint(0.015, _trainLookVec);
+        startPortal.lookAt(_trainLookVec);
+
+        const endPortal = createTrainTeleportPortal3D(endPortalTex);
+        endPortal.scale.setScalar(0.001);
+        endPortal.visible = false;
+        getSkyTrainSpiralPoint(1.0, endPortal.position);
+        getSkyTrainSpiralPoint(0.985, _trainLookVec);
+        endPortal.lookAt(_trainLookVec);
+
+        system.add(startPortal, endPortal);
+
+        const boilerMat = new THREE.MeshStandardMaterial({ color: 0x1a222d, metalness: 0.7, roughness: 0.25 });
+        const glowPadMat = new THREE.MeshBasicMaterial({
+          color: 0x5ce6ff, transparent: true, opacity: 0.78,
+          blending: THREE.AdditiveBlending, depthWrite: false
+        });
+        const winGlowMat = new THREE.MeshBasicMaterial({ color: 0xffe899 });
+        const wagonColors = [0xc91e32, 0x146b48, 0x2b6cb0, 0x8e44ad, 0xd97706, 0x0d9488, 0xc53030, 0x1e824c];
+        const wagonMats = wagonColors.map((c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.32, metalness: 0.22 }));
+
+        const sharedTrainGeos = {
+          chassis: new THREE.BoxGeometry(1.35, 0.26, 2.7),
+          hoverPad: new THREE.BoxGeometry(1.2, 0.1, 2.4),
+          wheel: new THREE.CylinderGeometry(0.28, 0.28, 0.12, 10),
+          wagonBody: new THREE.BoxGeometry(1.28, 0.85, 2.35),
+          wagonRoof: new THREE.BoxGeometry(1.42, 0.14, 2.5),
+          winStrip: new THREE.BoxGeometry(1.32, 0.28, 1.65),
+          boiler: new THREE.CylinderGeometry(0.52, 0.52, 1.75, 14),
+          locoCab: new THREE.BoxGeometry(1.34, 1.35, 1.05),
+          locoRoof: new THREE.BoxGeometry(1.5, 0.16, 1.25),
+          smokestack: new THREE.CylinderGeometry(0.24, 0.16, 0.68, 10),
+          headlight: new THREE.CylinderGeometry(0.2, 0.2, 0.18, 10),
+          lightCone: new THREE.ConeGeometry(0.85, 2.8, 12, 1, true)
+        };
+        sharedTrainGeos.wheel.rotateZ(Math.PI / 2);
+        sharedTrainGeos.boiler.rotateX(Math.PI / 2);
+        sharedTrainGeos.headlight.rotateX(Math.PI / 2);
+        sharedTrainGeos.lightCone.rotateX(Math.PI / 2);
+
+        for (let i = 0; i < TRAIN_TOTAL_CARS; i++) {
+          const car = new THREE.Group();
+
+          const chassis = new THREE.Mesh(sharedTrainGeos.chassis, SHARED_MATS.goldTrim);
+          chassis.position.y = 0.32;
+          const hoverPad = new THREE.Mesh(sharedTrainGeos.hoverPad, glowPadMat);
+          hoverPad.position.y = 0.14;
+          car.add(chassis, hoverPad);
+
+          [-0.68, 0.68].forEach((wx) => {
+            [-0.75, 0.75].forEach((wz) => {
+              const wheel = new THREE.Mesh(sharedTrainGeos.wheel, SHARED_MATS.goldTrim);
+              wheel.position.set(wx, 0.28, wz);
+              car.add(wheel);
+            });
+          });
+
+          if (i === 0) {
+            const boiler = new THREE.Mesh(sharedTrainGeos.boiler, boilerMat);
+            boiler.position.set(0, 0.88, 0.38);
+            const cab = new THREE.Mesh(sharedTrainGeos.locoCab, wagonMats[0]);
+            cab.position.set(0, 1.12, -0.78);
+            const cabRoof = new THREE.Mesh(sharedTrainGeos.locoRoof, SHARED_MATS.goldTrim);
+            cabRoof.position.set(0, 1.84, -0.78);
+            const cabWin = new THREE.Mesh(sharedTrainGeos.winStrip, winGlowMat);
+            cabWin.scale.set(1.02, 1.2, 0.45);
+            cabWin.position.set(0, 1.32, -0.78);
+
+            const stack = new THREE.Mesh(sharedTrainGeos.smokestack, boilerMat);
+            stack.position.set(0, 1.48, 0.88);
+            const headlamp = new THREE.Mesh(sharedTrainGeos.headlight, winGlowMat);
+            headlamp.position.set(0, 0.92, 1.32);
+
+            const beam = new THREE.Mesh(
+              sharedTrainGeos.lightCone,
+              new THREE.MeshBasicMaterial({
+                color: 0xfff3a8, transparent: true, opacity: 0.28,
+                blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide
+              })
+            );
+            beam.position.set(0, 0.92, 2.75);
+
+            car.add(boiler, cab, cabRoof, cabWin, stack, headlamp, beam);
+          } else {
+            const body = new THREE.Mesh(sharedTrainGeos.wagonBody, wagonMats[i % wagonMats.length]);
+            body.position.y = 0.86;
+            const roof = new THREE.Mesh(sharedTrainGeos.wagonRoof, SHARED_MATS.goldTrim);
+            roof.position.y = 1.32;
+            const win = new THREE.Mesh(sharedTrainGeos.winStrip, winGlowMat);
+            win.position.y = 0.92;
+            car.add(body, roof, win);
+
+            const gift1 = createDecorativeGiftBox3D(i, 0.68, 0.65, 0.68);
+            gift1.position.set(0, 1.68, 0.42);
+            const gift2 = createDecorativeGiftBox3D(i + 3, 0.62, 0.78, 0.62);
+            gift2.position.set(0, 1.74, -0.45);
+            car.add(gift1, gift2);
+          }
+
+          car.visible = false;
+          system.add(car);
+          skyTrainCarriages.push(car);
+        }
+
+        system.userData = { startPortal, endPortal };
+        return system;
+      }
+
+      const skySpiralTrain3D = createSkySpiralTrainSystem3D();
+      worldTreeGroup.add(skySpiralTrain3D);
 
       const sharedMiniTreeAssets = (() => {
         const tierSpecs = [
@@ -2638,7 +2830,7 @@
         frames: 0,
         elapsed: 0,
         qualityTier: 2, // 2: Cao nhất, 1: Cân bằng, 0: Siêu mượt cho máy yếu
-        basePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+        basePixelRatio: Math.min(window.devicePixelRatio || 1.5, 1.5),
         update(dt) {
           if (document.hidden) return;
           this.frames++;
@@ -3105,12 +3297,12 @@
       );
 
       const smallCrystalFlakes = [];
-      const smallCrystalCount = 240;
+      const smallCrystalCount = 90;
       for (let i = 0; i < smallCrystalCount; i++) {
         const flakeMesh = new THREE.Mesh(unitPlaneGeo, smallCrystalMaterials[i % 3]);
-        const s = rand(1.15, 2.55);
+        const s = rand(1.25, 2.55);
         flakeMesh.scale.set(s, s, s);
-        flakeMesh.position.set(rand(-85, 85), rand(-12, 92), rand(-85, 85));
+        flakeMesh.position.set(rand(-75, 75), rand(-12, 92), rand(-65, 65));
         flakeMesh.rotation.set(rand(0, Math.PI), rand(0, Math.PI), rand(0, Math.PI));
         smallCrystalFlakesGroup.add(flakeMesh);
         smallCrystalFlakes.push({
@@ -3351,6 +3543,7 @@
       }
 
       // Hệ thống chùm pháo hoa 3D nổ trên bầu trời
+      let fireworkLightFlash = 0;
       const fireworkBursts = [];
       const fireworkGroup = new THREE.Group();
       scene3D.add(fireworkGroup);
@@ -3360,7 +3553,7 @@
         for (let k = 0; k < count; k++) {
           setTimeout(() => {
             if (!isCurtainOpened) return;
-            const sparkCount = 120;
+            const sparkCount = 100;
             const geo = new THREE.BufferGeometry();
             const pos = new Float32Array(sparkCount * 3);
             const vels = [];
@@ -3385,7 +3578,7 @@
             const colorHex = FW_COLORS[Math.floor(Math.random() * FW_COLORS.length)];
             const mat = new THREE.PointsMaterial({
               color: colorHex,
-              size: 2.1,
+              size: 2.2,
               map: snowTexture,
               transparent: true,
               opacity: 1,
@@ -3393,12 +3586,11 @@
               depthWrite: false
             });
             const points = new THREE.Points(geo, mat);
-            const fwLight = new THREE.PointLight(colorHex, 2.5, 65);
-            fwLight.position.set(cx, cy, cz);
-            fireworkGroup.add(points, fwLight);
+            fireworkGroup.add(points);
             playFireworkBoomSound();
 
-            fireworkBursts.push({ points, geo, mat, vels, fwLight, life: 1.0 });
+            fireworkLightFlash = Math.max(fireworkLightFlash, 0.95);
+            fireworkBursts.push({ points, geo, mat, vels, life: 1.0 });
           }, k * 380);
         }
       }
@@ -3771,7 +3963,8 @@
           pos.needsUpdate = true;
           layer.mat.opacity = layer.baseOpacity + Math.sin(timeSec * 1.3 + phase) * 0.08;
         });
-        auroraSkyLight.intensity = 0.68 + Math.sin(timeSec * 1.6) * 0.18;
+        fireworkLightFlash = Math.max(0, fireworkLightFlash - dt * 1.8);
+        auroraSkyLight.intensity = 0.68 + Math.sin(timeSec * 1.6) * 0.18 + fireworkLightFlash;
 
         starLayerA.mat.opacity = 0.84 + Math.sin(timeSec * 2.8) * 0.16;
         starLayerB.mat.opacity = 0.82 + Math.cos(timeSec * 2.2 + 1.2) * 0.18;
@@ -3884,12 +4077,16 @@
           });
         });
 
+        const wCfg = WEATHER_CONFIGS[weatherMode];
+        const windDx = wCfg.windX * dt;
+        const speedMult = wCfg.speedMult;
         const posAttr = snowParticles.geometry.attributes.position;
         for (let i = 0; i < snowParticleCount; i++) {
           const v = snowVel[i];
-          let x = posAttr.getX(i) + (v.vx + Math.sin(timeSec + v.phase) * 0.8) * dt;
-          let y = posAttr.getY(i) - v.vy * dt;
+          let x = posAttr.getX(i) + (v.vx + Math.sin(timeSec + v.phase) * 0.8) * dt + windDx;
+          let y = posAttr.getY(i) - v.vy * speedMult * dt;
           let z = posAttr.getZ(i) + v.vz * dt;
+          if (x > 95) x = -95; else if (x < -95) x = 95;
           if (y < -12) { y = 88; x = rand(-95, 95); z = rand(-95, 95); }
           posAttr.setXYZ(i, x, y, z);
         }
@@ -3964,23 +4161,6 @@
         }
 
 // ==================== CẬP NHẬT 5 MÔ-ĐUN NÂNG CẤP TRONG ANIMATE3D ====================
-        const wCfg = WEATHER_CONFIGS[weatherMode];
-
-        // 1. Hiệu ứng gió lốc Bắc Cực hoặc Tuyết dịu theo chế độ thời tiết
-        if (wCfg.windX !== 0 || wCfg.speedMult !== 1.0) {
-          const extraVy = (wCfg.speedMult - 1.0) * 6.5 * dt;
-          const extraVx = wCfg.windX * dt;
-          const sPos = snowParticles.geometry.attributes.position;
-          for (let i = 0; i < snowParticleCount; i++) {
-            let x = sPos.getX(i) + extraVx;
-            let y = sPos.getY(i) - extraVy;
-            if (x > 95) x = -95;
-            if (y < -12) y = 88;
-            sPos.setX(i, x);
-            sPos.setY(i, y);
-          }
-          sPos.needsUpdate = true;
-        }
 
         // 2. Cập nhật Mưa Sao Băng 3D xẹt ngang bầu trời đêm
         shootingStars.forEach((st) => {
@@ -4024,13 +4204,12 @@
           const fw = fireworkBursts[i];
           fw.life -= dt * 0.72;
           if (fw.life <= 0) {
-            fireworkGroup.remove(fw.points, fw.fwLight);
+            fireworkGroup.remove(fw.points);
             fw.geo.dispose();
             fw.mat.dispose();
             fireworkBursts.splice(i, 1);
           } else {
             fw.mat.opacity = fw.life;
-            fw.fwLight.intensity = fw.life * 2.5;
             const attr = fw.geo.attributes.position;
             for (let j = 0; j < fw.vels.length; j++) {
               const v = fw.vels[j];
@@ -4074,12 +4253,61 @@
 
         // 5. Góc nhìn thứ nhất "Ngồi Trên Cỗ Xe Ông Già Noel" (First-Person Sleigh POV)
         if (CAMERA_MODES[cameraMode] && CAMERA_MODES[cameraMode].id === 'sleigh_pov' && orbitSantaActive && !hasDraggedManual360) {
-          const seatWorldPos = orbitSanta3D.localToWorld(new THREE.Vector3(0, 6.2, -4.5));
-          const reindeerLookPos = orbitSanta3D.localToWorld(new THREE.Vector3(0, 3.8, 12.0));
-          camera.position.lerp(seatWorldPos, 0.25);
-          camera.lookAt(reindeerLookPos);
+          _forwardVec.set(0, 6.2, -4.5);
+          orbitSanta3D.localToWorld(_forwardVec);
+          camera.position.lerp(_forwardVec, 0.25);
+          _forwardVec.set(0, 3.8, 12.0);
+          orbitSanta3D.localToWorld(_forwardVec);
+          camera.lookAt(_forwardVec);
         }
 
+// ==================== CẬP NHẬT ĐOÀN TÀU 8 TOA BAY XOẮN ỐC XUYÊN CỔNG DỊCH CHUYỂN ====================
+        if (skySpiralTrain3D && worldTreeGroup.visible) {
+          const { startPortal, endPortal } = skySpiralTrain3D.userData;
+          const totalTailLag = (TRAIN_TOTAL_CARS - 1) * TRAIN_CAR_SPACING;
+          const cycleLength = 1.0 + totalTailLag + 0.18;
+          const headU = (timeSec * 0.095) % cycleLength;
+
+          const isStartOpen = headU >= 0 && headU <= totalTailLag + 0.12;
+          const startTargetScale = isStartOpen ? 1.0 + Math.sin(timeSec * 6) * 0.06 : 0.001;
+          startPortal.scale.lerp(_trainPosVec.set(startTargetScale, startTargetScale, startTargetScale), 0.15);
+          startPortal.visible = startPortal.scale.x > 0.02;
+          if (startPortal.visible) {
+            startPortal.userData.outerDisc.rotation.z -= dt * 2.8;
+            startPortal.userData.innerDisc.rotation.z += dt * 3.6;
+          }
+
+          const isEndOpen = headU >= 0.88 && headU <= 1.0 + totalTailLag + 0.08;
+          const endTargetScale = isEndOpen ? 1.0 + Math.cos(timeSec * 6) * 0.06 : 0.001;
+          endPortal.scale.lerp(_trainPosVec.set(endTargetScale, endTargetScale, endTargetScale), 0.15);
+          endPortal.visible = endPortal.scale.x > 0.02;
+          if (endPortal.visible) {
+            endPortal.userData.outerDisc.rotation.z += dt * 2.8;
+            endPortal.userData.innerDisc.rotation.z -= dt * 3.6;
+          }
+
+          for (let i = 0; i < TRAIN_TOTAL_CARS; i++) {
+            const car = skyTrainCarriages[i];
+            const carU = headU - i * TRAIN_CAR_SPACING;
+
+            if (carU < 0.0 || carU > 1.0) {
+              car.visible = false;
+            } else {
+              car.visible = true;
+              getSkyTrainSpiralPoint(carU, car.position);
+              getSkyTrainSpiralPoint(Math.min(1.0, carU + 0.008), _trainLookVec);
+              car.lookAt(_trainLookVec);
+
+              let portalScale = 1.0;
+              if (carU < 0.05) {
+                portalScale = Math.max(0.05, carU / 0.05);
+              } else if (carU > 0.95) {
+                portalScale = Math.max(0.05, (1.0 - carU) / 0.05);
+              }
+              car.scale.setScalar(portalScale);
+            }
+          }
+        }
         renderer.render(scene3D, camera);
         requestAnimationFrame(animate3D);
       }
