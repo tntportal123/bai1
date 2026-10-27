@@ -230,6 +230,146 @@
     @media (max-width: 680px) {
       .frozen-lake-stage { display: block; left: 5%; bottom: 10%; width: 155px; }
     }
+  
+    /* Phòng quà cục bộ, nhãn 3D và khóa quà */
+    .room-status-bar {
+      position: absolute; z-index: 22; top: 12px; left: 14px; right: 14px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;
+      pointer-events: none; opacity: 0; transform: translateY(-10px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .scene.show-subtitle .room-status-bar { opacity: 1; transform: translateY(0); }
+    .room-pills-group { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; pointer-events: auto; }
+    .room-pill {
+      display: inline-flex; align-items: center; padding: 7px 11px; border-radius: 999px;
+      background: rgba(8, 26, 44, .9); border: 1px solid rgba(255, 218, 138, .5);
+      color: #fff4d9; font-size: 11px; font-weight: 600; line-height: 1.25;
+      box-shadow: 0 3px 10px rgba(0,0,0,.35);
+    }
+    .room-action-btn {
+      padding: 7px 11px; border-radius: 999px; cursor: pointer;
+      background: linear-gradient(135deg, rgba(22, 88, 68, .95), rgba(12, 52, 40, .97));
+      border: 1px solid #6df7c1; color: #eafff6; font-family: var(--font-sans);
+      font-size: 11px; font-weight: 700; transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .room-action-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(109, 247, 193, .28); }
+    .room-action-btn.admin-unlock { background: #68400e; border-color: #ffd875; color: #fff6dc; }
+    .room-action-btn.admin-unlock.unlocked { background: #155b35; border-color: #80ffbe; }
+    .room-action-btn[hidden] { display: none !important; }
+    .gift-floating-labels { position: absolute; inset: 0; z-index: 15; overflow: hidden; pointer-events: none; }
+    .gift-tag-3d {
+      position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); opacity: 0;
+      padding: 4px 9px; border-radius: 999px; background: rgba(18, 8, 12, .88);
+      border: 1px solid rgba(255, 216, 135, .78); color: #ffe8a8; font-size: 10px;
+      font-weight: 700; white-space: nowrap; box-shadow: 0 3px 10px rgba(0,0,0,.55);
+      transition: opacity .15s ease;
+    }
+    .gift-tag-3d.unlocked { border-color: #6df7c1; color: #d9ffef; }
+    .gift-palette-picker { display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; margin: 4px 0 2px; }
+    .palette-swatch {
+      width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+      border: 2px solid rgba(255,255,255,.5); box-shadow: inset 0 0 0 5px rgba(0,0,0,.08);
+      transition: transform .16s ease, border-color .16s ease;
+    }
+    .palette-swatch.active { transform: scale(1.15); border-color: #fff; box-shadow: 0 0 10px rgba(255, 220, 130, .8); }
+    .room-form-note { margin: 0; color: #f4dca7; font-size: .76rem; line-height: 1.45; text-align: center; }
+    .creator-actions { flex-wrap: wrap; }
+    .wish-modal.locked-shake { animation: lock-shake-anim .48s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes lock-shake-anim {
+      10%, 90% { transform: scale(1) translate3d(-4px,0,0) rotate(-1deg); }
+      20%, 80% { transform: scale(1) translate3d(6px,0,0) rotate(1.5deg); }
+      30%, 50%, 70% { transform: scale(1) translate3d(-8px,0,0) rotate(-2deg); }
+      40%, 60% { transform: scale(1) translate3d(8px,0,0) rotate(2deg); }
+    }
+    @media (max-width: 680px) {
+      .room-status-bar { top: 8px; left: 7px; right: 7px; justify-content: center; gap: 5px; }
+      .room-pills-group { justify-content: center; gap: 5px; }
+      .room-pill { padding: 5px 8px; font-size: 9px; }
+      .room-action-btn { padding: 6px 8px; font-size: 9px; }
+      .scene.dock-greeting .greeting { top: 100px; transform: translate(-50%, -50%) scale(.42); }
+      .gift-tag-3d { font-size: 9px; }
+      .creator-actions > button { flex: 1 1 auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .room-status-bar, .gift-tag-3d { transition: none; }
+    }
+
+  
+    /* V2: chat, emote, voice, avatar labels, D-Pad and room password modal */
+    .room-action-btn.mic-active { background: linear-gradient(135deg, #b91c1c, #7f1d1d); border-color: #fca5a5; color: #fff; }
+    .player-tag-3d {
+      position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); display: flex;
+      flex-direction: column; align-items: center; gap: 4px; padding: 5px 9px; border-radius: 12px;
+      background: rgba(8, 34, 58, .93); border: 1px solid #63d2ff; color: #e6f9ff;
+      font-size: 10px; font-weight: 700; white-space: nowrap; pointer-events: none;
+      box-shadow: 0 3px 10px rgba(0,0,0,.55); transition: opacity .14s ease;
+    }
+    .player-tag-3d.speaking { border-color: #4cd97b; box-shadow: 0 0 14px rgba(76,217,123,.8); }
+    .player-chat-bubble {
+      max-width: 180px; padding: 4px 8px; border-radius: 10px; background: #fff8e8;
+      color: #2b1105; font-size: 10px; font-weight: 700; white-space: normal; text-align: center;
+      border: 1px solid #f5ca72; box-shadow: 0 3px 8px rgba(0,0,0,.4);
+    }
+    .multiplayer-hud {
+      position: absolute; z-index: 21; left: 14px; bottom: 76px; width: min(88vw, 320px);
+      display: flex; flex-direction: column; gap: 6px; opacity: 0; pointer-events: none;
+      transition: opacity .4s ease;
+    }
+    .scene.show-subtitle .multiplayer-hud { opacity: 1; pointer-events: auto; }
+    .chat-messages-box {
+      max-height: 128px; overflow-y: auto; padding: 8px 10px; border-radius: 13px;
+      background: rgba(6,20,36,.8); border: 1px solid rgba(255,218,138,.4);
+      backdrop-filter: blur(7px); font-size: 11px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .chat-msg-line { line-height: 1.35; word-break: break-word; color: #fff5e0; }
+    .chat-msg-line b { color: #ffd875; }
+    .chat-msg-line.system { color: #7ae582; font-style: italic; }
+    .chat-input-row { display: flex; gap: 5px; }
+    .chat-input-row input {
+      flex: 1; min-width: 0; padding: 7px 11px; border-radius: 999px;
+      border: 1px solid rgba(255,218,138,.55); background: rgba(6,18,32,.9);
+      color: #fff; font: 12px var(--font-sans); outline: none;
+    }
+    .chat-send-btn {
+      padding: 7px 12px; border-radius: 999px; border: 1px solid #ffd875;
+      background: linear-gradient(135deg,#d97706,#b45309); color: #fff; font-weight: 700; cursor: pointer;
+    }
+    .interaction-bar { display: flex; flex-wrap: wrap; gap: 5px; }
+    .interact-btn {
+      padding: 5px 9px; border-radius: 999px; font-size: 10px; font-weight: 700;
+      background: rgba(14,42,68,.9); border: 1px solid rgba(125,211,252,.55); color: #e0f2fe; cursor: pointer;
+    }
+    .walk-dpad {
+      position: absolute; z-index: 21; right: 14px; bottom: 76px; display: none;
+      flex-direction: column; align-items: center; gap: 4px; padding: 8px; border-radius: 15px;
+      background: rgba(6,20,36,.78); border: 1px solid rgba(109,247,193,.45); backdrop-filter: blur(6px);
+      touch-action: none; user-select: none;
+    }
+    .walk-dpad.active { display: flex; }
+    .walk-dpad-row { display: flex; gap: 4px; }
+    .dpad-btn {
+      width: 36px; height: 34px; border-radius: 8px; border: 1px solid rgba(255,220,140,.55);
+      background: rgba(15,48,75,.92); color: #fff; font-weight: 800; font-size: 12px;
+      display: flex; align-items: center; justify-content: center; touch-action: none; user-select: none;
+    }
+    .dpad-btn:active { background: #248f59; transform: scale(.94); }
+    .dpad-hint { color: #a7f3d0; font-size: 9px; font-weight: 600; text-align: center; }
+    .player-label-overlay { position: absolute; inset: 0; z-index: 16; overflow: hidden; pointer-events: none; }
+    .password-error-msg { color: #ff7676; font-size: .85rem; font-weight: 700; min-height: 1.3em; margin-top: 6px; }
+    .checkbox-row { display: flex; align-items: center; gap: 8px; color: #ffe8a8; font-size: .9rem; font-weight: 600; cursor: pointer; }
+    .checkbox-row input { width: 17px; height: 17px; cursor: pointer; }
+    .v2-security-note { margin: 4px 0 0; color: #f4dca7; font-size: .76rem; line-height: 1.45; }
+    @media (max-width: 680px) {
+      .scene.dock-greeting .greeting { top: 132px; }
+      .multiplayer-hud { left: 7px; bottom: 122px; width: min(67vw, 280px); }
+      .chat-messages-box { max-height: 96px; }
+      .walk-dpad { right: 7px; bottom: 122px; }
+      .dpad-btn { width: 32px; height: 31px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .multiplayer-hud, .player-tag-3d { transition: none; }
+    }
+
   </style>
 </head>
 <body>
@@ -398,10 +538,55 @@
       <p id="greetingSubtitle">Giáng sinh an lành</p>
     </div>
 
+
+    <!-- Phòng riêng chạy cục bộ: đồng bộ giữa các tab cùng trình duyệt -->
+    <div class="room-status-bar" id="roomStatusBar" aria-label="Trạng thái phòng quà">
+      <div class="room-pills-group">
+        <div class="room-pill" id="roomCodePill">🏠 Phòng</div>
+        <div class="room-pill" id="roomOnlineCount">1 tab cùng phòng · trình duyệt này</div>
+        <div class="room-pill" id="roomGiftCountPill">🎁 Hộp quà dưới cây: 0</div>
+        <div class="room-pill" id="roomUnlockStatusPill">🔒 Đang tính giờ mở khóa</div>
+      </div>
+      <div class="room-pills-group">
+        <button class="room-action-btn" id="micToggleBtn" type="button">🎤 Mic: TẮT</button>
+        <button class="room-action-btn" id="voiceSpeakerBtn" type="button">🎧 Loa thoại: BẬT</button>
+        <button class="room-action-btn" id="newRoomServerBtn" type="button">🎄 Phòng mới</button>
+        <button class="room-action-btn" id="copyRoomLinkQuickBtn" type="button">🔗 Copy link phòng</button>
+        <button class="room-action-btn admin-unlock" id="adminBypassUnlockBtn" type="button" hidden>⚡ Sếp Test: Đang Khóa</button>
+      </div>
+    </div>
+    <div class="gift-floating-labels" id="giftFloatingLabels" aria-hidden="true"></div>
+    <section class="multiplayer-hud" id="multiplayerHud" aria-label="Chat và tương tác trong phòng">
+      <div class="chat-messages-box" id="chatMessagesBox" aria-live="polite">
+        <div class="chat-msg-line system">✨ Chat và tương tác đồng bộ giữa các tab cùng trình duyệt.</div>
+      </div>
+      <div class="chat-input-row">
+        <input id="chatInputBox" type="text" maxlength="120" placeholder="Nhập tin nhắn (Enter)…" aria-label="Tin nhắn">
+        <button class="chat-send-btn" id="chatSendBtn" type="button">Gửi</button>
+      </div>
+      <div class="interaction-bar">
+        <button class="interact-btn" id="throwSnowballBtn" type="button">❄️ Ném tuyết (E)</button>
+        <button class="interact-btn" data-emote="👋 Vẫy tay chào!" type="button">👋 Vẫy tay</button>
+        <button class="interact-btn" data-emote="❤️ Thả tim ấm áp!" type="button">❤️ Thả tim</button>
+        <button class="interact-btn" data-emote="🎉 Giáng sinh vui vẻ!" type="button">🎉 Hoan hô</button>
+      </div>
+    </section>
+    <div class="walk-dpad" id="walkDpad" aria-label="Điều khiển đi dạo">
+      <div class="dpad-hint">WASD · kéo để xoay</div>
+      <div class="walk-dpad-row"><button class="dpad-btn" data-move="forward" type="button" aria-label="Tiến">▲</button></div>
+      <div class="walk-dpad-row">
+        <button class="dpad-btn" data-move="left" type="button" aria-label="Sang trái">◄</button>
+        <button class="dpad-btn" data-move="backward" type="button" aria-label="Lùi">▼</button>
+        <button class="dpad-btn" data-move="right" type="button" aria-label="Sang phải">►</button>
+      </div>
+      <div class="walk-dpad-row" style="width:100%;"><button class="dpad-btn" id="dpadJumpBtn" type="button" style="width:100%;font-size:10px;">⏫ Nhảy (Space)</button></div>
+    </div>
+
     <!-- ==================== NÚT ĐIỀU KHIỂN ==================== -->
     <div class="bottom-controls">
       <div class="controls-group">
         <button class="control-btn highlight" id="createCardBtn" type="button">💌 Tạo thiệp gửi bạn bè</button>
+        <button class="control-btn" id="freeWalkToggleBtn" type="button">🚶 Tự đi dạo: TẮT</button>
         <button class="control-btn" id="snapshotCardBtn" type="button" title="Chụp lại khung cảnh 3D hiện tại thành thiệp ảnh PNG">📸 Chụp thiệp 3D</button>
         <button class="control-btn" id="cameraViewBtn" type="button" title="Bấm để đổi góc nhìn hoặc nhấn giữ kéo chuột trên màn hình để xoay 360°">🎥 Góc máy: Toàn cảnh (Kéo chuột xoay 360°)</button>
       </div>
@@ -444,13 +629,57 @@
             <textarea id="inputCustomWish" rows="3" maxlength="240" placeholder="Chúc bạn một mùa Giáng sinh ấm áp, hạnh phúc và tràn ngập phép màu!"></textarea>
           </div>
         </div>
+
+        <div class="gift-palette-picker" id="giftPalettePicker" role="group" aria-label="Chọn màu hộp quà">
+          <button class="palette-swatch active" type="button" data-palette="0" aria-label="Hộp đỏ" aria-pressed="true" style="background:linear-gradient(135deg,#e63946,#ffd166)"></button>
+          <button class="palette-swatch" type="button" data-palette="1" aria-label="Hộp xanh lá" aria-pressed="false" style="background:linear-gradient(135deg,#1e824c,#ffeb85)"></button>
+          <button class="palette-swatch" type="button" data-palette="2" aria-label="Hộp xanh dương" aria-pressed="false" style="background:linear-gradient(135deg,#2b6cb0,#ffd166)"></button>
+          <button class="palette-swatch" type="button" data-palette="3" aria-label="Hộp tím" aria-pressed="false" style="background:linear-gradient(135deg,#8e44ad,#ffeaa7)"></button>
+          <button class="palette-swatch" type="button" data-palette="4" aria-label="Hộp vàng" aria-pressed="false" style="background:linear-gradient(135deg,#d97706,#fff3c4)"></button>
+          <button class="palette-swatch" type="button" data-palette="5" aria-label="Hộp đỏ và xanh" aria-pressed="false" style="background:linear-gradient(135deg,#c53030,#9ae6b4)"></button>
+          <button class="palette-swatch" type="button" data-palette="6" aria-label="Hộp xanh ngọc" aria-pressed="false" style="background:linear-gradient(135deg,#0d9488,#fde68a)"></button>
+        </div>
+        <p class="room-form-note">Khóa chỉ là hiệu ứng giao diện; lời chúc lưu dạng văn bản trên máy này. Đồng bộ nhiều thiết bị cần máy chủ.</p>
+
         <div class="copy-status" id="copyStatusText"></div>
         <div class="creator-actions">
           <button class="secondary-btn" id="creatorCloseBtn" type="button">Đóng</button>
           <button class="wish-close-btn" id="copyShareLinkBtn" type="button">🔗 Tạo & Sao chép Link</button>
+          <button class="wish-close-btn" id="sendRoomGiftBtn" type="button">🎁 Thả quà vào phòng</button>
         </div>
       </div>
     </div>
+  
+    <div class="wish-modal-backdrop" id="createRoomModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="createRoomTitle">
+      <div class="wish-modal">
+        <span class="wish-modal-badge">Thiết lập phòng cục bộ 🎄</span>
+        <h3 id="createRoomTitle">Tạo phòng mới</h3>
+        <div class="creator-form">
+          <div><label for="newRoomTitleInput">Tên phòng:</label><input id="newRoomTitleInput" maxlength="45" type="text" placeholder="Phòng Noel ấm áp"></div>
+          <div><label for="newRoomHostNameInput">Tên hiển thị của bạn:</label><input id="newRoomHostNameInput" maxlength="30" type="text" placeholder="Tên của bạn"></div>
+          <label class="checkbox-row"><input id="useRoomPasswordCheck" type="checkbox"><span>🔐 Đặt mật khẩu cho phòng trên trình duyệt này</span></label>
+          <div id="newRoomPasswordWrap" style="display:none"><label for="newRoomPasswordInput">Mật khẩu (4–32 ký tự):</label><input id="newRoomPasswordInput" maxlength="32" type="password" autocomplete="new-password"></div>
+          <p class="v2-security-note">Tên phòng và mật khẩu lưu cục bộ. Không có máy chủ để bảo vệ hoặc đồng bộ giữa thiết bị.</p>
+        </div>
+        <div class="copy-status" id="createRoomStatus"></div>
+        <div class="creator-actions"><button class="secondary-btn" id="createRoomCancelBtn" type="button">Hủy</button><button class="wish-close-btn" id="createRoomConfirmBtn" type="button">Tạo phòng & copy link</button></div>
+      </div>
+    </div>
+    <div class="wish-modal-backdrop" id="passwordGateBackdrop" role="dialog" aria-modal="true" aria-labelledby="passwordGateRoomTitle">
+      <div class="wish-modal" id="passwordGateBox">
+        <span class="wish-modal-badge">🔒 Phòng có mật khẩu</span>
+        <h3 id="passwordGateRoomTitle">Nhập mật khẩu để vào phòng</h3>
+        <div class="creator-form">
+          <div><label for="guestNicknameInput">Tên hiển thị:</label><input id="guestNicknameInput" maxlength="30" type="text" placeholder="Tên của bạn"></div>
+          <div><label for="gatePasswordInput">Mật khẩu phòng:</label><input id="gatePasswordInput" maxlength="32" type="password" autocomplete="current-password"></div>
+        </div>
+        <div class="password-error-msg" id="passwordErrorMsg" aria-live="polite"></div>
+        <p class="v2-security-note">Cửa mật khẩu chỉ là kiểm tra phía trình duyệt, không thay thế đăng nhập bảo mật trên máy chủ.</p>
+        <div class="creator-actions"><button class="wish-close-btn" id="passwordSubmitBtn" type="button">🔑 Mở phòng</button></div>
+      </div>
+    </div>
+    <div id="voiceStreamsContainer" aria-hidden="true"></div>
+
   </main>
 
   <script>
@@ -516,13 +745,19 @@
 
       /* ==================== 2. HỆ THỐNG ÂM THANH ==================== */
       let audioCtx = null;
+      let masterGain = null;
       let jingleLoopTimer = null;
       let sleighBellTimer = null;
 
       function ensureAudioContext() {
         if (!audioCtx) {
           const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          if (AudioCtx) audioCtx = new AudioCtx();
+          if (AudioCtx) {
+            audioCtx = new AudioCtx();
+            masterGain = audioCtx.createGain();
+            masterGain.gain.value = isMuted ? 0 : 1;
+            masterGain.connect(audioCtx.destination);
+          }
         }
         if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
         return audioCtx;
@@ -555,7 +790,7 @@
 
         noise.connect(filter);
         filter.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(masterGain || ctx.destination);
         noise.start(now);
 
         [2637, 3520].forEach((freq) => {
@@ -566,7 +801,7 @@
           bellGain.gain.setValueAtTime(volume * 0.35, now);
           bellGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
           osc.connect(bellGain);
-          bellGain.connect(ctx.destination);
+          bellGain.connect(masterGain || ctx.destination);
           osc.start(now);
           osc.stop(now + duration);
         });
@@ -592,7 +827,7 @@
         osc1.connect(gain);
         osc2.connect(osc2Gain);
         osc2Gain.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(masterGain || audioCtx.destination);
 
         osc1.start(startTime);
         osc2.start(startTime);
@@ -699,7 +934,7 @@
 
             osc.connect(f1); osc.connect(f2);
             f1.connect(vGain); f2.connect(vGain);
-            vGain.connect(ctx.destination);
+            vGain.connect(masterGain || ctx.destination);
             osc.start(start); osc.stop(start + dur + 0.02);
           });
         }
@@ -724,8 +959,15 @@
       }
 
       document.addEventListener('visibilitychange', () => {
-        if (document.hidden) stopSynthesizedJingleBells();
-        else if (isCurtainOpened && !isMuted && jingleBellsAudio.paused) startSynthesizedJingleBells();
+        if (document.hidden) {
+          stopSynthesizedJingleBells();
+          if (renderLoopRaf) cancelAnimationFrame(renderLoopRaf);
+          renderLoopRaf = 0;
+        } else {
+          if (isCurtainOpened && !isMuted && jingleBellsAudio.paused) startSynthesizedJingleBells();
+          lastFrameTime = performance.now();
+          requestSceneFrame();
+        }
       });
 
       soundToggleBtn.addEventListener('click', () => {
@@ -733,6 +975,10 @@
         jingleBellsAudio.muted = isMuted;
         hoHoHoAudio.muted = isMuted;
         soundToggleBtn.textContent = isMuted ? '🔇 Bật nhạc' : '🔊 Tắt nhạc';
+        if (masterGain && audioCtx) {
+          masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+          masterGain.gain.setTargetAtTime(isMuted ? 0 : 1, audioCtx.currentTime, 0.012);
+        }
         if (isMuted) {
           stopSynthesizedJingleBells();
           if ('speechSynthesis' in window) window.speechSynthesis.cancel();
@@ -823,6 +1069,7 @@
         const fromVal = sanitizeText(inputSender.value, 45);
         const msgVal = sanitizeText(inputCustomWish.value, 240);
         const shareUrl = new URL(window.location.href.split('?')[0]);
+        shareUrl.searchParams.set('room', roomId);
         if (toVal) shareUrl.searchParams.set('to', toVal);
         if (fromVal) shareUrl.searchParams.set('from', fromVal);
         if (msgVal) shareUrl.searchParams.set('msg', msgVal);
@@ -1878,32 +2125,7 @@
         snowMound.rotation.x = Math.PI / 2; snowMound.position.y = 0.2;
         treeGroup.add(trunk, snowMound);
 
-        [
-          { angle: 0.15, r: 3.1, sx: 1.9, sy: 1.6, sz: 1.9, pal: 0, rotY: 0.3 },
-          { angle: 0.95, r: 3.3, sx: 1.7, sy: 2.1, sz: 1.6, pal: 1, rotY: -0.5 },
-          { angle: 1.75, r: 3.0, sx: 2.0, sy: 1.4, sz: 1.8, pal: 2, rotY: 0.8 },
-          { angle: 2.55, r: 3.2, sx: 1.8, sy: 1.8, sz: 1.8, pal: 3, rotY: 0.2 },
-          { angle: 3.35, r: 3.1, sx: 1.9, sy: 1.5, sz: 2.0, pal: 4, rotY: -0.4 },
-          { angle: 4.15, r: 3.3, sx: 1.6, sy: 2.0, sz: 1.6, pal: 5, rotY: 0.6 },
-          { angle: 4.95, r: 3.0, sx: 2.1, sy: 1.5, sz: 1.8, pal: 6, rotY: -0.7 },
-          { angle: 5.75, r: 3.2, sx: 1.7, sy: 1.7, sz: 1.7, pal: 0, rotY: 0.4 },
-          { angle: 0.52, r: 5.2, sx: 2.2, sy: 1.7, sz: 2.1, pal: 4, rotY: -0.3 },
-          { angle: 1.18, r: 5.5, sx: 1.6, sy: 1.4, sz: 1.6, pal: 6, rotY: 0.7 },
-          { angle: 1.82, r: 5.0, sx: 1.9, sy: 1.9, sz: 1.9, pal: 0, rotY: -0.6 },
-          { angle: 2.45, r: 5.4, sx: 2.1, sy: 1.4, sz: 1.7, pal: 1, rotY: 0.5 },
-          { angle: 3.08, r: 5.1, sx: 1.8, sy: 1.6, sz: 1.8, pal: 2, rotY: -0.2 },
-          { angle: 3.72, r: 5.3, sx: 2.0, sy: 1.8, sz: 1.9, pal: 3, rotY: 0.9 },
-          { angle: 4.38, r: 5.0, sx: 1.7, sy: 1.5, sz: 1.7, pal: 5, rotY: -0.8 },
-          { angle: 5.02, r: 5.4, sx: 2.2, sy: 1.6, sz: 2.0, pal: 1, rotY: 0.3 },
-          { angle: 5.62, r: 5.2, sx: 1.6, sy: 2.0, sz: 1.6, pal: 2, rotY: -0.5 },
-          { angle: 6.12, r: 5.8, sx: 1.8, sy: 1.4, sz: 1.8, pal: 3, rotY: 0.2 }
-        ].forEach((spec) => {
-          const gift = createDecorativeGiftBox3D(spec.pal, spec.sx, spec.sy, spec.sz);
-          const baseSnowY = spec.r < 3.8 ? 0.52 : 0.18;
-          gift.position.set(Math.cos(spec.angle) * spec.r, baseSnowY + spec.sy * 0.45, Math.sin(spec.angle) * spec.r);
-          gift.rotation.y = spec.rotY;
-          treeGroup.add(gift);
-        });
+        // Hộp quà chỉ được thêm khi có người gửi lời chúc vào phòng.
 
         [
           { r: 10.8, h: 6.8, y: 6.8,  lobes: 16, tube: 0.36 },
@@ -2826,11 +3048,13 @@
       }
 
       /* ==================== MÔ-ĐUN 4: TỰ ĐỘNG TỐI ƯU HÓA FPS THEO THIẾT BỊ (SMART FPS AUTO-SCALER) ==================== */
+      const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
+      const lowPowerDevice = prefersReducedMotion || (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4) || window.innerWidth <= 720;
       const fpsAutoScaler = {
         frames: 0,
         elapsed: 0,
-        qualityTier: 2, // 2: Cao nhất, 1: Cân bằng, 0: Siêu mượt cho máy yếu
-        basePixelRatio: Math.min(window.devicePixelRatio || 1.5, 1.5),
+        qualityTier: prefersReducedMotion ? 0 : (lowPowerDevice ? 1 : 2), // Tự hạ mức cho máy yếu và màn hình nhỏ.
+        basePixelRatio: Math.min(window.devicePixelRatio || 1, lowPowerDevice ? 1.15 : 1.35),
         update(dt) {
           if (document.hidden) return;
           this.frames++;
@@ -2853,12 +3077,15 @@
             renderer.setPixelRatio(this.basePixelRatio);
             moonLight.castShadow = true;
           } else if (this.qualityTier === 1) {
-            renderer.setPixelRatio(Math.min(this.basePixelRatio, 1.25));
+            renderer.setPixelRatio(Math.min(this.basePixelRatio, 1.05));
             moonLight.castShadow = true;
           } else {
             renderer.setPixelRatio(1.0);
             moonLight.castShadow = false;
           }
+          const snowBudget = this.qualityTier === 2 ? 1 : (this.qualityTier === 1 ? 0.78 : 0.55);
+          snowParticles.geometry.setDrawRange(0, Math.ceil(snowParticleCount * snowBudget));
+          smallCrystalFlakesGroup.visible = this.qualityTier > 0;
         }
       };
 
@@ -3262,7 +3489,7 @@
         });
       }
 
-      const snowParticleCount = 950;
+      const snowParticleCount = lowPowerDevice ? 500 : 760;
       const snowGeo = new THREE.BufferGeometry();
       const snowPos = new Float32Array(snowParticleCount * 3);
       const snowVel = [];
@@ -3297,7 +3524,7 @@
       );
 
       const smallCrystalFlakes = [];
-      const smallCrystalCount = 90;
+      const smallCrystalCount = lowPowerDevice ? 28 : 52;
       for (let i = 0; i < smallCrystalCount; i++) {
         const flakeMesh = new THREE.Mesh(unitPlaneGeo, smallCrystalMaterials[i % 3]);
         const s = rand(1.25, 2.55);
@@ -3311,6 +3538,8 @@
           rotX: rand(-1.5, 1.5), rotY: rand(-1.8, 1.8), rotZ: rand(-2.4, 2.4), phase: rand(0, Math.PI * 2)
         });
       }
+
+      fpsAutoScaler.applyTier();
 
       const burstCount = 90;
       const burstGeo = new THREE.BufferGeometry();
@@ -3404,7 +3633,7 @@
           });
         }
       }
-      initFallingGiftsPool();
+      // Không tạo sẵn hộp quà ngẫu nhiên; chỉ dựng quà được gửi vào phòng.
 
       function resetFallingGiftsState() {
         const shuffledWishes = shuffleArray(WISHES_POOL);
@@ -3474,6 +3703,1153 @@
         orbitPolar = clamp(Math.acos(clamp(dy / orbitRadius, -1, 1)), 0.35, 1.52);
       });
 
+      /* ==================== PHÒNG GIÁNG SINH CỤC BỘ & QUÀ PHONG ẤN ==================== */
+      const roomStatusBar = $('roomStatusBar');
+      const roomCodePill = $('roomCodePill');
+      const roomOnlineCount = $('roomOnlineCount');
+      const roomGiftCountPill = $('roomGiftCountPill');
+      const roomUnlockStatusPill = $('roomUnlockStatusPill');
+      const giftFloatingLabels = $('giftFloatingLabels');
+      const newRoomServerBtn = $('newRoomServerBtn');
+      const copyRoomLinkQuickBtn = $('copyRoomLinkQuickBtn');
+      const adminBypassUnlockBtn = $('adminBypassUnlockBtn');
+      const sendRoomGiftBtn = $('sendRoomGiftBtn');
+      const giftPalettePicker = $('giftPalettePicker');
+      const ROOM_GIFT_LIMIT = 40;
+      const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+      const ROOM_ID_PATTERN = /^[a-z0-9-]{4,32}$/i;
+      const roomSessionId = `tab-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+      const roomQuery = new URLSearchParams(window.location.search);
+      const roomFromUrl = roomQuery.get('room');
+      let roomId = roomFromUrl && ROOM_ID_PATTERN.test(roomFromUrl) ? roomFromUrl : createRoomId();
+      let roomGifts = [];
+      let roomGiftMeshes = [];
+      let roomChannel = null;
+      let roomPresenceTimer = null;
+      let roomUiTimer = null;
+      let roomStorageAvailable = true;
+      let selectedGiftPaletteIndex = 0;
+      let adminDemoUnlocked = false;
+      let roomLabelFrame = 0;
+      let renderLoopRaf = 0;
+      const roomLabelWorldPosition = new THREE.Vector3();
+      const transientRoomGifts = [];
+
+      function createRoomId() {
+        const randomPart = window.crypto && typeof window.crypto.randomUUID === 'function'
+          ? window.crypto.randomUUID().replace(/-/g, '').slice(0, 10)
+          : Math.random().toString(36).slice(2, 12);
+        return `noel-${randomPart}`;
+      }
+
+      function roomGiftsStorageKey() { return `christmas:room:${roomId}:gifts`; }
+      function roomPresencePrefix() { return `christmas:room:${roomId}:presence:`; }
+      function roomChannelName() { return `christmas:room:${roomId}`; }
+
+      function updateRoomUrl(usePushState = false) {
+        try {
+          const nextUrl = new URL(window.location.href);
+          nextUrl.searchParams.set('room', roomId);
+          if (roomTitle) nextUrl.searchParams.set('roomName', roomTitle);
+          else nextUrl.searchParams.delete('roomName');
+          const method = usePushState ? 'pushState' : 'replaceState';
+          window.history[method]({ roomId }, '', nextUrl.toString());
+        } catch (_) {
+          // A file:// preview may not allow history updates; the room still works in this tab.
+        }
+      }
+
+      function nextChristmasMidnight(from = new Date()) {
+        const target = new Date(from.getFullYear(), 11, 25, 0, 0, 0, 0);
+        if (target.getTime() <= from.getTime()) target.setFullYear(target.getFullYear() + 1);
+        return target;
+      }
+
+      function formatCountdown(ms) {
+        const total = Math.max(0, Math.floor(ms / 1000));
+        const days = Math.floor(total / 86400);
+        const hours = Math.floor((total % 86400) / 3600);
+        const minutes = Math.floor((total % 3600) / 60);
+        const seconds = total % 60;
+        return `${days} ngày ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+
+      function normaliseRoomGift(raw) {
+        if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+        const id = sanitizeText(raw.id, 64);
+        const createdAt = Number(raw.createdAt);
+        if (!id || !Number.isFinite(createdAt)) return null;
+        const unlockAt = Number(raw.unlockAt);
+        const fallbackUnlock = new Date(new Date(createdAt).getFullYear(), 11, 25, 0, 0, 0, 0).getTime();
+        return {
+          id,
+          to: sanitizeText(raw.to, 45),
+          from: sanitizeText(raw.from, 45),
+          msg: sanitizeText(raw.msg, 240),
+          paletteIndex: clamp(Math.floor(Number(raw.paletteIndex) || 0), 0, GIFT_PALETTES.length - 1),
+          createdAt,
+          unlockAt: Number.isFinite(unlockAt) ? unlockAt : fallbackUnlock
+        };
+      }
+
+      function mergeRoomGifts(incoming) {
+        const byId = new Map(roomGifts.map((gift) => [gift.id, gift]));
+        (Array.isArray(incoming) ? incoming : []).forEach((raw) => {
+          const gift = normaliseRoomGift(raw);
+          if (gift) byId.set(gift.id, gift);
+        });
+        roomGifts = [...byId.values()].sort((a, b) => a.createdAt - b.createdAt).slice(-ROOM_GIFT_LIMIT);
+        renderRoomGifts();
+        updateRoomStatus();
+      }
+
+      function readRoomGiftsFromStorage() {
+        try {
+          const raw = window.localStorage.getItem(roomGiftsStorageKey());
+          const parsed = raw ? JSON.parse(raw) : [];
+          return (Array.isArray(parsed) ? parsed : []).map(normaliseRoomGift).filter(Boolean).slice(-ROOM_GIFT_LIMIT);
+        } catch (_) {
+          roomStorageAvailable = false;
+          return [];
+        }
+      }
+
+      function persistRoomGifts() {
+        try {
+          window.localStorage.setItem(roomGiftsStorageKey(), JSON.stringify(roomGifts.slice(-ROOM_GIFT_LIMIT)));
+          roomStorageAvailable = true;
+        } catch (_) {
+          roomStorageAvailable = false;
+        }
+        if (roomChannel) roomChannel.postMessage({ type: 'gifts', gifts: roomGifts });
+      }
+
+      function updateRoomPresence() {
+        const key = `${roomPresencePrefix()}${roomSessionId}`;
+        try {
+          window.localStorage.setItem(key, String(Date.now()));
+          if (roomChannel) roomChannel.postMessage({ type: 'presence' });
+        } catch (_) {
+          roomStorageAvailable = false;
+        }
+        updateRoomStatus();
+      }
+
+      function countRoomTabs() {
+        const now = Date.now();
+        let count = 1;
+        try {
+          const prefix = roomPresencePrefix();
+          for (let i = 0; i < window.localStorage.length; i++) {
+            const key = window.localStorage.key(i);
+            if (!key || !key.startsWith(prefix) || key.endsWith(roomSessionId)) continue;
+            const seenAt = Number(window.localStorage.getItem(key));
+            if (Number.isFinite(seenAt) && now - seenAt < 15000) count++;
+          }
+        } catch (_) {
+          roomStorageAvailable = false;
+        }
+        return count;
+      }
+
+      function updateRoomStatus() {
+        if (!roomStatusBar) return;
+        if (roomCodePill) roomCodePill.textContent = `🏠 ${roomTitle ? roomTitle + ' · ' : 'Phòng: '}#${roomId}`;
+        if (roomOnlineCount) {
+          const count = countRoomTabs();
+          roomOnlineCount.textContent = `${count} tab cùng phòng · trình duyệt này`;
+        }
+        if (roomGiftCountPill) roomGiftCountPill.textContent = `🎁 Hộp quà dưới cây: ${roomGifts.length}`;
+        if (roomUnlockStatusPill) {
+          roomUnlockStatusPill.textContent = adminDemoUnlocked
+            ? '⚡ Demo mở khóa · tab này'
+            : `🔒 Mở khóa sau ${formatCountdown(nextChristmasMidnight().getTime() - Date.now())}`;
+        }
+        roomStatusBar.title = roomStorageAvailable
+          ? 'Phòng lưu trên trình duyệt này; đồng bộ giữa các tab cùng nguồn.'
+          : 'Trình duyệt đang chặn lưu cục bộ; dữ liệu phòng chỉ còn trong tab này.';
+      }
+
+      function clearRoomPresence() {
+        try { window.localStorage.removeItem(`${roomPresencePrefix()}${roomSessionId}`); } catch (_) {}
+      }
+
+      function stopRoomSync() {
+        if (roomPresenceTimer) clearInterval(roomPresenceTimer);
+        roomPresenceTimer = null;
+        clearRoomPresence();
+        if (roomChannel) roomChannel.close();
+        roomChannel = null;
+      }
+
+      function startRoomSync() {
+        if (roomChannel) roomChannel.close();
+        if (typeof BroadcastChannel === 'function') {
+          roomChannel = new BroadcastChannel(roomChannelName());
+          roomChannel.onmessage = (event) => handleRoomBroadcast(event.data);
+        }
+        updateRoomUrl(false);
+        roomGifts = readRoomGiftsFromStorage();
+        renderRoomGifts();
+        updateRoomPresence();
+        if (roomPresenceTimer) clearInterval(roomPresenceTimer);
+        roomPresenceTimer = setInterval(updateRoomPresence, 5000);
+        updateRoomStatus();
+      }
+
+      function loadRoomGiftsFromStorageAndUrl() {
+        const requestedRoom = new URLSearchParams(window.location.search).get('room');
+        if (requestedRoom && ROOM_ID_PATTERN.test(requestedRoom)) roomId = requestedRoom;
+        const requestedName = new URLSearchParams(window.location.search).get('roomName');
+        if (requestedName) roomTitle = sanitizeText(requestedName, 45);
+        if (checkRoomPasswordGateOnLoad()) return;
+        startRoomSync();
+      }
+
+      const roomLockMaterial = new THREE.MeshStandardMaterial({ color: 0xffd875, emissive: 0x6d3f08, emissiveIntensity: 0.25, metalness: 0.82, roughness: 0.24 });
+      const roomLockBodyGeometry = new THREE.BoxGeometry(0.48, 0.42, 0.16);
+      const roomLockShackleGeometry = new THREE.TorusGeometry(0.2, 0.055, 7, 14, Math.PI);
+
+      function addRoomGiftLock(root) {
+        const lock = new THREE.Group();
+        const body = new THREE.Mesh(roomLockBodyGeometry, roomLockMaterial);
+        body.position.y = 0.28;
+        const shackle = new THREE.Mesh(roomLockShackleGeometry, roomLockMaterial);
+        shackle.position.set(0, 0.55, 0);
+        shackle.rotation.z = Math.PI;
+        lock.add(body, shackle);
+        lock.position.set(0, 0.08, 0.88);
+        root.add(lock);
+        return lock;
+      }
+
+      function roomGiftPosition(index) {
+        const angle = index * GOLDEN_ANGLE;
+        const radius = 1.8 + Math.sqrt(index + 1) * 0.92;
+        return { x: Math.cos(angle) * radius, z: Math.sin(angle) * radius + 3.2 };
+      }
+
+      function makeRoomWish(gift) {
+        return {
+          title: gift.to ? `Gửi ${gift.to} Yêu Quý!` : 'Giáng Sinh An Lành!',
+          text: gift.msg || 'Chúc bạn một mùa Giáng sinh ngập tràn niềm vui, hạnh phúc và phép màu ấm áp!',
+          sender: gift.from
+        };
+      }
+
+      function addRoomGiftToScene(gift, shouldFall = false, positionIndex = 0) {
+        if (roomGiftMeshes.some((entry) => entry.gift.id === gift.id)) return;
+        const palette = GIFT_PALETTES[gift.paletteIndex];
+        const root = new THREE.Group();
+        const giftBox = createDecorativeGiftBox3D(gift.paletteIndex, 1.3, 1.08, 1.3);
+        root.add(giftBox);
+        const hitSphere = new THREE.Mesh(sharedGiftGeos.hit, sharedGiftGeos.hitMat);
+        hitSphere.scale.setScalar(0.48);
+        hitSphere.userData.giftRoot = root;
+        giftHitTargets.push(hitSphere);
+        root.add(hitSphere);
+        const lock = addRoomGiftLock(root);
+        const target = roomGiftPosition(positionIndex);
+        root.position.set(target.x, shouldFall ? 38 : 0.92, target.z);
+        root.userData.giftInfo = { wish: makeRoomWish(gift), palette, roomGiftId: gift.id, gift };
+        root.userData.popAnim = 0;
+        gifts3DGroup.add(root);
+        const label = document.createElement('div');
+        label.className = 'gift-tag-3d';
+        label.textContent = gift.from ? `🎁 ${gift.from}` : '🎁 Lời chúc';
+        label.title = gift.to ? `Gửi tặng ${gift.to}` : 'Quà Giáng sinh';
+        if (gift.unlockAt <= Date.now() || adminDemoUnlocked) label.classList.add('unlocked');
+        giftFloatingLabels?.appendChild(label);
+        const entry = { id: gift.id, gift, group: root, lock, label, x: target.x, z: target.z, y: 0.92, spawnStart: shouldFall ? performance.now() : 0 };
+        roomGiftMeshes.push(entry);
+        if (shouldFall) transientRoomGifts.push(entry);
+        gifts3DGroup.visible = roomGiftMeshes.length > 0;
+        giftsFallingActive = roomGiftMeshes.length > 0;
+      }
+
+      function renderRoomGifts(newGiftId = '') {
+        roomGiftMeshes.forEach((entry) => {
+          gifts3DGroup.remove(entry.group);
+          const hit = entry.group.children.find((child) => child.geometry === sharedGiftGeos.hit);
+          if (hit) {
+            const hitIndex = giftHitTargets.indexOf(hit);
+            if (hitIndex >= 0) giftHitTargets.splice(hitIndex, 1);
+          }
+          entry.label.remove();
+        });
+        roomGiftMeshes = [];
+        transientRoomGifts.length = 0;
+        roomGifts.forEach((gift, index) => addRoomGiftToScene(gift, gift.id === newGiftId, index));
+        gifts3DGroup.visible = roomGiftMeshes.length > 0 && isCurtainOpened;
+        giftsFallingActive = roomGiftMeshes.length > 0;
+      }
+
+      function updateRoomGiftLocks() {
+        roomGiftMeshes.forEach((entry) => {
+          const locked = entry.gift.unlockAt > Date.now() && !adminDemoUnlocked;
+          entry.lock.visible = locked;
+          entry.label.classList.toggle('unlocked', !locked);
+        });
+      }
+
+      function updateRoomGiftAnimations(now) {
+        for (let i = transientRoomGifts.length - 1; i >= 0; i--) {
+          const entry = transientRoomGifts[i];
+          const progress = clamp((now - entry.spawnStart) / 1050, 0, 1);
+          entry.group.position.y = 38 + (entry.y - 38) * easeOutCubic(progress);
+          if (progress > 0.84) {
+            const impact = Math.sin(((progress - 0.84) / 0.16) * Math.PI);
+            entry.group.scale.set(1 - impact * 0.11, 1 + impact * 0.16, 1 - impact * 0.11);
+          } else {
+            entry.group.scale.set(1, 1, 1);
+          }
+          if (progress >= 1) {
+            entry.group.position.y = entry.y;
+            entry.group.scale.set(1, 1, 1);
+            transientRoomGifts.splice(i, 1);
+          }
+        }
+      }
+
+      function updateRoomGiftLabels() {
+        if (!giftFloatingLabels) return;
+        camera.updateMatrixWorld();
+        roomGiftMeshes.forEach((entry) => {
+          if (!entry.group.visible || !isCurtainOpened) {
+            entry.label.style.opacity = '0';
+            return;
+          }
+          roomLabelWorldPosition.set(0, 2.1, 0);
+          entry.group.localToWorld(roomLabelWorldPosition);
+          roomLabelWorldPosition.project(camera);
+          const visible = roomLabelWorldPosition.z > -1 && roomLabelWorldPosition.z < 1 && Math.abs(roomLabelWorldPosition.x) <= 1.08 && Math.abs(roomLabelWorldPosition.y) <= 1.08;
+          if (!visible) {
+            entry.label.style.opacity = '0';
+            return;
+          }
+          entry.label.style.left = `${(roomLabelWorldPosition.x * 0.5 + 0.5) * window.innerWidth}px`;
+          entry.label.style.top = `${(-roomLabelWorldPosition.y * 0.5 + 0.5) * window.innerHeight}px`;
+          entry.label.style.opacity = '1';
+        });
+      }
+
+      function openRoomGift(giftRoot) {
+        const info = giftRoot.userData.giftInfo;
+        if (!info) return;
+        const gift = info.gift;
+        if (gift && gift.unlockAt > Date.now() && !adminDemoUnlocked) {
+          const remaining = formatCountdown(gift.unlockAt - Date.now());
+          openGiftWish({
+            title: 'Hộp quà đang được phong ấn',
+            text: `Lời chúc sẽ mở vào 00:00 ngày 25/12. Còn ${remaining}.`,
+            sender: gift.from ? `Người gửi: ${gift.from}` : ''
+          }, info.palette, true);
+          wishModalBadge.textContent = '🔒 Chưa đến đêm Giáng sinh';
+          const modal = wishModalBackdrop.querySelector('.wish-modal');
+          modal?.classList.remove('locked-shake');
+          requestAnimationFrame(() => modal?.classList.add('locked-shake'));
+          setTimeout(() => modal?.classList.remove('locked-shake'), 520);
+          return;
+        }
+        giftRoot.userData.popAnim = 1;
+        triggerGiftSparkleBurst(giftRoot.position, info.palette.hexRibbon);
+        setTimeout(() => openGiftWish(info.wish, info.palette), 220);
+      }
+
+      function sendRoomGift() {
+        if (roomGifts.length >= ROOM_GIFT_LIMIT) {
+          copyStatusText.textContent = `Phòng đã có tối đa ${ROOM_GIFT_LIMIT} hộp quà.`;
+          return;
+        }
+        const to = sanitizeText(inputReceiver.value, 45);
+        const from = sanitizeText(inputSender.value, 45);
+        const msg = sanitizeText(inputCustomWish.value, 240);
+        if (!to && !msg) {
+          copyStatusText.textContent = 'Hãy nhập tên người nhận hoặc lời chúc trước khi thả quà.';
+          return;
+        }
+        const now = Date.now();
+        const christmasThisYear = new Date(new Date(now).getFullYear(), 11, 25, 0, 0, 0, 0).getTime();
+        const gift = {
+          id: `${roomSessionId}-${now.toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+          to, from, msg,
+          paletteIndex: selectedGiftPaletteIndex,
+          createdAt: now,
+          unlockAt: christmasThisYear > now ? christmasThisYear : now
+        };
+        roomGifts = [...roomGifts, gift].slice(-ROOM_GIFT_LIMIT);
+        renderRoomGifts(gift.id);
+        persistRoomGifts();
+        updateRoomStatus();
+        copyStatusText.textContent = roomStorageAvailable
+          ? '✅ Đã thả quà vào phòng. Các tab cùng trình duyệt sẽ thấy món quà này.'
+          : '✅ Đã thả quà trong tab này; trình duyệt đang chặn lưu cục bộ.';
+        inputReceiver.value = '';
+        inputSender.value = '';
+        inputCustomWish.value = '';
+        setTimeout(() => creatorModalBackdrop.classList.remove('active'), 500);
+      }
+
+      function copyCurrentRoomLink() {
+        const invite = new URL(window.location.href);
+        invite.searchParams.delete('to');
+        invite.searchParams.delete('from');
+        invite.searchParams.delete('msg');
+        invite.searchParams.set('room', roomId);
+        if (roomTitle) invite.searchParams.set('roomName', roomTitle);
+        const link = invite.toString();
+        const done = () => {
+          if (copyStatusText) copyStatusText.textContent = '✅ Đã sao chép link phòng.';
+        };
+        if (navigator.clipboard?.writeText) navigator.clipboard.writeText(link).then(done).catch(() => window.prompt('Sao chép link phòng này:', link));
+        else window.prompt('Sao chép link phòng này:', link);
+      }
+
+      function switchRoom() {
+        stopRoomSync();
+        roomId = createRoomId();
+        roomGifts = [];
+        renderRoomGifts();
+        updateRoomUrl(true);
+        startRoomSync();
+      }
+
+      giftPalettePicker?.querySelectorAll('[data-palette]').forEach((button) => {
+        button.addEventListener('click', () => {
+          selectedGiftPaletteIndex = clamp(Number(button.dataset.palette) || 0, 0, GIFT_PALETTES.length - 1);
+          giftPalettePicker.querySelectorAll('[data-palette]').forEach((swatch) => {
+            const selected = swatch === button;
+            swatch.classList.toggle('active', selected);
+            swatch.setAttribute('aria-pressed', String(selected));
+          });
+        });
+      });
+      sendRoomGiftBtn?.addEventListener('click', sendRoomGift);
+      newRoomServerBtn?.addEventListener('click', switchRoom);
+      copyRoomLinkQuickBtn?.addEventListener('click', copyCurrentRoomLink);
+      if (adminBypassUnlockBtn) {
+        adminBypassUnlockBtn.hidden = new URLSearchParams(window.location.search).get('demo') !== '1';
+        adminBypassUnlockBtn.addEventListener('click', () => {
+          adminDemoUnlocked = !adminDemoUnlocked;
+          adminBypassUnlockBtn.classList.toggle('unlocked', adminDemoUnlocked);
+          adminBypassUnlockBtn.textContent = adminDemoUnlocked ? '⚡ Tắt mở khóa demo' : '⚡ Sếp Test: Đang Khóa';
+          updateRoomGiftLocks();
+          updateRoomStatus();
+        });
+      }
+      window.addEventListener('storage', (event) => {
+        if (event.key === roomGiftsStorageKey()) mergeRoomGifts(readRoomGiftsFromStorage());
+        if (event.key?.startsWith(roomPresencePrefix())) updateRoomStatus();
+      });
+      window.addEventListener('pagehide', () => {
+        roomChannel?.postMessage({ type: 'player-left', from: roomSessionId });
+        stopRoomSync();
+        if (renderLoopRaf) cancelAnimationFrame(renderLoopRaf);
+        renderLoopRaf = 0;
+      });
+      roomUiTimer = setInterval(() => {
+        if (document.hidden) return;
+        updateRoomStatus();
+        updateRoomGiftLocks();
+      }, 1000);
+      /* V2 module: chat, đi dạo, tương tác, mật khẩu và voice cục bộ. */
+/* ==================== V2: WALK, CHAT, SNOWBALLS, PASSWORD GATE & VOICE ==================== */
+const createRoomModalBackdrop = $('createRoomModalBackdrop');
+const createRoomCancelBtn = $('createRoomCancelBtn');
+const createRoomConfirmBtn = $('createRoomConfirmBtn');
+const newRoomTitleInput = $('newRoomTitleInput');
+const newRoomHostNameInput = $('newRoomHostNameInput');
+const useRoomPasswordCheck = $('useRoomPasswordCheck');
+const newRoomPasswordWrap = $('newRoomPasswordWrap');
+const newRoomPasswordInput = $('newRoomPasswordInput');
+const createRoomStatus = $('createRoomStatus');
+const passwordGateBackdrop = $('passwordGateBackdrop');
+const passwordGateBox = $('passwordGateBox');
+const passwordGateRoomTitle = $('passwordGateRoomTitle');
+const gatePasswordInput = $('gatePasswordInput');
+const guestNicknameInput = $('guestNicknameInput');
+const passwordSubmitBtn = $('passwordSubmitBtn');
+const passwordErrorMsg = $('passwordErrorMsg');
+const freeWalkToggleBtn = $('freeWalkToggleBtn');
+const walkDpad = $('walkDpad');
+const dpadJumpBtn = $('dpadJumpBtn');
+const chatMessagesBox = $('chatMessagesBox');
+const chatInputBox = $('chatInputBox');
+const chatSendBtn = $('chatSendBtn');
+const throwSnowballBtn = $('throwSnowballBtn');
+const micToggleBtn = $('micToggleBtn');
+const voiceSpeakerBtn = $('voiceSpeakerBtn');
+const voiceStreamsContainer = $('voiceStreamsContainer');
+
+let roomTitle = new URLSearchParams(window.location.search).get('roomName') || '';
+let roomUserName = 'Khách Noel';
+try { roomUserName = sessionStorage.getItem('christmas:player-name') || roomUserName; } catch (_) {}
+let roomMetadata = null;
+let isRoomLockedByPassword = false;
+
+const walkKeys = new Set();
+const mobileWalkKeys = new Set();
+const roomPlayers = new Map();
+const snowballs = [];
+const ROOM_PLAYER_LIMIT = 12;
+const ROOM_BALL_LIMIT = 18;
+let walkModeEnabled = false;
+let walkPreviousCameraMode = 0;
+let walkPreviousManual360 = false;
+let walkPreviousFov = 50;
+let walkCameraPitch = 0.12;
+let localJumpVelocity = 0;
+let localJumpOffset = 0;
+let lastPlayerStateSentAt = 0;
+let lastPlayerStateSnapshot = '';
+let isVoiceSpeakerMuted = false;
+let localMicStream = null;
+let currentSnowballAt = 0;
+const walkTargetPos = new THREE.Vector3();
+const walkLookAt = new THREE.Vector3();
+const playerLabelWorld = new THREE.Vector3();
+const playerLabelOverlay = document.createElement('div');
+playerLabelOverlay.className = 'player-label-overlay';
+playerLabelOverlay.setAttribute('aria-hidden', 'true');
+sceneEl.appendChild(playerLabelOverlay);
+
+function roomMetaStorageKey(id = roomId) { return 'christmas:room:' + id + ':meta'; }
+function readRoomMetadata(id = roomId) {
+  try {
+    const value = JSON.parse(localStorage.getItem(roomMetaStorageKey(id)) || 'null');
+    return value && typeof value === 'object' ? value : null;
+  } catch (_) { return null; }
+}
+function saveRoomMetadata(meta, id = roomId) {
+  try { localStorage.setItem(roomMetaStorageKey(id), JSON.stringify(meta)); return true; }
+  catch (_) { return false; }
+}
+function toBase64Url(bytes) {
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+}
+function fromBase64Url(value) {
+  const normalized = String(value).replace(/-/g, '+').replace(/_/g, '/');
+  const binary = atob(normalized + '='.repeat((4 - normalized.length % 4) % 4));
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+}
+async function hashRoomPassword(password, saltText) {
+  if (!crypto?.subtle) throw new Error('Trình duyệt không hỗ trợ Web Crypto trong ngữ cảnh hiện tại.');
+  const salt = saltText ? fromBase64Url(saltText) : crypto.getRandomValues(new Uint8Array(16));
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 120000, hash: 'SHA-256' }, key, 256);
+  return { salt: toBase64Url(salt), hash: toBase64Url(new Uint8Array(bits)) };
+}
+function checkRoomPasswordGateOnLoad() {
+  roomMetadata = readRoomMetadata();
+  if (roomMetadata?.roomTitle) roomTitle = sanitizeText(roomMetadata.roomTitle, 45);
+  isRoomLockedByPassword = Boolean(roomMetadata?.passwordHash && roomMetadata?.passwordSalt);
+  if (!isRoomLockedByPassword) return false;
+  passwordGateRoomTitle.textContent = '🔒 ' + (roomTitle || 'Phòng có mật khẩu');
+  passwordGateBackdrop.classList.add('active');
+  setTimeout(() => gatePasswordInput.focus(), 0);
+  return true;
+}
+async function submitRoomPassword() {
+  if (!roomMetadata?.passwordHash || !roomMetadata?.passwordSalt) return;
+  passwordErrorMsg.textContent = '';
+  passwordSubmitBtn.disabled = true;
+  try {
+    const result = await hashRoomPassword(gatePasswordInput.value, roomMetadata.passwordSalt);
+    if (result.hash !== roomMetadata.passwordHash) {
+      passwordErrorMsg.textContent = 'Mật khẩu chưa đúng. Hãy thử lại.';
+      passwordGateBox.classList.remove('locked-shake');
+      requestAnimationFrame(() => passwordGateBox.classList.add('locked-shake'));
+      setTimeout(() => passwordGateBox.classList.remove('locked-shake'), 520);
+      gatePasswordInput.select();
+      return;
+    }
+    roomUserName = sanitizeText(guestNicknameInput.value, 30) || roomMetadata.hostName || 'Khách Noel';
+    localAvatar.name = roomUserName;
+    localAvatar.tag.querySelector('.player-name').textContent = roomUserName;
+    try { sessionStorage.setItem('christmas:player-name', roomUserName); } catch (_) {}
+    isRoomLockedByPassword = false;
+    passwordGateBackdrop.classList.remove('active');
+    startRoomSync();
+    updateRoomStatus();
+    addChatLine('Đã vào phòng.', true);
+  } catch (error) {
+    passwordErrorMsg.textContent = error?.message || 'Không thể kiểm tra mật khẩu.';
+  } finally { passwordSubmitBtn.disabled = false; }
+}
+function openCreateRoomModal() {
+  createRoomStatus.textContent = '';
+  newRoomTitleInput.value = roomTitle || '';
+  newRoomHostNameInput.value = roomUserName === 'Khách Noel' ? '' : roomUserName;
+  useRoomPasswordCheck.checked = false;
+  newRoomPasswordWrap.style.display = 'none';
+  newRoomPasswordInput.value = '';
+  createRoomModalBackdrop.classList.add('active');
+  setTimeout(() => newRoomTitleInput.focus(), 0);
+}
+async function createRoomFromModal() {
+  const nextTitle = sanitizeText(newRoomTitleInput.value, 45);
+  const nextHostName = sanitizeText(newRoomHostNameInput.value, 30) || 'Chủ phòng';
+  const password = newRoomPasswordInput.value;
+  if (!nextTitle) { createRoomStatus.textContent = 'Hãy đặt tên cho phòng.'; newRoomTitleInput.focus(); return; }
+  if (useRoomPasswordCheck.checked && (password.length < 4 || password.length > 32)) {
+    createRoomStatus.textContent = 'Mật khẩu cần có từ 4 đến 32 ký tự.';
+    newRoomPasswordInput.focus();
+    return;
+  }
+  createRoomConfirmBtn.disabled = true;
+  createRoomStatus.textContent = 'Đang tạo phòng…';
+  try {
+    const nextMeta = { roomTitle: nextTitle, hostName: nextHostName, createdAt: Date.now(), passwordSalt: '', passwordHash: '' };
+    if (useRoomPasswordCheck.checked) {
+      const hashed = await hashRoomPassword(password, '');
+      nextMeta.passwordSalt = hashed.salt;
+      nextMeta.passwordHash = hashed.hash;
+    }
+    const nextRoomId = createRoomId();
+    if (!saveRoomMetadata(nextMeta, nextRoomId)) throw new Error('Trình duyệt đang chặn lưu phòng cục bộ. Hãy mở trang qua localhost hoặc bật quyền lưu dữ liệu.');
+    stopRoomSync();
+    roomId = nextRoomId;
+    roomTitle = nextTitle;
+    roomUserName = nextHostName;
+    localAvatar.name = roomUserName;
+    localAvatar.tag.querySelector('.player-name').textContent = roomUserName;
+    roomMetadata = nextMeta;
+    isRoomLockedByPassword = false;
+    try { sessionStorage.setItem('christmas:player-name', roomUserName); } catch (_) {}
+    roomGifts = [];
+    renderRoomGifts();
+    updateRoomUrl(true);
+    startRoomSync();
+    createRoomModalBackdrop.classList.remove('active');
+    updateRoomStatus();
+    addChatLine('Đã tạo phòng “' + roomTitle + '”.', true);
+    copyCurrentRoomLink();
+  } catch (error) {
+    createRoomStatus.textContent = error?.message || 'Không tạo được phòng.';
+  } finally { createRoomConfirmBtn.disabled = false; }
+}
+
+/* Avatar dùng chung hình học và vật liệu để giảm draw calls / bộ nhớ. */
+const avatarGeo = {
+  torso: new THREE.BoxGeometry(0.72, 0.92, 0.42),
+  head: new THREE.SphereGeometry(0.25, 10, 8),
+  hat: new THREE.ConeGeometry(0.27, 0.48, 7),
+  scarf: new THREE.BoxGeometry(0.76, 0.13, 0.48),
+  leg: new THREE.BoxGeometry(0.2, 0.54, 0.23),
+  arm: new THREE.BoxGeometry(0.18, 0.58, 0.2),
+  nose: new THREE.ConeGeometry(0.06, 0.2, 5)
+};
+const avatarMats = {
+  shirts: ['#3f86d9', '#c64242', '#41a06b', '#8b63c7', '#d38b32', '#238b9b', '#c55b95', '#6578a8'].map((color) => new THREE.MeshStandardMaterial({ color, roughness: 0.82 })),
+  skin: new THREE.MeshStandardMaterial({ color: 0xf2c9a4, roughness: 0.92 }),
+  hat: new THREE.MeshStandardMaterial({ color: 0xb91c2d, roughness: 0.8 }),
+  scarf: new THREE.MeshStandardMaterial({ color: 0xffd166, roughness: 0.8 }),
+  legs: new THREE.MeshStandardMaterial({ color: 0x253346, roughness: 0.9 }),
+  nose: new THREE.MeshStandardMaterial({ color: 0xd97836, roughness: 0.8 })
+};
+function addAvatarMesh(root, geometry, material, position, parent = root) {
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(position[0], position[1], position[2]);
+  mesh.castShadow = false;
+  mesh.receiveShadow = false;
+  parent.add(mesh);
+  return mesh;
+}
+function makePlayerAvatar(playerId, name, colorIndex = 0) {
+  const root = new THREE.Group();
+  const shirt = avatarMats.shirts[Math.abs(colorIndex) % avatarMats.shirts.length];
+  addAvatarMesh(root, avatarGeo.torso, shirt, [0, 1.12, 0]);
+  addAvatarMesh(root, avatarGeo.head, avatarMats.skin, [0, 1.82, 0]);
+  addAvatarMesh(root, avatarGeo.hat, avatarMats.hat, [0, 2.24, 0]);
+  addAvatarMesh(root, avatarGeo.scarf, avatarMats.scarf, [0, 1.52, 0]);
+  const legs = [], arms = [];
+  for (const side of [-1, 1]) {
+    const legPivot = new THREE.Group();
+    legPivot.position.set(side * 0.22, 0.75, 0);
+    addAvatarMesh(legPivot, avatarGeo.leg, avatarMats.legs, [0, -0.25, 0]);
+    root.add(legPivot); legs.push(legPivot);
+    const armPivot = new THREE.Group();
+    armPivot.position.set(side * 0.43, 1.38, 0);
+    addAvatarMesh(armPivot, avatarGeo.arm, shirt, [0, -0.25, 0]);
+    root.add(armPivot); arms.push(armPivot);
+  }
+  addAvatarMesh(root, avatarGeo.nose, avatarMats.nose, [0, 1.81, -0.24]).rotation.x = -Math.PI / 2;
+  scene3D.add(root);
+  const tag = document.createElement('div');
+  tag.className = 'player-tag-3d';
+  const nameNode = document.createElement('span');
+  nameNode.className = 'player-name';
+  const bubbleNode = document.createElement('span');
+  bubbleNode.className = 'player-chat-bubble';
+  bubbleNode.hidden = true;
+  tag.append(nameNode, bubbleNode);
+  playerLabelOverlay.appendChild(tag);
+  nameNode.textContent = sanitizeText(name, 30) || 'Khách Noel';
+  return { id: playerId, name: nameNode.textContent, root, legs, arms, tag, bubbleNode,
+    targetX: 0, targetY: 0, targetZ: 0, targetYaw: 0, moving: false,
+    bubbleUntil: 0, lastSeen: performance.now(), speaking: false, local: false };
+}
+const localAvatar = makePlayerAvatar(roomSessionId, roomUserName, 0);
+localAvatar.local = true;
+localAvatar.root.position.set(8, -0.42, 11);
+localAvatar.targetX = localAvatar.root.position.x;
+localAvatar.targetZ = localAvatar.root.position.z;
+roomPlayers.set(roomSessionId, localAvatar);
+function groundHeightAt(x, z) {
+  const inside = Math.max(0.15, 1 - (x / 142.5) ** 2 - (z / 142.5) ** 2);
+  return -24.2 + 23.75 * Math.sqrt(inside) + 0.08;
+}
+function setPlayerLabelText(player, text, until) {
+  player.bubbleNode.textContent = text || '';
+  player.bubbleNode.hidden = !text;
+  player.bubbleUntil = until || 0;
+}
+function updatePlayerLabels() {
+  const width = renderer.domElement.clientWidth || window.innerWidth;
+  const height = renderer.domElement.clientHeight || window.innerHeight;
+  const now = performance.now();
+  roomPlayers.forEach((player) => {
+    if (!isCurtainOpened || !player.root.visible) { player.tag.style.display = 'none'; return; }
+    if (player.bubbleUntil && now > player.bubbleUntil) setPlayerLabelText(player, '', 0);
+    playerLabelWorld.copy(player.root.position);
+    playerLabelWorld.y += 2.65;
+    playerLabelWorld.project(camera);
+    const visible = playerLabelWorld.z > -1 && playerLabelWorld.z < 1 && Math.abs(playerLabelWorld.x) < 1.2 && Math.abs(playerLabelWorld.y) < 1.2;
+    player.tag.style.display = visible ? 'flex' : 'none';
+    if (visible) {
+      player.tag.style.left = ((playerLabelWorld.x * 0.5 + 0.5) * width) + 'px';
+      player.tag.style.top = ((-playerLabelWorld.y * 0.5 + 0.5) * height) + 'px';
+      player.tag.classList.toggle('speaking', player.speaking);
+    }
+  });
+}
+function addRemotePlayer(state) {
+  if (!state || !state.id || state.id === roomSessionId) return null;
+  let player = roomPlayers.get(state.id);
+  if (!player) {
+    if (roomPlayers.size - 1 >= ROOM_PLAYER_LIMIT) return null;
+    player = makePlayerAvatar(state.id, state.name || 'Khách Noel', state.color || roomPlayers.size);
+    roomPlayers.set(state.id, player);
+    addChatLine(player.name + ' đã vào phòng.', true);
+  }
+  player.name = sanitizeText(state.name, 30) || player.name;
+  player.tag.querySelector('.player-name').textContent = player.name;
+  player.targetX = Number.isFinite(state.x) ? state.x : player.targetX;
+  player.targetY = Number.isFinite(state.y) ? state.y : player.targetY;
+  player.targetZ = Number.isFinite(state.z) ? state.z : player.targetZ;
+  player.targetYaw = Number.isFinite(state.yaw) ? state.yaw : player.targetYaw;
+  player.moving = Boolean(state.moving);
+  player.lastSeen = performance.now();
+  player.root.visible = isCurtainOpened;
+  return player;
+}
+function removeRemotePlayer(id, announce = false) {
+  const player = roomPlayers.get(id);
+  if (!player || player.local) return;
+  scene3D.remove(player.root);
+  player.tag.remove();
+  roomPlayers.delete(id);
+  closeVoicePeer(id);
+  if (announce) addChatLine(player.name + ' đã rời phòng.', true);
+}
+function addChatLine(message, isSystem = false, sender = '') {
+  if (!chatMessagesBox) return;
+  const line = document.createElement('div');
+  line.className = 'chat-msg-line' + (isSystem ? ' system' : '');
+  if (!isSystem && sender) {
+    const name = document.createElement('b');
+    name.textContent = sanitizeText(sender, 30) + ': ';
+    line.appendChild(name);
+  }
+  const text = document.createElement('span');
+  text.textContent = sanitizeText(message, 120);
+  line.appendChild(text);
+  chatMessagesBox.appendChild(line);
+  while (chatMessagesBox.children.length > 35) chatMessagesBox.removeChild(chatMessagesBox.firstElementChild);
+  chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+}
+function sendRoomChat() {
+  const message = sanitizeText(chatInputBox.value, 120);
+  if (!message) return;
+  roomChannel?.postMessage({ type: 'chat', from: roomSessionId, name: roomUserName, text: message, at: Date.now() });
+  addChatLine(message, false, roomUserName);
+  setPlayerLabelText(localAvatar, message, performance.now() + 3800);
+  chatInputBox.value = '';
+}
+function showEmote(id, message) {
+  const player = roomPlayers.get(id);
+  if (!player) return;
+  const emote = sanitizeText(message, 60);
+  setPlayerLabelText(player, emote, performance.now() + 2600);
+  if (!player.local) addChatLine(emote, false, player.name);
+}
+function sendEmote(message) {
+  const emote = sanitizeText(message, 60);
+  showEmote(roomSessionId, emote);
+  roomChannel?.postMessage({ type: 'emote', from: roomSessionId, name: roomUserName, text: emote });
+}
+function handleRoomBroadcast(data) {
+  if (!data || typeof data !== 'object') return;
+  if (data.type === 'gifts') { mergeRoomGifts(data.gifts); return; }
+  if (data.type === 'presence') { updateRoomStatus(); return; }
+  if (data.type === 'player-state') { addRemotePlayer(data); return; }
+  if (data.type === 'player-left') { removeRemotePlayer(data.from, true); return; }
+  if (data.type === 'chat' && data.from !== roomSessionId) {
+    addChatLine(data.text, false, data.name || 'Khách Noel');
+    const player = roomPlayers.get(data.from);
+    if (player) setPlayerLabelText(player, data.text, performance.now() + 3800);
+    return;
+  }
+  if (data.type === 'emote' && data.from !== roomSessionId) { showEmote(data.from, data.text); return; }
+  if (data.type === 'snowball' && data.from !== roomSessionId) { createSnowball(data); return; }
+  if (data.type === 'snowball-hit' && data.to === roomSessionId) {
+    setPlayerLabelText(localAvatar, '☃️ Trúng cầu tuyết!', performance.now() + 2200);
+    localJumpVelocity = Math.max(localJumpVelocity, 2.8);
+    return;
+  }
+  if (data.type === 'voice-signal' && data.from !== roomSessionId && data.to === roomSessionId) { handleVoiceSignal(data.from, data.signal); return; }
+  if (data.type === 'voice-hello' && data.from !== roomSessionId) { ensureVoicePeer(data.from); return; }
+  if (data.type === 'voice-stop' && data.from !== roomSessionId) { closeVoicePeer(data.from); return; }
+}
+function makeRoomPlayerSnapshot(now) {
+  const moving = walkModeEnabled && (walkKeys.size > 0 || mobileWalkKeys.size > 0);
+  const rounded = (value) => Math.round(value * 100) / 100;
+  return {
+    type: 'player-state', id: roomSessionId, name: roomUserName,
+    x: rounded(localAvatar.root.position.x), y: rounded(localAvatar.root.position.y), z: rounded(localAvatar.root.position.z),
+    yaw: rounded(localAvatar.root.rotation.y), moving, color: 0, at: now
+  };
+}
+function updateLocalAvatar(dt) {
+  localAvatar.root.visible = isCurtainOpened;
+  if (!isCurtainOpened) return;
+  const forward = (walkKeys.has('KeyW') || walkKeys.has('ArrowUp') || mobileWalkKeys.has('forward') ? 1 : 0)
+    - (walkKeys.has('KeyS') || walkKeys.has('ArrowDown') || mobileWalkKeys.has('backward') ? 1 : 0);
+  const side = (walkKeys.has('KeyD') || walkKeys.has('ArrowRight') || mobileWalkKeys.has('right') ? 1 : 0)
+    - (walkKeys.has('KeyA') || walkKeys.has('ArrowLeft') || mobileWalkKeys.has('left') ? 1 : 0);
+  const moving = walkModeEnabled && (forward !== 0 || side !== 0);
+  if (walkModeEnabled && moving) {
+    const length = Math.hypot(forward, side) || 1;
+    const f = forward / length, s = side / length, yaw = localAvatar.root.rotation.y;
+    const dx = (Math.sin(yaw) * f + Math.cos(yaw) * s) * 7.2 * dt;
+    const dz = (-Math.cos(yaw) * f + Math.sin(yaw) * s) * 7.2 * dt;
+    const oldX = localAvatar.root.position.x, oldZ = localAvatar.root.position.z;
+    const nextX = THREE.MathUtils.clamp(oldX + dx, -75, 75);
+    const nextZ = THREE.MathUtils.clamp(oldZ + dz, -75, 75);
+    if (nextX * nextX + nextZ * nextZ >= 16) localAvatar.root.position.set(nextX, groundHeightAt(nextX, nextZ) + localJumpOffset, nextZ);
+    else localAvatar.root.position.y = groundHeightAt(oldX, oldZ) + localJumpOffset;
+  }
+  if (walkModeEnabled && (walkKeys.has('Space') || mobileWalkKeys.has('jump')) && localJumpOffset <= 0.001) {
+    localJumpVelocity = 5.3;
+    walkKeys.delete('Space');
+    mobileWalkKeys.delete('jump');
+  }
+  if (walkModeEnabled || localJumpOffset > 0) {
+    localJumpVelocity -= 12.5 * dt;
+    localJumpOffset = Math.max(0, localJumpOffset + localJumpVelocity * dt);
+    if (localJumpOffset === 0) localJumpVelocity = 0;
+  }
+  localAvatar.root.position.y = groundHeightAt(localAvatar.root.position.x, localAvatar.root.position.z) + localJumpOffset;
+  const now = performance.now();
+  localAvatar.root.scale.y = 1 + Math.sin(now * 0.018) * (moving ? 0.025 : 0.006);
+  const gait = moving ? Math.sin(now * 0.014) * 0.55 : 0;
+  localAvatar.legs[0].rotation.x = gait;
+  localAvatar.legs[1].rotation.x = -gait;
+  localAvatar.arms[0].rotation.x = -gait * 0.55;
+  localAvatar.arms[1].rotation.x = gait * 0.55;
+}
+function updateMetaverse(dt, now) {
+  updateLocalAvatar(dt);
+  if (walkModeEnabled) {
+    const followDistance = 9.2;
+    walkTargetPos.set(
+      localAvatar.root.position.x + Math.sin(localAvatar.root.rotation.y) * followDistance,
+      localAvatar.root.position.y + 5.7,
+      localAvatar.root.position.z + Math.cos(localAvatar.root.rotation.y) * followDistance
+    );
+    walkLookAt.set(localAvatar.root.position.x, localAvatar.root.position.y + 1.5 - walkCameraPitch * 3.2, localAvatar.root.position.z);
+    camera.position.lerp(walkTargetPos, 1 - Math.exp(-dt * 5.2));
+    camera.lookAt(walkLookAt);
+  }
+  roomPlayers.forEach((player) => {
+    if (player.local) return;
+    const amount = Math.min(1, dt * 8);
+    player.root.position.x += (player.targetX - player.root.position.x) * amount;
+    player.root.position.z += (player.targetZ - player.root.position.z) * amount;
+    player.root.position.y += (player.targetY - player.root.position.y) * amount;
+    player.root.rotation.y += Math.atan2(Math.sin(player.targetYaw - player.root.rotation.y), Math.cos(player.targetYaw - player.root.rotation.y)) * amount;
+    const gait = player.moving ? Math.sin(now * 0.014) * 0.48 : 0;
+    player.legs[0].rotation.x = gait;
+    player.legs[1].rotation.x = -gait;
+    player.arms[0].rotation.x = -gait * 0.55;
+    player.arms[1].rotation.x = gait * 0.55;
+    if (now - player.lastSeen > 18000) removeRemotePlayer(player.id, true);
+  });
+  updateSnowballs(dt);
+  if (now - lastPlayerStateSentAt >= 120) {
+    const state = makeRoomPlayerSnapshot(now);
+    const snapshot = [state.x, state.y, state.z, state.yaw, state.moving, state.name].join(',');
+    if (snapshot !== lastPlayerStateSnapshot || now - lastPlayerStateSentAt > 1200) {
+      roomChannel?.postMessage(state);
+      lastPlayerStateSnapshot = snapshot;
+    }
+    lastPlayerStateSentAt = now;
+  }
+}
+function setWalkMode(enabled) {
+  const nextEnabled = Boolean(enabled);
+  if (nextEnabled && !walkModeEnabled) {
+    walkPreviousCameraMode = cameraMode;
+    walkPreviousManual360 = hasDraggedManual360;
+    walkPreviousFov = camera.fov;
+    camera.fov = 64;
+    camera.updateProjectionMatrix();
+  } else if (!nextEnabled && walkModeEnabled) {
+    camPos.copy(camera.position);
+    camLook.copy(walkLookAt);
+    cameraMode = walkPreviousCameraMode;
+    hasDraggedManual360 = walkPreviousManual360;
+    camera.fov = walkPreviousFov;
+    camera.updateProjectionMatrix();
+  }
+  walkModeEnabled = nextEnabled;
+  freeWalkToggleBtn.textContent = walkModeEnabled ? '🚶 Tự đi dạo: BẬT' : '🚶 Tự đi dạo: TẮT';
+  freeWalkToggleBtn.classList.toggle('active-360', walkModeEnabled);
+  walkDpad.classList.toggle('active', walkModeEnabled && window.innerWidth <= 820);
+  cameraViewBtn.disabled = walkModeEnabled;
+  walkKeys.clear();
+  mobileWalkKeys.clear();
+  if (walkModeEnabled) { cameraMode = 0; hasDraggedManual360 = true; }
+}
+function isTextInput(target) {
+  return target instanceof HTMLElement && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
+}
+function throwSnowball() {
+  if (!isCurtainOpened) { addChatLine('Mở tấm rèm để vào phòng.', true); return; }
+  const now = performance.now();
+  if (now - currentSnowballAt < 460) return;
+  currentSnowballAt = now;
+  const yaw = localAvatar.root.rotation.y;
+  const ball = {
+    id: roomSessionId + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
+    owner: roomSessionId, x: localAvatar.root.position.x, y: localAvatar.root.position.y + 1.35, z: localAvatar.root.position.z,
+    vx: Math.sin(yaw) * 9.2, vy: 4.8, vz: -Math.cos(yaw) * 9.2
+  };
+  createSnowball(ball);
+  roomChannel?.postMessage({ type: 'snowball', from: roomSessionId, ...ball });
+}
+const snowballGeometry = new THREE.SphereGeometry(0.22, 8, 6);
+const snowballMaterial = new THREE.MeshStandardMaterial({ color: 0xf3fbff, roughness: 0.45, metalness: 0.04 });
+function createSnowball(data) {
+  if (snowballs.length >= ROOM_BALL_LIMIT) {
+    const oldest = snowballs.shift();
+    scene3D.remove(oldest.mesh);
+  }
+  const mesh = new THREE.Mesh(snowballGeometry, snowballMaterial);
+  mesh.position.set(data.x, data.y, data.z);
+  mesh.castShadow = false; mesh.receiveShadow = false;
+  scene3D.add(mesh);
+  snowballs.push({ id: data.id, owner: data.owner || data.from, mesh, vx: data.vx, vy: data.vy, vz: data.vz, born: performance.now(), hit: false });
+}
+function updateSnowballs(dt) {
+  const now = performance.now();
+  for (let i = snowballs.length - 1; i >= 0; i--) {
+    const ball = snowballs[i];
+    ball.vy -= 10.5 * dt;
+    ball.mesh.position.x += ball.vx * dt;
+    ball.mesh.position.y += ball.vy * dt;
+    ball.mesh.position.z += ball.vz * dt;
+    const px = ball.mesh.position.x, py = ball.mesh.position.y, pz = ball.mesh.position.z;
+    if (!ball.hit && ball.owner === roomSessionId) {
+      roomPlayers.forEach((player) => {
+        if (player.local || ball.hit) return;
+        const dx = player.root.position.x - px, dy = player.root.position.y + 1.0 - py, dz = player.root.position.z - pz;
+        if (dx * dx + dy * dy + dz * dz < 0.72) {
+          ball.hit = true;
+          roomChannel?.postMessage({ type: 'snowball-hit', from: roomSessionId, to: player.id });
+        }
+      });
+    }
+    if (py < groundHeightAt(px, pz) || now - ball.born > 2400 || ball.hit) {
+      scene3D.remove(ball.mesh);
+      snowballs.splice(i, 1);
+    }
+  }
+}
+const voicePeers = new Map();
+function sendVoiceSignal(peerId, signal) {
+  roomChannel?.postMessage({ type: 'voice-signal', from: roomSessionId, to: peerId, signal });
+}
+function ensureVoicePeer(peerId) {
+  if (!peerId || peerId === roomSessionId || typeof RTCPeerConnection !== 'function' || !roomChannel) return null;
+  let entry = voicePeers.get(peerId);
+  if (entry) return entry;
+  try {
+    const pc = new RTCPeerConnection({ iceServers: [] });
+    entry = { pc, makingOffer: false, ignoreOffer: false, audio: null, playerId: peerId };
+    voicePeers.set(peerId, entry);
+    pc.onicecandidate = (event) => {
+      if (event.candidate) sendVoiceSignal(peerId, { candidate: event.candidate.toJSON() });
+    };
+    pc.onnegotiationneeded = async () => {
+      try {
+        entry.makingOffer = true;
+        await pc.setLocalDescription();
+        sendVoiceSignal(peerId, { description: pc.localDescription.toJSON() });
+      } catch (_) { }
+      finally { entry.makingOffer = false; }
+    };
+    pc.ontrack = (event) => {
+      let audio = entry.audio;
+      if (!audio) {
+        audio = document.createElement('audio');
+        audio.autoplay = true;
+        audio.playsInline = true;
+        audio.muted = isVoiceSpeakerMuted;
+        audio.dataset.peer = peerId;
+        voiceStreamsContainer.appendChild(audio);
+        entry.audio = audio;
+      }
+      audio.srcObject = event.streams[0] || new MediaStream([event.track]);
+      audio.play().catch(() => addChatLine('Bấm “Loa thoại” để cho phép phát giọng nói.', true));
+      const player = roomPlayers.get(peerId);
+      if (player) player.speaking = true;
+    };
+    pc.onconnectionstatechange = () => {
+      if (pc.connectionState === 'failed' || pc.connectionState === 'closed') closeVoicePeer(peerId);
+    };
+    if (localMicStream) localMicStream.getTracks().forEach((track) => pc.addTrack(track, localMicStream));
+    return entry;
+  } catch (_) { return null; }
+}
+async function handleVoiceSignal(peerId, signal) {
+  const entry = ensureVoicePeer(peerId);
+  if (!entry || !signal) return;
+  const pc = entry.pc;
+  try {
+    if (signal.description) {
+      const description = signal.description;
+      const collision = description.type === 'offer' && (entry.makingOffer || pc.signalingState !== 'stable');
+      entry.ignoreOffer = roomSessionId < peerId && collision;
+      if (entry.ignoreOffer) return;
+      if (collision) await pc.setLocalDescription({ type: 'rollback' });
+      await pc.setRemoteDescription(description);
+      if (description.type === 'offer') {
+        await pc.setLocalDescription();
+        sendVoiceSignal(peerId, { description: pc.localDescription.toJSON() });
+      }
+    } else if (signal.candidate && !entry.ignoreOffer) {
+      await pc.addIceCandidate(signal.candidate);
+    }
+  } catch (_) { }
+}
+function closeVoicePeer(peerId) {
+  const entry = voicePeers.get(peerId);
+  if (!entry) return;
+  try { entry.pc.ontrack = null; entry.pc.close(); } catch (_) {}
+  if (entry.audio) { entry.audio.srcObject = null; entry.audio.remove(); }
+  voicePeers.delete(peerId);
+  const player = roomPlayers.get(peerId);
+  if (player) player.speaking = false;
+}
+function sendRoomPresenceNow() {
+  if (localMicStream && roomChannel) roomChannel.postMessage({ type: 'voice-hello', from: roomSessionId });
+}
+async function toggleRoomMic() {
+  if (localMicStream) {
+    localMicStream.getTracks().forEach((track) => track.stop());
+    localMicStream = null;
+    Array.from(voicePeers.keys()).forEach((id) => closeVoicePeer(id));
+    roomChannel?.postMessage({ type: 'voice-stop', from: roomSessionId });
+    micToggleBtn.textContent = '🎤 Mic: TẮT';
+    micToggleBtn.classList.remove('mic-active');
+    return;
+  }
+  if (!navigator.mediaDevices?.getUserMedia) {
+    addChatLine('Mic cần HTTPS hoặc localhost và trình duyệt hỗ trợ.', true);
+    return;
+  }
+  micToggleBtn.disabled = true;
+  try {
+    localMicStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false
+    });
+    Array.from(voicePeers.keys()).forEach((id) => closeVoicePeer(id));
+    micToggleBtn.textContent = '🎤 Mic: BẬT';
+    micToggleBtn.classList.add('mic-active');
+    roomPlayers.forEach((player) => { if (!player.local) ensureVoicePeer(player.id); });
+    sendRoomPresenceNow();
+    addChatLine('Mic đang bật. Voice chỉ kết nối trong cùng trình duyệt.', true);
+  } catch (error) {
+    addChatLine(error?.name === 'NotAllowedError' ? 'Bạn chưa cấp quyền dùng mic.' : 'Không mở được mic trên thiết bị này.', true);
+  } finally { micToggleBtn.disabled = false; }
+}
+function activateRoomControls() {
+  freeWalkToggleBtn?.addEventListener('click', () => setWalkMode(!walkModeEnabled));
+  chatSendBtn?.addEventListener('click', sendRoomChat);
+  chatInputBox?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') { event.preventDefault(); sendRoomChat(); }
+  });
+  throwSnowballBtn?.addEventListener('click', throwSnowball);
+  document.querySelectorAll('[data-emote]').forEach((button) => button.addEventListener('click', () => sendEmote(button.dataset.emote)));
+  micToggleBtn?.addEventListener('click', toggleRoomMic);
+  voiceSpeakerBtn?.addEventListener('click', () => {
+    isVoiceSpeakerMuted = !isVoiceSpeakerMuted;
+    voiceSpeakerBtn.textContent = isVoiceSpeakerMuted ? '🔇 Loa thoại: TẮT' : '🎧 Loa thoại: BẬT';
+    voiceStreamsContainer.querySelectorAll('audio').forEach((audio) => { audio.muted = isVoiceSpeakerMuted; });
+  });
+  newRoomServerBtn?.removeEventListener('click', switchRoom);
+  newRoomServerBtn?.addEventListener('click', openCreateRoomModal);
+  createRoomCancelBtn?.addEventListener('click', () => createRoomModalBackdrop.classList.remove('active'));
+  createRoomConfirmBtn?.addEventListener('click', createRoomFromModal);
+  useRoomPasswordCheck?.addEventListener('change', () => { newRoomPasswordWrap.style.display = useRoomPasswordCheck.checked ? 'block' : 'none'; });
+  passwordSubmitBtn?.addEventListener('click', submitRoomPassword);
+  gatePasswordInput?.addEventListener('keydown', (event) => { if (event.key === 'Enter') submitRoomPassword(); });
+  guestNicknameInput?.addEventListener('keydown', (event) => { if (event.key === 'Enter') gatePasswordInput.focus(); });
+  document.querySelectorAll('.wish-modal-backdrop').forEach((backdrop) => backdrop.addEventListener('click', (event) => {
+    if (event.target === backdrop && backdrop !== passwordGateBackdrop) backdrop.classList.remove('active');
+  }));
+  window.addEventListener('keydown', (event) => {
+    if (isTextInput(event.target) || createRoomModalBackdrop.classList.contains('active') || passwordGateBackdrop.classList.contains('active') || wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active')) return;
+    if (event.code === 'KeyE') { event.preventDefault(); throwSnowball(); return; }
+    if (!walkModeEnabled) return;
+    if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(event.code)) {
+      event.preventDefault();
+      walkKeys.add(event.code);
+    }
+  });
+  window.addEventListener('keyup', (event) => walkKeys.delete(event.code));
+  window.addEventListener('blur', () => { walkKeys.clear(); mobileWalkKeys.clear(); });
+  walkDpad?.querySelectorAll('[data-move]').forEach((button) => {
+    const move = button.dataset.move;
+    button.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      if (button.setPointerCapture) button.setPointerCapture(event.pointerId);
+      mobileWalkKeys.add(move);
+    });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((type) => button.addEventListener(type, () => mobileWalkKeys.delete(move)));
+  });
+  dpadJumpBtn?.addEventListener('pointerdown', (event) => { event.preventDefault(); mobileWalkKeys.add('jump'); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach((type) => dpadJumpBtn?.addEventListener(type, () => mobileWalkKeys.delete('jump')));
+  window.addEventListener('resize', () => walkDpad?.classList.toggle('active', walkModeEnabled && window.innerWidth <= 820), { passive: true });
+}
+activateRoomControls();
+roomMetadata = readRoomMetadata();
+if (roomMetadata?.roomTitle) roomTitle = sanitizeText(roomMetadata.roomTitle, 45);
+if (roomMetadata?.hostName && roomUserName === 'Khách Noel') roomUserName = sanitizeText(roomMetadata.hostName, 30) || roomUserName;
+localAvatar.name = roomUserName;
+localAvatar.tag.querySelector('.player-name').textContent = roomUserName;
+const roomBroadcastTimer = setInterval(sendRoomPresenceNow, 3000);
+window.addEventListener('pagehide', () => {
+  clearInterval(roomBroadcastTimer);
+  if (localMicStream) localMicStream.getTracks().forEach((track) => track.stop());
+  Array.from(voicePeers.keys()).forEach((id) => closeVoicePeer(id));
+});
+      loadRoomGiftsFromStorageAndUrl();
+
+
       function getIntersectedGiftRoot(clientX, clientY) {
         if (!giftsFallingActive || !gifts3DGroup.visible) return null;
         const rect = renderer.domElement.getBoundingClientRect();
@@ -3538,7 +4914,7 @@
 
         noise.connect(filter);
         filter.connect(gain);
-        gain.connect(ctx.destination);
+        gain.connect(masterGain || ctx.destination);
         noise.start(now);
       }
 
@@ -3732,7 +5108,7 @@
       });
 
       renderer.domElement.addEventListener('pointerdown', (e) => {
-        if (wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active')) return;
+        if (wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active') || createRoomModalBackdrop?.classList.contains('active') || passwordGateBackdrop?.classList.contains('active')) return;
         isDraggingOrbit = true;
         dragStartPos = { x: e.clientX, y: e.clientY };
         prevDragPos = { x: e.clientX, y: e.clientY };
@@ -3749,8 +5125,13 @@
           const dx = e.clientX - prevDragPos.x, dy = e.clientY - prevDragPos.y;
           if (Math.hypot(e.clientX - dragStartPos.x, e.clientY - dragStartPos.y) > 5) {
             hasDraggedManual360 = true;
-            orbitAzimuth -= dx * 0.0075;
-            orbitPolar = clamp(orbitPolar - dy * 0.0055, 0.32, 1.53);
+            if (walkModeEnabled) {
+              localAvatar.root.rotation.y -= dx * 0.0075;
+              walkCameraPitch = clamp(walkCameraPitch + dy * 0.004, -0.45, 0.72);
+            } else {
+              orbitAzimuth -= dx * 0.0075;
+              orbitPolar = clamp(orbitPolar - dy * 0.0055, 0.32, 1.53);
+            }
             renderer.domElement.style.cursor = 'grabbing';
           }
           prevDragPos = { x: e.clientX, y: e.clientY };
@@ -3777,10 +5158,7 @@
           if (wishModalBackdrop.classList.contains('active') || creatorModalBackdrop.classList.contains('active')) return;
           const hitRoot = getIntersectedGiftRoot(e.clientX, e.clientY);
           if (hitRoot && hitRoot.userData.giftInfo) {
-            const { wish, palette } = hitRoot.userData.giftInfo;
-            hitRoot.userData.popAnim = 1.0;
-            triggerGiftSparkleBurst(hitRoot.position, palette.hexRibbon);
-            setTimeout(() => openGiftWish(wish, palette), 240);
+            openRoomGift(hitRoot);
           }
         }
       });
@@ -3788,7 +5166,9 @@
       renderer.domElement.addEventListener('wheel', (e) => {
         if (!isCurtainOpened) return;
         e.preventDefault();
+        if (walkModeEnabled) setWalkMode(false);
         hasDraggedManual360 = true;
+        // Zoom luôn lấy tâm tại _centerLook (gốc cây thông) trong updateDirectorTimeline.
         orbitRadius = clamp(orbitRadius + e.deltaY * 0.035, 26, 92);
       }, { passive: false });
 
@@ -3807,8 +5187,10 @@
 
       function updateDirectorTimeline(now, dt) {
         if (!timelineRunning) {
-          camera.position.set(0, 11, 56);
-          camera.lookAt(0, 12, 0);
+          if (!walkModeEnabled) {
+            camera.position.set(0, 11, 56);
+            camera.lookAt(0, 12, 0);
+          }
           return;
         }
 
@@ -3910,18 +5292,27 @@
         const lerpFactor = elapsed <= 6.50 ? 1 : Math.min(1, dt * (isDraggingOrbit ? 12 : 4.5));
         camPos.lerp(targetCamPos, lerpFactor);
         camLook.lerp(targetCamLook, lerpFactor);
-        camera.position.copy(camPos);
-        camera.lookAt(camLook);
+        if (!walkModeEnabled) {
+          camera.position.copy(camPos);
+          camera.lookAt(camLook);
+        }
       }
 
       let lastFrameTime = performance.now();
 
+      function requestSceneFrame() {
+        if (!renderLoopRaf && !document.hidden && isCurtainOpened) renderLoopRaf = requestAnimationFrame(animate3D);
+      }
+
       function animate3D(now) {
+        renderLoopRaf = 0;
+        if (document.hidden || !isCurtainOpened) return;
         const dt = Math.min((now - lastFrameTime) / 1000, 0.1);
         const timeSec = now / 1000;
         lastFrameTime = now;
 
         updateDirectorTimeline(now, dt);
+        updateMetaverse(dt, now);
 
         if (portal3DGroup.visible) {
           const pd = portal3DGroup.userData;
@@ -4081,18 +5472,22 @@
         const windDx = wCfg.windX * dt;
         const speedMult = wCfg.speedMult;
         const posAttr = snowParticles.geometry.attributes.position;
-        for (let i = 0; i < snowParticleCount; i++) {
-          const v = snowVel[i];
-          let x = posAttr.getX(i) + (v.vx + Math.sin(timeSec + v.phase) * 0.8) * dt + windDx;
-          let y = posAttr.getY(i) - v.vy * speedMult * dt;
-          let z = posAttr.getZ(i) + v.vz * dt;
+        const positions = posAttr.array;
+        const activeSnowCount = Math.ceil(snowParticleCount * (fpsAutoScaler.qualityTier === 2 ? 1 : (fpsAutoScaler.qualityTier === 1 ? 0.78 : 0.55)));
+        for (let i = 0; i < activeSnowCount; i++) {
+          const v = snowVel[i], offset = i * 3;
+          let x = positions[offset] + (v.vx + Math.sin(timeSec + v.phase) * 0.8) * dt + windDx;
+          let y = positions[offset + 1] - v.vy * speedMult * dt;
+          let z = positions[offset + 2] + v.vz * dt;
           if (x > 95) x = -95; else if (x < -95) x = 95;
           if (y < -12) { y = 88; x = rand(-95, 95); z = rand(-95, 95); }
-          posAttr.setXYZ(i, x, y, z);
+          positions[offset] = x;
+          positions[offset + 1] = y;
+          positions[offset + 2] = z;
         }
         posAttr.needsUpdate = true;
 
-        for (let i = 0; i < smallCrystalCount; i++) {
+        if (smallCrystalFlakesGroup.visible) for (let i = 0; i < smallCrystalCount; i++) {
           const cf = smallCrystalFlakes[i];
           cf.mesh.position.y -= cf.vy * dt;
           cf.mesh.position.x += (cf.vx + Math.sin(timeSec * cf.swaySpeed + cf.phase) * cf.swayAmp) * dt;
@@ -4122,6 +5517,7 @@
             }
           });
         }
+        updateRoomGiftAnimations(now);
 
 // 1. Tự động đo & tối ưu hóa FPS theo thiết bị
         fpsAutoScaler.update(dt);
@@ -4252,7 +5648,7 @@
         });
 
         // 5. Góc nhìn thứ nhất "Ngồi Trên Cỗ Xe Ông Già Noel" (First-Person Sleigh POV)
-        if (CAMERA_MODES[cameraMode] && CAMERA_MODES[cameraMode].id === 'sleigh_pov' && orbitSantaActive && !hasDraggedManual360) {
+        if (!walkModeEnabled && CAMERA_MODES[cameraMode] && CAMERA_MODES[cameraMode].id === 'sleigh_pov' && orbitSantaActive && !hasDraggedManual360) {
           _forwardVec.set(0, 6.2, -4.5);
           orbitSanta3D.localToWorld(_forwardVec);
           camera.position.lerp(_forwardVec, 0.25);
@@ -4308,13 +5704,18 @@
             }
           }
         }
+        if (++roomLabelFrame >= 6) {
+          roomLabelFrame = 0;
+          updateRoomGiftLabels();
+          updatePlayerLabels();
+        }
         renderer.render(scene3D, camera);
-        requestAnimationFrame(animate3D);
+        requestSceneFrame();
       }
 
       /* ==================== 16. SỰ KIỆN MỞ RÈM & KHỞI CHẠY ==================== */
       function openCurtain() {
-        if (isCurtainOpened) return;
+        if (isRoomLockedByPassword || isCurtainOpened) return;
         isCurtainOpened = true;
         if (curtainHint) curtainHint.style.display = 'none';
         worldTreeGroup.visible = false;
@@ -4323,13 +5724,14 @@
         curtainStage.classList.add('open');
         timelineStart = performance.now();
         timelineRunning = true;
+        requestSceneFrame();
 
         schedule(playSantaHoHoHoSound, 520);
         schedule(() => { snowWhiteout.classList.add('active'); worldTreeGroup.visible = true; }, 4100);
         schedule(() => snowWhiteout.classList.remove('active'), 4850);
         schedule(() => { giantSnowflakesGroup.visible = false; sceneEl.classList.add('show-title'); }, 6800);
         schedule(() => sceneEl.classList.add('show-subtitle'), 7550);
-        schedule(() => { gifts3DGroup.visible = true; giftsFallingActive = true; orbitSantaActive = true; }, 8200);
+        schedule(() => { gifts3DGroup.visible = roomGiftMeshes.length > 0; giftsFallingActive = roomGiftMeshes.length > 0; orbitSantaActive = true; }, 8200);
         schedule(() => sceneEl.classList.add('dock-greeting'), 9800);
 
         if (customCardData.to || customCardData.msg) {
@@ -4349,7 +5751,10 @@
 
       function resetAndStandbyCurtain() {
         clearTimers();
+        if (renderLoopRaf) cancelAnimationFrame(renderLoopRaf);
+        renderLoopRaf = 0;
         isCurtainOpened = timelineRunning = giftsFallingActive = orbitSantaActive = hasDraggedManual360 = false;
+        setWalkMode(false);
         cameraMode = 0; orbitAzimuth = 0; orbitPolar = 1.38; orbitRadius = 56;
         cameraViewBtn.textContent = CAMERA_MODES[0].label;
         cameraViewBtn.classList.remove('active-360');
@@ -4382,7 +5787,7 @@
       }, { passive: true });
 
       resetFallingGiftsState();
-      requestAnimationFrame(animate3D);
+      // Scene rendering starts only when the user opens the curtain.
     })();
   </script>
 </body>
